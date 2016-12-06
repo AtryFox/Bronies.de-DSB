@@ -40,7 +40,7 @@ bot.on('ready', function () {
 });
 
 bot.on('guildMemberAdd', function (member) {
-    bot.channels.find('id', config.DEFAULT_CH).sendMessage(member + ' Willkommen auf dem offiziellen Discord Server von Bronies.de ... Wirf doch für den Anfang einen Blick in den #info Bereich. :lyra_1:');
+    //bot.channels.find('id', config.DEFAULT_CH).sendMessage(member + ' Willkommen auf dem offiziellen Discord Server von Bronies.de ... Wirf doch für den Anfang einen Blick in den #info Bereich. :lyra_1:');
 });
 
 function onMessage(message) {
