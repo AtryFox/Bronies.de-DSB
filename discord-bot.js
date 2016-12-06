@@ -317,6 +317,8 @@ function processCommand(message, command, args) {
                 if(regexSort.test(query)) {
                     parameters += '&sf=' + query.match(regexSort)[1];
                     query = query.replace(regexSort, '');
+                } else {
+                    parameters += '&sf=random';
                 }
 
                 query = query.replace(/,{2,}/g, ',').replace(/(^,|,$)/, '');
