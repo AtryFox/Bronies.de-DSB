@@ -306,7 +306,7 @@ function processCommand(message, command, args) {
                     query = args.join(' ');
 
                 if(message.channel == server.channels.find('name', 'nsfw')) {
-                    parameters += '&filter_id=56027';
+                    parameters += '&filter_id=134111&key=' + config.DERPI_KEY;
                 }
 
                 if(regexOrder.test(query)) {
