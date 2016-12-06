@@ -26,7 +26,7 @@ function getVersion(callback) {
 /* BOT EVENTS */
 bot.on('ready', function () {
     online();
-    console.log('I am ready!');
+    console.log(getDateTime() + 'I am ready!');
     getVersion(function (v) {
         version = v;
         bot.user.setGame('version ' + version);
@@ -323,7 +323,7 @@ function processCommand(message, command, args) {
 
                 query = query.replace(/,{2,}/g, ',').replace(/(^,|,$)/, '');
                 var url = 'https://derpibooru.org/search.json?q=' + encodeURIComponent(query) + parameters;
-                console.log(message.author + ' - Derpibooru search: ' + url);
+                console.log(message.author.username + '#' + message.author.discriminator + ' - Derpibooru search: ' + url);
 
                 unirest.get(url)
                     .header("Accept", "application/json")
@@ -337,7 +337,6 @@ function processCommand(message, command, args) {
                         if (typeof data.search === 'undefined' || typeof data.search[0] === 'undefined')
                             return respond(message, 'Keine Suchergebnisse gefunden.');
 
-                        //respondWithDerpibooruImage(data.search[0]);
                         var img = data.search[0];
 
                         if (!img.is_rendered) {
@@ -420,6 +419,10 @@ process.on('SIGINT', function () {
     process.exit();
 
 });
+
+function getDateTime() {
+    return "[" + new Date().toLocaleString() + "] ";
+}
 
 function idle() {
     bot.user.setStatus('idle');
