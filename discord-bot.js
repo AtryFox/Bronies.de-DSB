@@ -1,5 +1,6 @@
 var Discord = require('discord.js'),
     config = require('./config'),
+    fs = require('fs'),
     token = config.TOKEN,
     bot = new Discord.Client(),
     server,
@@ -256,7 +257,6 @@ function processCommand(message, command, args) {
                         return;
                     }
 
-                    var fs = require('fs');
                     var soundPath = './sounds/' + sounds[arg];
 
                     fs.access(soundPath, fs.constants.R_OK, function(err) {
@@ -332,7 +332,8 @@ var sounds = {
     'rimshot': 'Pinkie Pie/rimshot.mp3',
     'yeah': 'Snowflake/yeah2.mp3',
     'fanfare': 'Trixie/fanfare.mp3',
-    'youmad': 'Zecora/have you gone mad.mp3'
+    'youmad': 'Zecora/have you gone mad.mp3',
+    '10seconds': 'Rainbow Dash/10 seconds flat.mp3'
 };
 
 /* GENERAL APPLICATION STUFF */
