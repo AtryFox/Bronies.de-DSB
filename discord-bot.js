@@ -333,7 +333,8 @@ var sounds = {
     'yeah': 'Snowflake/yeah2.mp3',
     'fanfare': 'Trixie/fanfare.mp3',
     'youmad': 'Zecora/have you gone mad.mp3',
-    '10seconds': 'Rainbow Dash/10 seconds flat.mp3'
+    '10seconds': 'Rainbow Dash/10 seconds flat.mp3',
+    'style': 'Pinkie Pie/pinkie pie style.mp3'
 };
 
 /* GENERAL APPLICATION STUFF */
