@@ -4,7 +4,8 @@ var Discord = require('discord.js'),
     bot = new Discord.Client(),
     server,
     version,
-    exec;
+    exec,
+    sbbusy = false;
 
 /* VERSION */
 function getVersion(callback) {
@@ -28,7 +29,7 @@ bot.on('ready', function () {
         version = v;
         bot.user.setGame('version ' + version);
 
-        if (config.DEBUG) bot.channels.find('id', config.BOT_CH).sendMessage('I am ready, running version `' + version + '`! 👌 :kappa:');
+        if (config.DEBUG) bot.channels.find('id', config.BOT_CH).sendMessage('I am ready, running version `' + version + '`! 👌');
     });
 
     if (!bot.guilds.exists('id', config.SERVER_ID)) {
@@ -102,7 +103,7 @@ function Permission(checker) {
 }
 
 var isAdmin = new Permission(function (member) {
-    return member.roles.exists('name', 'Admin');
+    return member.roles.exists('name', 'Admin') || member.roles.exists('name', 'Co-Admin');
 });
 
 var isMod = new Permission(function (member) {
@@ -177,8 +178,8 @@ function processCommand(message, command, args) {
             break;
         case 'nsfw':
             (function () {
-                if(message.guild != server) {
-                    return respond(msg, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!', true);
+                if (message.guild != server) {
+                    return respond(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!', true);
                 }
 
                 var msg = message;
@@ -188,24 +189,24 @@ function processCommand(message, command, args) {
                     return respond(msg, 'Du besitzt nicht genügend Rechte!', true);
                 }
 
-                if(args.length != 1) {
+                if (args.length != 1) {
                     return respond(msg, 'Nutze `!nsfw <join|leave>` um den NSFW Bereich zu betreten bzw. zu verlassen.\nBeispiel: `!nsfw join`', true);
                 }
 
-                var arg = args[0];
+                var arg = args[0].toLowerCase();
 
-                var nsfwRole = server.roles.find('name', 'NSFW')
+                var nsfwRole = server.roles.find('name', 'NSFW');
                 var member = getGuildMemeber(msg.author);
 
-                if(arg == 'join') {
-                    if(member.roles.exists('name', 'NSFW')) {
+                if (arg == 'join') {
+                    if (member.roles.exists('name', 'NSFW')) {
                         return respond(msg, 'Du hast bereits Zugriff auf den NSFW Bereich.', true);
                     } else {
                         member.addRole(nsfwRole);
                         return respond(msg, 'Bronies.de NSFW Bereich beigetreten. :smirk:', true);
                     }
-                } else if(arg == 'leave'){
-                    if(!member.roles.exists('name', 'NSFW')) {
+                } else if (arg == 'leave') {
+                    if (!member.roles.exists('name', 'NSFW')) {
                         return respond(msg, 'Du hast bereits keinen Zugriff auf den NSFW Bereich.', true);
                     } else {
                         member.removeRole(nsfwRole);
@@ -214,6 +215,73 @@ function processCommand(message, command, args) {
                 } else {
                     return respond(msg, 'Nutze `!nsfw <join|leave>` um den NSFW Bereich zu betreten bzw. zu verlassen.\nBeispiel: `!nsfw join`', true);
                 }
+            })();
+            break;
+        case 'soundboard':
+        case 'sb':
+            (function () {
+                if (message.guild != server) {
+                    return respond(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!', true);
+                    message.delete();
+                }
+
+                if (!isUser.check(message.author)) {
+                    return respond(message, 'Du besitzt nicht genügend Rechte!', true);
+                    message.delete();
+                }
+
+                if (args.length != 1) {
+                    return respond(message, 'Spiele Pony Sounds in deinem aktuellen Voicechannel ab. Nutze `!sb help` um alle Sounds anzuzeigen.\nBeispiel: `!sb lunafun`', true);
+                    message.delete();
+                }
+
+                var arg = args[0].toLowerCase();
+
+
+                if (arg == 'help') {
+                    respond(message, 'Folgende Sounds können abgespielt werden:\n```' + Object.keys(sounds).join(' ') + '```', true);
+                    return message.delete();
+                } else {
+                    if (sbbusy) {
+                        return;
+                    }
+
+                    var member = getGuildMemeber(message.author);
+
+                    if (typeof member.voiceChannel == 'undefined') {
+                        return;
+                    }
+
+                    if (!(arg in sounds)) {
+                        return;
+                    }
+
+                    var fs = require('fs');
+                    var soundPath = './sounds/' + sounds[arg];
+
+                    fs.access(soundPath, fs.constants.R_OK, function(err) {
+                        if (!err) {
+                            sbbusy = true;
+                            member.voiceChannel.join().then(function (connection) {
+                                const dispatcher = connection.playFile('./sounds/' + sounds[arg]);
+
+                                dispatcher.on('end', function () {
+                                    sbbusy = false;
+                                    connection.disconnect();
+
+                                });
+
+                                dispatcher.on('error', function (message) {
+                                    console.log(message);
+                                });
+                            })
+                                .catch(console.error);
+                        } else {
+                            console.log('Soundfile not found: ' + arg + ' file ' + sounds[arg]);
+                        }
+                    });
+                }
+
             })();
             break;
     }
@@ -235,11 +303,37 @@ var commands = [
         role: 'Community'
     },
     {
+        name: 'soundboard <sound>',
+        help: 'Sound in aktuellem Sprachchannel abspielen. Liste aller Sounds mit !sb help',
+        aliases: ['sb'],
+        role: 'Community'
+    },
+    {
         name: 'nowplaying',
         help: 'Zeigt den aktuell gespielten Track des BRG-Musikbots an.',
         aliases: ['np']
     }
 ];
+
+var sounds = {
+    'lunafun': 'Princess Luna/the fun has been doubled.mp3',
+    'eyyup': 'Big Macintosh/eyup.mp3',
+    'nope': 'Big Macintosh/nnope.mp3',
+    'yeehaw': 'Applejack/yeehaw.mp3',
+    'laugh': 'Rainbow Dash/laughing.mp3',
+    'catchy': 'Twilight Sparkle/wow catchy.mp3',
+    'crazy': 'Twilight Sparkle/are you crazy.mp3',
+    'grin': 'Fluttershy/(grin).mp3',
+    'choochoo': 'Fluttershy/choo choo train.mp3',
+    'yay': 'Fluttershy/yay.mp3',
+    'boring': 'Pinkie Pie/boring.mp3',
+    'giggle': 'Pinkie Pie/giggle.mp3',
+    'oki': 'Pinkie Pie/oki doki loki.mp3',
+    'rimshot': 'Pinkie Pie/rimshot.mp3',
+    'yeah': 'Snowflake/yeah2.mp3',
+    'fanfare': 'Trixie/fanfare.mp3',
+    'youmad': 'Zecora/have you gone mad.mp3'
+};
 
 /* GENERAL APPLICATION STUFF */
 process.on('exit', idle);

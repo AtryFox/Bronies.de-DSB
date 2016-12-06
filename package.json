@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "Discord server bot for Bronies.de",
   "dependencies": {
-    "discord.js": "^10.0.1"
+    "discord.js": "^10.0.1",
+    "node-opus": "^0.2.4"
   },
   "repository": {
     "type": "git",
