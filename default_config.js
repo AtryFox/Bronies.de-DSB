@@ -7,8 +7,6 @@ module.exports = {
     DEFAULT_CH: '',
     // CHANNEL FOR DEBUG/INFO MESSAGES
     BOT_CH: '',
-    // DERPIBOORU API KEY
-    DERPI_KEY: '',
     // SEND MORE DEBUG MESSAGES
     DEBUG: false
 };
