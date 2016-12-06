@@ -344,7 +344,7 @@ function processCommand(message, command, args) {
                             return respond(message, 'Dieses Bild wurde noch nicht von Derpibooru verarbeitet. Bitte versuche es später erneut.');
                         }
 
-                        respond(message, 'http://derpibooru.org/' + img.id + '\nhttps:' + (img.image.replace(/__[^.]+(.\w+)$/, '$1')));
+                        respond(message, '<http://derpibooru.org/' + img.id + '>\nhttps:' + (img.image.replace(/__[^.]+(.\w+)$/, '$1')));
                     });
 
 
