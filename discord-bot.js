@@ -319,7 +319,7 @@ function processCommand(message, command, args) {
                     query = args.join(' ');
 
                 if(message.channel == server.channels.find('name', 'nsfw')) {
-                    parameters += '&filter_id=134114';
+                    parameters += '&filter_id=134141';
                 }
 
                 if(regexOrder.test(query)) {
