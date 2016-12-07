@@ -120,16 +120,20 @@ function getGuildMemeber(user) {
     return server.members.find('id', user.id);
 }
 
-function respond(message, response, pm) {
-    if (typeof pm === 'undefined') {
-        pm = false;
+function respond(message, response, mention) {
+    if (typeof mention === 'undefined') {
+        mention = false;
     }
 
-    if (pm) {
-        message.author.sendMessage(response);
-    } else {
+    if (mention) {
         message.reply(response);
+    } else {
+        message.channel.sendMessage(response);
     }
+}
+
+function respondPm(message, response) {
+    message.author.sendMessage(response);
 }
 
 /* COMMAND PROCESSING */
@@ -166,7 +170,8 @@ function processCommand(message, command, args) {
                     text += '\n```' + command.help + '```\n\n';
                 });
 
-                respond(message, text, true);
+                respondPm(message, text);
+
                 if (message.channel.type == 'text') {
                     message.delete();
                 }
@@ -181,18 +186,18 @@ function processCommand(message, command, args) {
         case 'nsfw':
             (function () {
                 if (message.guild != server) {
-                    return respond(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!', true);
+                    return respondPm(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!');
                 }
 
                 var msg = message;
                 message.delete();
 
                 if (!isUser.check(msg.author)) {
-                    return respond(msg, 'Du besitzt nicht genügend Rechte!', true);
+                    return respondPm(msg, 'Du besitzt nicht genügend Rechte!');
                 }
 
                 if (args.length != 1) {
-                    return respond(msg, 'Nutze `!nsfw <join|leave>` um den NSFW Bereich zu betreten bzw. zu verlassen.\nBeispiel: `!nsfw join`', true);
+                    return respondPm(msg, 'Nutze `!nsfw <join|leave>` um den NSFW Bereich zu betreten bzw. zu verlassen.\nBeispiel: `!nsfw join`');
                 }
 
                 var arg = args[0].toLowerCase();
@@ -202,20 +207,20 @@ function processCommand(message, command, args) {
 
                 if (arg == 'join') {
                     if (member.roles.exists('name', 'NSFW')) {
-                        return respond(msg, 'Du hast bereits Zugriff auf den NSFW Bereich.', true);
+                        return respondPm(msg, 'Du hast bereits Zugriff auf den NSFW Bereich.');
                     } else {
                         member.addRole(nsfwRole);
-                        return respond(msg, 'Bronies.de NSFW Bereich beigetreten. :smirk:', true);
+                        return respondPm(msg, 'Bronies.de NSFW Bereich beigetreten. :smirk:');
                     }
                 } else if (arg == 'leave') {
                     if (!member.roles.exists('name', 'NSFW')) {
-                        return respond(msg, 'Du hast bereits keinen Zugriff auf den NSFW Bereich.', true);
+                        return respondPm(msg, 'Du hast bereits keinen Zugriff auf den NSFW Bereich.');
                     } else {
                         member.removeRole(nsfwRole);
-                        return respond(msg, 'Bronies.de NSFW Bereich verlassen.', true);
+                        return respondPm(msg, 'Bronies.de NSFW Bereich verlassen.');
                     }
                 } else {
-                    return respond(msg, 'Nutze `!nsfw <join|leave>` um den NSFW Bereich zu betreten bzw. zu verlassen.\nBeispiel: `!nsfw join`', true);
+                    return respondPm(msg, 'Nutze `!nsfw <join|leave>` um den NSFW Bereich zu betreten bzw. zu verlassen.\nBeispiel: `!nsfw join`');
                 }
             })();
             break;
@@ -223,16 +228,16 @@ function processCommand(message, command, args) {
         case 'sb':
             (function () {
                 if (message.guild != server) {
-                    return respond(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!', true);
+                    return respondPm(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!');
                 }
 
                 if (!isUser.check(message.author)) {
-                    return respond(message, 'Du besitzt nicht genügend Rechte!', true);
+                    return respondPm(message, 'Du besitzt nicht genügend Rechte!');
                     message.delete();
                 }
 
                 if (args.length != 1) {
-                    return respond(message, 'Spiele Pony Sounds in deinem aktuellen Voicechannel ab. Nutze `!sb help` um alle Sounds anzuzeigen.\nBeispiel: `!sb lunafun`', true);
+                    return respondPm(message, 'Spiele Pony Sounds in deinem aktuellen Voicechannel ab. Nutze `!sb help` um alle Sounds anzuzeigen.\nBeispiel: `!sb lunafun`');
                     message.delete();
                 }
 
@@ -240,7 +245,7 @@ function processCommand(message, command, args) {
 
 
                 if (arg == 'help') {
-                    respond(message, 'Folgende Sounds können abgespielt werden:\n```' + Object.keys(sounds).join(' ') + '```', true);
+                    respondPm(message, 'Folgende Sounds können abgespielt werden:\n```' + Object.keys(sounds).join(' ') + '```');
                     return message.delete();
                 } else {
                     if (sbbusy) {
@@ -288,11 +293,11 @@ function processCommand(message, command, args) {
         case 'db':
             (function () {
                 if (message.guild != server) {
-                    return respond(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!', true);
+                    return respondPm(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!');
                 }
 
                 if (!isUser.check(message.author)) {
-                    return respond(message, 'Du besitzt nicht genügend Rechte!', true);
+                    return respondPm(message, 'Du besitzt nicht genügend Rechte!');
                     message.delete();
                 }
 
@@ -408,7 +413,8 @@ var sounds = {
     'fanfare': 'Trixie/fanfare.mp3',
     'youmad': 'Zecora/have you gone mad.mp3',
     '10seconds': 'Rainbow Dash/10 seconds flat.mp3',
-    'style': 'Pinkie Pie/pinkie pie style.mp3'
+    'style': 'Pinkie Pie/pinkie pie style.mp3',
+    'notcool': 'Rainbow Dash/not cool.mp3'
 };
 
 /* GENERAL APPLICATION STUFF */
