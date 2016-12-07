@@ -49,7 +49,7 @@ Twitter.prototype.initTwitter = function () {
 Twitter.prototype.postNewTweets = function () {
     var parent = this;
 
-    if(!this.init) {
+    if (!this.init) {
         return;
     }
 
@@ -88,7 +88,7 @@ Twitter.prototype.postNewTweets = function () {
                 var channel = parent.server.channels.find('id', profile.channel);
 
                 async.each(jsonData, function (tweet, callback) {
-                    channel.sendMessage(':bird: Neuer Tweet von **@' + tweet.user.screen_name + '**: <https://twitter.com/' + tweet.user.screen_name + '/status/' + tweet.id_str + '>```' + tweet.text + '```');
+                    channel.sendMessage(':bird: Neuer Tweet von **@' + tweet.user.screen_name + ' (' + tweet.user.name + ')** | <https://twitter.com/' + tweet.user.screen_name + '/status/' + tweet.id_str + '>```' + tweet.text + '```');
                     callback();
                 });
             }
