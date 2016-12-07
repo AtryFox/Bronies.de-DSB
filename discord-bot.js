@@ -1,13 +1,27 @@
 var Discord = require('discord.js'),
-    config = require('./config'),
+    config = require('./config/config'),
+    twitterProfiles = require('./config/twitter'),
     fs = require('fs'),
+    async = require('async'),
     unirest = require('unirest'),
+    Twitter = require('twitter-node-client').Twitter,
     token = config.TOKEN,
     bot = new Discord.Client(),
     server,
     version,
     exec,
-    sbbusy = false;
+    sbbusy = false,
+    lastTweets = {},
+    twitterInit = false;
+
+var tw_config = {
+    'consumerKey': config.TWITTER_API.CONSUMER_KEY,
+    'consumerSecret': config.TWITTER_API.CONSUMER_SECRET,
+    'accessToken': config.TWITTER_API.ACCESS_TOKEN_KEY,
+    'accessTokenSecret': config.TWITTER_API.ACCESS_TOKEN_SECRET
+};
+
+var twitter = new Twitter(tw_config);
 
 /* VERSION */
 function getVersion(callback) {
@@ -40,7 +54,82 @@ bot.on('ready', function () {
     }
 
     server = bot.guilds.find('id', config.SERVER_ID);
+
+    setInterval(function () {
+        postNewTweets();
+    }, 60000 * 5);
 });
+
+function initTwitter() {
+    async.each(twitterProfiles, function (profile, callback) {
+        twitter.getUserTimeline({screen_name: profile.name, count: '1'}, function (err) {
+            console.log('Could not initialize twitter for ' + profile.name + "! " + err);
+        }, function (data) {
+            try {
+                var jsonData = JSON.parse(data);
+            } catch (err) {
+                console.log(err);
+                return callback();
+            }
+
+            if (jsonData.length < 1) {
+                console.log('Could not initialize twitter for ' + profile.name + ', no tweets fetched...');
+            } else {
+                lastTweets[profile.name] = jsonData[0].id_str;
+            }
+
+            callback();
+        })
+    }, function () {
+        twitterInit = true;
+    });
+}
+
+function postNewTweets() {
+    async.each(twitterProfiles, function (profile, callback) {
+        if (!(profile.name in lastTweets)) {
+            return callback();
+        }
+
+        var options = {
+            screen_name: profile.name,
+            count: '10',
+            since_id: lastTweets[profile.name],
+            include_rts: profile.rts,
+            exclude_replies: !profile.mentions
+        };
+
+
+        twitter.getUserTimeline(options, function (err) {
+            console.log('Could not fetch new tweets for' + profile.name + "! " + err);
+        }, function (data) {
+            try {
+                var jsonData = JSON.parse(data);
+            } catch (err) {
+                console.log('Could not fetch new tweets for' + profile.name + '! ' + err);
+                return callback();
+            }
+
+            if (jsonData.length >= 1) {
+                lastTweets[profile.name] = jsonData[0].id_str;
+
+                if(!server.channels.exists('id', profile.channel)) {
+                    console.log('Could not find channel id ' + profile.channel + ' for ' + profile.name);
+                    return callback();
+                }
+
+                var channel = server.channels.find('id', profile.channel);
+
+                async.each(jsonData, function (tweet, callback) {
+                    channel.sendMessage(':bird: Neuer Tweet von **@' + tweet.user.screen_name + '**: <https://twitter.com/' + tweet.user.screen_name + '/' + tweet.id_str + '>```' + tweet.text + '```');
+                    callback();
+                });
+            }
+
+            callback();
+        })
+    });
+}
 
 bot.on('guildMemberAdd', function (member) {
     //bot.channels.find('id', config.DEFAULT_CH).sendMessage(member + ' Willkommen auf dem offiziellen Discord Server von Bronies.de ... Wirf doch für den Anfang einen Blick in den #info Bereich. :lyra_1:');
@@ -137,7 +226,7 @@ function respondPm(message, response) {
 }
 
 function getEmoji(name) {
-    if(server.emojis.exists('name', name)) {
+    if (server.emojis.exists('name', name)) {
         return server.emojis.find('name', name).toString();
     } else {
         return ':robot:';
@@ -318,16 +407,16 @@ function processCommand(message, command, args) {
                     parameters = '',
                     query = args.join(' ');
 
-                if(message.channel == server.channels.find('name', 'nsfw')) {
+                if (message.channel == server.channels.find('name', 'nsfw')) {
                     parameters += '&filter_id=134141';
                 }
 
-                if(regexOrder.test(query)) {
+                if (regexOrder.test(query)) {
                     parameters += '&sd=' + query.match(regexOrder)[1];
                     query = query.replace(regexOrder, '');
                 }
 
-                if(regexSort.test(query)) {
+                if (regexSort.test(query)) {
                     parameters += '&sf=' + query.match(regexSort)[1];
                     query = query.replace(regexSort, '');
                 } else {
@@ -449,4 +538,4 @@ function online() {
 
 /* LOGIN */
 bot.login(token);
-
+initTwitter();
