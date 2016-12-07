@@ -136,6 +136,14 @@ function respondPm(message, response) {
     message.author.sendMessage(response);
 }
 
+function getEmoji(name) {
+    if(server.emojis.exists('name', name)) {
+        return server.emojis.find('name', name).toString();
+    } else {
+        return ':robot:';
+    }
+}
+
 /* COMMAND PROCESSING */
 function processCommand(message, command, args) {
     switch (command) {
@@ -414,7 +422,8 @@ var sounds = {
     'youmad': 'Zecora/have you gone mad.mp3',
     '10seconds': 'Rainbow Dash/10 seconds flat.mp3',
     'style': 'Pinkie Pie/pinkie pie style.mp3',
-    'notcool': 'Rainbow Dash/not cool.mp3'
+    'notcool': 'Rainbow Dash/not cool.mp3',
+    'wrong': 'Derpy/i just dont know what went wrong.mp3'
 };
 
 /* GENERAL APPLICATION STUFF */
