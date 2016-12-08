@@ -1,5 +1,6 @@
 var Discord = require('discord.js'),
     config = require('./config/config'),
+    roles = require('./config/roles'),
     Twitter = require('./modules/twitter').Twitter,
     fs = require('fs'),
     unirest = require('unirest'),
@@ -71,8 +72,35 @@ function onMessage(message) {
 
         if (match) {
             var args = message.content.split(' ').splice(1);
+            var cmd = match[1].toLowerCase();
 
-            processCommand(message, match[1].toLowerCase(), args);
+            if (!(cmd in commands)) {
+                return;
+            }
+
+            var cmdObj = commands[cmd];
+
+            if ('ignore' in cmdObj) {
+                if (cmdObj.ignore == true) {
+                    return;
+                }
+            }
+
+            if ('server' in cmdObj) {
+                if (cmdObj.server == true) {
+                    if (message.guild != server) {
+                        return respondPm(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!');
+                    }
+                }
+            }
+
+            if ('role' in cmdObj) {
+                if (!checkPermissions(cmdObj.role, message.author)) {
+                    return respond(message, 'Du besitzt nicht genügend Rechte um diesen Befehl auszuführen!', true);
+                }
+            }
+
+            processCommand(message, cmd, cmdObj, args);
         }
     }
 
@@ -97,31 +125,19 @@ bot.on('messageUpdate', function (oldMessage, newMessage) {
 });
 
 /* PERMISSIONS */
-function Permission(checker) {
-    return {
-        check: function (user) {
-            if (!server.members.exists('id', user.id)) {
-                return false;
-            }
+function checkPermissions(role, user) {
+    var member = server.members.find('id', user.id);
 
-            var member = server.members.find('id', user.id);
+    if (server.owner == member) {
+        //return true;
+    }
 
-            return checker(member);
-        }
-    };
+    if (!server.roles.exists('name', role)) {
+        return false;
+    }
+
+    return member.highestRole.comparePositionTo(server.roles.find('name', role)) >= 0;
 }
-
-var isAdmin = new Permission(function (member) {
-    return member.roles.exists('name', 'Admin') || member.roles.exists('name', 'Co-Admin');
-});
-
-var isMod = new Permission(function (member) {
-    return isAdmin.check(member) ? true : member.roles.exists('name', 'Moderator');
-});
-
-var isUser = new Permission(function (member) {
-    return isMod.check(member) ? true : member.roles.exists('name', '⬛ Community');
-});
 
 function getGuildMemeber(user) {
     return server.members.find('id', user.id);
@@ -152,25 +168,19 @@ function getEmoji(name) {
 }
 
 /* COMMAND PROCESSING */
-function processCommand(message, command, args) {
-    switch (command) {
+function processCommand(message, cmd, cmdObj, args) {
+    switch (cmd) {
         case 'help':
             (function () {
                 var text = '\n\nBefehle müssen `/` oder `!` vorangestellt haben. Groß- und Kleinschreibung wird nicht beachtet.\nIn PMs wird kein Präfix benötigt.\n\n';
 
                 text += 'Liste aller Befehle, die **du** nutzen kannst:\n\n';
 
-                commands.forEach(function (command) {
-                    if (command.role == "Admin") {
-                        if (!isAdmin.check(message.author)) {
-                            return;
-                        }
-                    } else if (command.role == "Moderator") {
-                        if (!isMod.check(message.author)) {
-                            return;
-                        }
-                    } else if (command.role == "Community") {
-                        if (!isUser.check(message.author)) {
+                Object.keys(commands).forEach(function (command) {
+                    command = commands[command];
+
+                    if ('role' in command) {
+                        if (!checkPermissions(command.role, message.author)) {
                             return;
                         }
                     }
@@ -200,19 +210,11 @@ function processCommand(message, command, args) {
             break;
         case 'nsfw':
             (function () {
-                if (message.guild != server) {
-                    return respondPm(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!');
-                }
-
                 var msg = message;
                 message.delete();
 
-                if (!isUser.check(msg.author)) {
-                    return respondPm(msg, 'Du besitzt nicht genügend Rechte!');
-                }
-
                 if (args.length != 1) {
-                    return respondPm(msg, 'Nutze `!nsfw <join|leave>` um den NSFW Bereich zu betreten bzw. zu verlassen.\nBeispiel: `!nsfw join`');
+                    return respondPm(msg, 'Nutze `!nsfw <join|leave>` um den NSFW Bereich zu betreten bzw. zu verlassen. Beispiel: `!nsfw join`');
                 }
 
                 var arg = args[0].toLowerCase();
@@ -222,42 +224,32 @@ function processCommand(message, command, args) {
 
                 if (arg == 'join') {
                     if (member.roles.exists('name', 'NSFW')) {
-                        return respondPm(msg, 'Du hast bereits Zugriff auf den NSFW Bereich.');
+                        return;
                     } else {
                         member.addRole(nsfwRole);
                         return respondPm(msg, 'Bronies.de NSFW Bereich beigetreten. :smirk:');
                     }
                 } else if (arg == 'leave') {
                     if (!member.roles.exists('name', 'NSFW')) {
-                        return respondPm(msg, 'Du hast bereits keinen Zugriff auf den NSFW Bereich.');
+                        return;
                     } else {
                         member.removeRole(nsfwRole);
                         return respondPm(msg, 'Bronies.de NSFW Bereich verlassen.');
                     }
                 } else {
-                    return respondPm(msg, 'Nutze `!nsfw <join|leave>` um den NSFW Bereich zu betreten bzw. zu verlassen.\nBeispiel: `!nsfw join`');
+                    return respondPm(msg, 'Nutze `!nsfw <join|leave>` um den NSFW Bereich zu betreten bzw. zu verlassen. Beispiel: `!nsfw join`');
                 }
             })();
             break;
         case 'soundboard':
         case 'sb':
             (function () {
-                if (message.guild != server) {
-                    return respondPm(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!');
-                }
-
-                if (!isUser.check(message.author)) {
-                    return respondPm(message, 'Du besitzt nicht genügend Rechte!');
-                    message.delete();
-                }
-
                 if (args.length != 1) {
                     return respondPm(message, 'Spiele Pony Sounds in deinem aktuellen Voicechannel ab. Nutze `!sb help` um alle Sounds anzuzeigen.\nBeispiel: `!sb lunafun`');
                     message.delete();
                 }
 
                 var arg = args[0].toLowerCase();
-
 
                 if (arg == 'help') {
                     respondPm(message, 'Folgende Sounds können abgespielt werden:\n```' + Object.keys(sounds).join(' ') + '```');
@@ -307,15 +299,6 @@ function processCommand(message, command, args) {
         case 'derpi':
         case 'db':
             (function () {
-                if (message.guild != server) {
-                    return respondPm(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!');
-                }
-
-                if (!isUser.check(message.author)) {
-                    return respondPm(message, 'Du besitzt nicht genügend Rechte!');
-                    message.delete();
-                }
-
                 if (args.length < 1) {
                     return respond(message, 'Dieser Befehl benötigt zusätzliche Parameter. Mehr unter `!help`');
                 }
@@ -372,42 +355,53 @@ function processCommand(message, command, args) {
     }
 }
 
-var commands = [
-    {
+var commands = {
+    help: {
         name: 'help',
         help: 'Zeigt alle verfügbaren Befehle an.'
     },
-    {
+    version: {
         name: 'version',
         help: 'Zeigt die verwendete Bronies.de DSB Version an.',
         aliases: ['ver']
     },
-    {
+    nsfw: {
         name: 'nsfw <join|leave>',
         help: '#nsfw betreten oder verlassen.',
-        role: 'Community'
+        server: true,
+        role: roles.community
     },
-    {
+    soundboard: {
         name: 'soundboard <sound>',
         help: 'Sound in aktuellem Sprachchannel abspielen. Liste aller Sounds mit !sb help',
         aliases: ['sb'],
-        role: 'Community'
+        server: true,
+        role: roles.community
     },
-    {
+    derpi: {
         name: 'derpi <search>',
         help: 'Gibt das erste Bild einer Derpibooru Suche zurück.\n\n' +
         'Optionen:\n' +
         ' - Reihenfolge  o:<desc|asc>\n' +
         ' - Sortierung   by:<score|relevance|width|height|comments|random>',
         aliases: ['db'],
-        role: 'Community'
+        server: true,
+        role: roles.community
     },
-    {
+    nowplaying: {
         name: 'nowplaying',
         help: 'Zeigt den aktuell gespielten Track des BRG-Musikbots an.',
-        aliases: ['np']
+        aliases: ['np'],
+        ignore: true
+    },
+    playradio: {
+        name: 'playradio',
+        help: 'Startet den Radiostream neu.',
+        aliases: ['pr'],
+        role: roles.brgteam,
+        ignore: true
     }
-];
+};
 
 var sounds = {
     'lunafun': 'Princess Luna/the fun has been doubled.mp3',

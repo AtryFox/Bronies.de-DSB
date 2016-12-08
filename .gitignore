@@ -1,5 +1,6 @@
 node_modules
 config/config.js
 config/twitter.js
+config/roles.js
 .idea
 sounds
