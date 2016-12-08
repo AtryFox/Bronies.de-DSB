@@ -307,12 +307,12 @@ function processCommand(message, cmd, cmdObj, args) {
                         if (!err) {
                             sbBusy = true;
                             member.voiceChannel.join().then(function (connection) {
-                                const dispatcher = connection.playFile('./sounds/' + sounds[arg]);
+                                const options = {volume: 0.5};
+                                const dispatcher = connection.playFile('./sounds/' + sounds[arg], options);
 
                                 dispatcher.on('end', function () {
                                     sbBusy = false;
                                     connection.disconnect();
-
                                 });
 
                                 dispatcher.on('error', function (message) {
@@ -455,7 +455,9 @@ const sounds = {
     '10seconds': 'Rainbow Dash/10 seconds flat.mp3',
     'style': 'Pinkie Pie/pinkie pie style.mp3',
     'notcool': 'Rainbow Dash/not cool.mp3',
-    'wrong': 'Derpy/i just dont know what went wrong.mp3'
+    'wrong': 'Derpy/i just dont know what went wrong.mp3',
+    '20percent': 'Rainbow Dash/it needs to be about 20% cooler.mp3',
+    'timecandy': 'Pinkie Pie/time is candy.mp3'
 };
 
 /* GENERAL APPLICATION STUFF */
