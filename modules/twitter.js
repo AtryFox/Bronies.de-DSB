@@ -1,4 +1,4 @@
-var TwitterClient = require('twitter-node-client').Twitter,
+let TwitterClient = require('twitter-node-client').Twitter,
     async = require('async');
 
 function Twitter(config, server) {
@@ -7,7 +7,7 @@ function Twitter(config, server) {
     this.init = false;
     this.lastTweets = {};
 
-    var tw_config = {
+    const tw_config = {
         'consumerKey': config.CONSUMER_KEY,
         'consumerSecret': config.CONSUMER_SECRET,
         'accessToken': config.ACCESS_TOKEN_KEY,
@@ -20,14 +20,15 @@ function Twitter(config, server) {
 }
 
 Twitter.prototype.initTwitter = function () {
-    var parent = this;
+    const parent = this;
 
     async.each(this.profiles, function (profile, callback) {
         parent.client.getUserTimeline({screen_name: profile.name, count: '1'}, function (err) {
             console.log('Could not initialize twitter for ' + profile.name + "! " + err);
         }, function (data) {
+            let jsonData;
             try {
-                var jsonData = JSON.parse(data);
+                jsonData = JSON.parse(data);
             } catch (err) {
                 console.log(err);
                 return callback();
@@ -47,7 +48,7 @@ Twitter.prototype.initTwitter = function () {
 };
 
 Twitter.prototype.postNewTweets = function () {
-    var parent = this;
+    const parent = this;
 
     if (!this.init) {
         return;
@@ -58,7 +59,7 @@ Twitter.prototype.postNewTweets = function () {
             return callback();
         }
 
-        var options = {
+        const options = {
             screen_name: profile.name,
             count: '10',
             since_id: parent.lastTweets[profile.name],
@@ -70,8 +71,10 @@ Twitter.prototype.postNewTweets = function () {
         parent.client.getUserTimeline(options, function (err) {
             console.log('Could not fetch new tweets for' + profile.name + "! " + err);
         }, function (data) {
+            let jsonData;
+
             try {
-                var jsonData = JSON.parse(data);
+                jsonData = JSON.parse(data);
             } catch (err) {
                 console.log('Could not fetch new tweets for' + profile.name + '! ' + err);
                 return callback();
@@ -85,7 +88,7 @@ Twitter.prototype.postNewTweets = function () {
                     return callback();
                 }
 
-                var channel = parent.server.channels.find('id', profile.channel);
+                const channel = parent.server.channels.find('id', profile.channel);
 
                 async.each(jsonData, function (tweet, callback) {
                     channel.sendMessage(':bird: Neuer Tweet von **@' + tweet.user.screen_name + ' (' + tweet.user.name + ')** | <https://twitter.com/' + tweet.user.screen_name + '/status/' + tweet.id_str + '>\n```' + tweet.text + '```');

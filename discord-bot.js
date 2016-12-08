@@ -1,4 +1,4 @@
-var Discord = require('discord.js'),
+let Discord = require('discord.js'),
     config = require('./config/config'),
     roles = require('./config/roles'),
     Twitter = require('./modules/twitter').Twitter,
@@ -9,7 +9,7 @@ var Discord = require('discord.js'),
     server,
     version,
     exec,
-    sbbusy = false;
+    sbBusy = false;
 
 /* VERSION */
 function getVersion(callback) {
@@ -43,7 +43,7 @@ bot.on('ready', function () {
 
     server = bot.guilds.find('id', config.SERVER_ID);
 
-    var twitter = new Twitter(config.TWITTER_API, server);
+    const twitter = new Twitter(config.TWITTER_API, server);
 
     setInterval(function () {
         twitter.postNewTweets();
@@ -64,21 +64,21 @@ function onMessage(message) {
     }
 
     function handleCommand() {
-        var match = /^[\/!]([a-zA-Z]+).*$/.exec(message.content);
+        let match = /^[\/!]([a-zA-Z]+).*$/.exec(message.content);
 
         if (message.channel.type == 'dm') {
             match = /^[\/!]?([a-zA-Z]+).*$/.exec(message.content);
         }
 
         if (match) {
-            var args = message.content.split(' ').splice(1);
-            var cmd = match[1].toLowerCase();
+            const args = message.content.split(' ').splice(1);
+            const cmd = match[1].toLowerCase();
 
             if (!(cmd in commands)) {
                 return;
             }
 
-            var cmdObj = commands[cmd];
+            const cmdObj = commands[cmd];
 
             if ('ignore' in cmdObj) {
                 if (cmdObj.ignore == true) {
@@ -126,7 +126,7 @@ bot.on('messageUpdate', function (oldMessage, newMessage) {
 
 /* PERMISSIONS */
 function checkPermissions(role, user) {
-    var member = server.members.find('id', user.id);
+    const member = server.members.find('id', user.id);
 
     if (server.owner == member) {
         //return true;
@@ -139,7 +139,7 @@ function checkPermissions(role, user) {
     return member.highestRole.comparePositionTo(server.roles.find('name', role)) >= 0;
 }
 
-function getGuildMemeber(user) {
+function getGuildMember(user) {
     return server.members.find('id', user.id);
 }
 
@@ -172,7 +172,7 @@ function processCommand(message, cmd, cmdObj, args) {
     switch (cmd) {
         case 'help':
             (function () {
-                var text = '\n\nBefehle müssen `/` oder `!` vorangestellt haben. Groß- und Kleinschreibung wird nicht beachtet.\nIn PMs wird kein Präfix benötigt.\n\n';
+                let text = '\n\nBefehle müssen `/` oder `!` vorangestellt haben. Groß- und Kleinschreibung wird nicht beachtet.\nIn PMs wird kein Präfix benötigt.\n\n';
 
                 text += 'Liste aller Befehle, die **du** nutzen kannst:\n\n';
 
@@ -210,29 +210,25 @@ function processCommand(message, cmd, cmdObj, args) {
             break;
         case 'nsfw':
             (function () {
-                var msg = message;
+                const msg = message;
                 message.delete();
 
                 if (args.length != 1) {
                     return respondPm(msg, 'Nutze `!nsfw <join|leave>` um den NSFW Bereich zu betreten bzw. zu verlassen. Beispiel: `!nsfw join`');
                 }
 
-                var arg = args[0].toLowerCase();
+                const arg = args[0].toLowerCase();
 
-                var nsfwRole = server.roles.find('name', 'NSFW');
-                var member = getGuildMemeber(msg.author);
+                const nsfwRole = server.roles.find('name', 'NSFW');
+                const member = getGuildMember(msg.author);
 
                 if (arg == 'join') {
-                    if (member.roles.exists('name', 'NSFW')) {
-                        return;
-                    } else {
+                    if (!member.roles.exists('name', 'NSFW')) {
                         member.addRole(nsfwRole);
                         return respondPm(msg, 'Bronies.de NSFW Bereich beigetreten. :smirk:');
                     }
                 } else if (arg == 'leave') {
-                    if (!member.roles.exists('name', 'NSFW')) {
-                        return;
-                    } else {
+                    if (member.roles.exists('name', 'NSFW')) {
                         member.removeRole(nsfwRole);
                         return respondPm(msg, 'Bronies.de NSFW Bereich verlassen.');
                     }
@@ -245,21 +241,21 @@ function processCommand(message, cmd, cmdObj, args) {
         case 'sb':
             (function () {
                 if (args.length != 1) {
-                    return respondPm(message, 'Spiele Pony Sounds in deinem aktuellen Voicechannel ab. Nutze `!sb help` um alle Sounds anzuzeigen.\nBeispiel: `!sb lunafun`');
-                    message.delete();
+                    respondPm(message, 'Spiele Pony Sounds in deinem aktuellen Voicechannel ab. Nutze `!sb help` um alle Sounds anzuzeigen.\nBeispiel: `!sb lunafun`');
+                    return message.delete();
                 }
 
-                var arg = args[0].toLowerCase();
+                const arg = args[0].toLowerCase();
 
                 if (arg == 'help') {
                     respondPm(message, 'Folgende Sounds können abgespielt werden:\n```' + Object.keys(sounds).join(' ') + '```');
                     return message.delete();
                 } else {
-                    if (sbbusy) {
+                    if (sbBusy) {
                         return;
                     }
 
-                    var member = getGuildMemeber(message.author);
+                    const member = getGuildMember(message.author);
 
                     if (typeof member.voiceChannel == 'undefined') {
                         return;
@@ -269,16 +265,16 @@ function processCommand(message, cmd, cmdObj, args) {
                         return;
                     }
 
-                    var soundPath = './sounds/' + sounds[arg];
+                    const soundPath = './sounds/' + sounds[arg];
 
                     fs.access(soundPath, fs.constants.R_OK, function (err) {
                         if (!err) {
-                            sbbusy = true;
+                            sbBusy = true;
                             member.voiceChannel.join().then(function (connection) {
                                 const dispatcher = connection.playFile('./sounds/' + sounds[arg]);
 
                                 dispatcher.on('end', function () {
-                                    sbbusy = false;
+                                    sbBusy = false;
                                     connection.disconnect();
 
                                 });
@@ -303,7 +299,7 @@ function processCommand(message, cmd, cmdObj, args) {
                     return respond(message, 'Dieser Befehl benötigt zusätzliche Parameter. Mehr unter `!help`');
                 }
 
-                var regexOrder = /\bo:(desc|asc)\b/i,
+                let regexOrder = /\bo:(desc|asc)\b/i,
                     regexSort = /\bby:(score|relevance|width|height|comments|random)\b/i,
                     parameters = '',
                     query = args.join(' ');
@@ -325,7 +321,7 @@ function processCommand(message, cmd, cmdObj, args) {
                 }
 
                 query = query.replace(/,{2,}/g, ',').replace(/(^,|,$)/, '');
-                var url = 'https://derpibooru.org/search.json?q=' + encodeURIComponent(query) + parameters;
+                const url = 'https://derpibooru.org/search.json?q=' + encodeURIComponent(query) + parameters;
                 console.log(message.author.username + '#' + message.author.discriminator + ' - Derpibooru search: ' + url);
 
                 unirest.get(url)
@@ -336,11 +332,11 @@ function processCommand(message, cmd, cmdObj, args) {
                             return respond(message, 'Derpibooru Anfrage fehlgeschlagen (HTTP ' + result.status + ')');
                         }
 
-                        var data = result.body;
+                        const data = result.body;
                         if (typeof data.search === 'undefined' || typeof data.search[0] === 'undefined')
                             return respond(message, 'Keine Suchergebnisse gefunden.');
 
-                        var img = data.search[0];
+                        const img = data.search[0];
 
                         if (!img.is_rendered) {
                             return respond(message, 'Dieses Bild wurde noch nicht von Derpibooru verarbeitet. Bitte versuche es später erneut.');
@@ -355,7 +351,7 @@ function processCommand(message, cmd, cmdObj, args) {
     }
 }
 
-var commands = {
+const commands = {
     help: {
         name: 'help',
         help: 'Zeigt alle verfügbaren Befehle an.'
@@ -403,7 +399,7 @@ var commands = {
     }
 };
 
-var sounds = {
+const sounds = {
     'lunafun': 'Princess Luna/the fun has been doubled.mp3',
     'eyyup': 'Big Macintosh/eyup.mp3',
     'nope': 'Big Macintosh/nnope.mp3',
