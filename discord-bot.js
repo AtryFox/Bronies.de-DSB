@@ -129,7 +129,7 @@ function checkPermissions(role, user) {
     const member = server.members.find('id', user.id);
 
     if (server.owner == member) {
-        //return true;
+        return true;
     }
 
     if (!server.roles.exists('name', role)) {
