@@ -72,10 +72,16 @@ function onMessage(message) {
 
         if (match) {
             const args = message.content.split(' ').splice(1);
-            const cmd = match[1].toLowerCase();
+            let cmd = match[1].toLowerCase();
 
             if (!(cmd in commands)) {
-                return;
+                const resolved = resolveAlias(cmd)
+
+                if (!resolved) {
+                    return
+                } else {
+                    cmd = resolved;
+                }
             }
 
             const cmdObj = commands[cmd];
@@ -167,6 +173,38 @@ function getEmoji(name) {
     }
 }
 
+function resolveAlias(resolvable) {
+    let result = false;
+
+    Object.keys(commands).some(function (cmd) {
+        var cmdObj = commands[cmd];
+
+        if (!('aliases' in cmdObj)) {
+            return false;
+        }
+
+        let resolved = false;
+
+        cmdObj.aliases.some(function (alias) {
+            if (resolvable == alias) {
+                resolved = true;
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+        if (resolved) {
+            result = cmd;
+            return true;
+        } else {
+            return false;
+        }
+    });
+
+    return result;
+}
+
 /* COMMAND PROCESSING */
 function processCommand(message, cmd, cmdObj, args) {
     switch (cmd) {
@@ -202,7 +240,6 @@ function processCommand(message, cmd, cmdObj, args) {
                 }
             })();
             break;
-        case 'ver':
         case 'version':
             (function () {
                 respond(message, "Bronies.de DSB version `" + version + "`.\nAktuellster Commit: https://github.com/DerAtrox/Bronies.de-DSB/commit/" + version);
@@ -238,7 +275,6 @@ function processCommand(message, cmd, cmdObj, args) {
             })();
             break;
         case 'soundboard':
-        case 'sb':
             (function () {
                 if (args.length != 1) {
                     respondPm(message, 'Spiele Pony Sounds in deinem aktuellen Voicechannel ab. Nutze `!sb help` um alle Sounds anzuzeigen.\nBeispiel: `!sb lunafun`');
@@ -293,7 +329,6 @@ function processCommand(message, cmd, cmdObj, args) {
             })();
             break;
         case 'derpi':
-        case 'db':
             (function () {
                 if (args.length < 1) {
                     return respond(message, 'Dieser Befehl benötigt zusätzliche Parameter. Mehr unter `!help`');
