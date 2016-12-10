@@ -355,7 +355,7 @@ function processCommand(message, cmd, cmdObj, args) {
                     parameters += '&sf=random';
                 }
 
-                query = query.replace(/,{2,}/g, ',').replace(/(^,|,$)/, '');
+                query = query.replace(/,{2,}/g, ',').replace(/(^,|,$)/, '').replace(/ *, *$/, '');
                 const url = 'https://derpibooru.org/search.json?q=' + encodeURIComponent(query) + parameters;
                 console.log(message.author.username + '#' + message.author.discriminator + ' - Derpibooru search: ' + url);
 
