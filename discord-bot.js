@@ -177,7 +177,7 @@ function resolveAlias(resolvable) {
     let result = false;
 
     Object.keys(commands).some(function (cmd) {
-        var cmdObj = commands[cmd];
+        const cmdObj = commands[cmd];
 
         if (!('aliases' in cmdObj)) {
             return false;

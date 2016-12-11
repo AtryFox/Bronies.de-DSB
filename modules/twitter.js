@@ -67,7 +67,6 @@ Twitter.prototype.postNewTweets = function () {
             exclude_replies: !profile.mentions
         };
 
-
         parent.client.getUserTimeline(options, function (err) {
             console.log('Could not fetch new tweets for' + profile.name + "! " + err);
         }, function (data) {
@@ -91,13 +90,69 @@ Twitter.prototype.postNewTweets = function () {
                 const channel = parent.server.channels.find('id', profile.channel);
 
                 async.each(jsonData, function (tweet, callback) {
-                    channel.sendMessage(':bird: Neuer Tweet von **@' + tweet.user.screen_name + ' (' + tweet.user.name + ')** | <https://twitter.com/' + tweet.user.screen_name + '/status/' + tweet.id_str + '>\n```' + tweet.text + '```');
+                    let urls = '';
+
+                    if (tweet.entities.urls.length > 0) {
+                        const urlData = tweet.entities.urls.map(function (a) {
+                            return a.expanded_url;
+                        });
+
+                        urls = '\n:link: Weitere Links aus dem Tweet: <' + urlData.join('>, <') + '>';
+                    }
+
+                    channel.sendMessage(':bird: Neuer Tweet von **`@' + tweet.user.screen_name + '` (' + tweet.user.name + ')** | <https://twitter.com/' + tweet.user.screen_name + '/status/' + tweet.id_str + '>\n' + urls + '\n```' + tweet.text + '```');
                     callback();
                 });
             }
 
             callback();
-        })
+        });
+    });
+};
+
+Twitter.prototype.getTestTweet = function (user, rts, mentions) {
+    const parent = this;
+
+    rts = rts || true;
+    mentions = mentions || true;
+
+    const options = {
+        screen_name: user,
+        count: '1',
+        include_rts: rts,
+        exclude_replies: !mentions
+    };
+
+    parent.client.getUserTimeline(options, function (err) {
+        console.log('Could not fetch new tweets for' + profile.name + "! " + err);
+    }, function (data) {
+        let jsonData;
+
+        try {
+            jsonData = JSON.parse(data);
+        } catch (err) {
+            console.log('Could not fetch new tweets for' + profile.name + '! ' + err);
+        }
+
+
+        console.log(data);
+
+        if (jsonData.length >= 1) {
+
+            async.each(jsonData, function (tweet, callback) {
+                let urls = '';
+
+                if (tweet.entities.urls.length > 0) {
+                    const urlData = tweet.entities.urls.map(function (a) {
+                        return a.expanded_url;
+                    });
+
+                    urls = '\n:link: Weitere Links aus dem Tweet: <' + urlData.join('>, <') + '>';
+                }
+
+                console.log(':bird: Neuer Tweet von **`@' + tweet.user.screen_name + '` (' + tweet.user.name + ')** | <https://twitter.com/' + tweet.user.screen_name + '/status/' + tweet.id_str + '>\n' + urls + '\n```' + tweet.text + '```');
+            });
+        }
     });
 };
 
