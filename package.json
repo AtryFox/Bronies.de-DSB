@@ -4,11 +4,11 @@
   "version": "1.0.0",
   "description": "Discord server bot for Bronies.de",
   "dependencies": {
-    "discord.js": "^10.0.1",
-    "node-opus": "^0.2.4",
-    "unirest": "^0.5.1",
     "async": "^2.1.4",
-    "twitter-node-client": "^0.0.6"
+    "discord.js": "github:hydrabolt/discord.js#indev",
+    "node-opus": "^0.2.4",
+    "twitter-node-client": "^0.0.6",
+    "unirest": "^0.5.1"
   },
   "repository": {
     "type": "git",

@@ -82,12 +82,12 @@ Twitter.prototype.postNewTweets = function () {
             if (jsonData.length >= 1) {
                 parent.lastTweets[profile.name] = jsonData[0].id_str;
 
-                if (!parent.server.channels.exists('id', profile.channel)) {
+                if (!parent.server.channels.has(profile.channel)) {
                     console.log('Could not find channel id ' + profile.channel + ' for ' + profile.name);
                     return callback();
                 }
 
-                const channel = parent.server.channels.find('id', profile.channel);
+                const channel = parent.server.channels.get(profile.channel);
 
                 async.each(jsonData, function (tweet, callback) {
                     let urls = '';

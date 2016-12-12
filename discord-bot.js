@@ -33,15 +33,15 @@ bot.on('ready', function () {
         version = v;
         bot.user.setGame('version ' + version);
 
-        if (config.DEBUG) bot.channels.find('id', config.BOT_CH).sendMessage('I am ready, running version `' + version + '`! 👌');
+        if (config.DEBUG) bot.channels.get(config.BOT_CH).sendMessage('I am ready, running version `' + version + '`! 👌');
     });
 
-    if (!bot.guilds.exists('id', config.SERVER_ID)) {
+    if (!bot.guilds.has(config.SERVER_ID)) {
         console.log('Bot is not connected to the selected server!');
         process.exit();
     }
 
-    server = bot.guilds.find('id', config.SERVER_ID);
+    server = bot.guilds.get(config.SERVER_ID);
 
     const twitter = new Twitter(config.TWITTER_API, server);
 
@@ -51,7 +51,7 @@ bot.on('ready', function () {
 });
 
 bot.on('guildMemberAdd', function (member) {
-    //bot.channels.find('id', config.DEFAULT_CH).sendMessage(member + ' Willkommen auf dem offiziellen Discord Server von Bronies.de ... Wirf doch für den Anfang einen Blick in den #info Bereich. :lyra_1:');
+    //bot.channels.get( config.DEFAULT_CH).sendMessage(member + ' Willkommen auf dem offiziellen Discord Server von Bronies.de ... Wirf doch für den Anfang einen Blick in den #info Bereich. :lyra_1:');
 });
 
 function onMessage(message) {
@@ -110,10 +110,10 @@ function onMessage(message) {
         }
     }
 
-    if (server.channels.exists('id', message.channel.id)) {
+    if (server.channels.has(message.channel.id)) {
         handleCommand();
     } else {
-        if (server.members.exists('id', message.author.id)) {
+        if (server.members.has(message.author.id)) {
             handleCommand();
         } else {
             return message.channel.sendMessage('You have to be member of ' + server.name + '!');
@@ -132,7 +132,7 @@ bot.on('messageUpdate', function (oldMessage, newMessage) {
 
 /* PERMISSIONS */
 function checkPermissions(role, user) {
-    const member = server.members.find('id', user.id);
+    const member = server.members.get(user.id);
 
     if (server.owner == member) {
         return true;
@@ -146,7 +146,7 @@ function checkPermissions(role, user) {
 }
 
 function getGuildMember(user) {
-    return server.members.find('id', user.id);
+    return server.members.get(user.id);
 }
 
 function respond(message, response, mention) {
