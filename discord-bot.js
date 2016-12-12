@@ -45,9 +45,11 @@ bot.on('ready', function () {
 
     const twitter = new Twitter(config.TWITTER_API, server);
 
+    let interval = config.DEBUG ? 5000 : 60000 * 5
+
     setInterval(function () {
         twitter.postNewTweets();
-    }, 60000 * 5);
+    }, interval);
 });
 
 bot.on('guildMemberAdd', function (member) {

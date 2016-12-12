@@ -1,4 +1,5 @@
 let TwitterClient = require('twitter-node-client').Twitter,
+    Discord = require('discord.js'),
     async = require('async');
 
 function Twitter(config, server) {
@@ -90,17 +91,7 @@ Twitter.prototype.postNewTweets = function () {
                 const channel = parent.server.channels.get(profile.channel);
 
                 async.each(jsonData, function (tweet, callback) {
-                    let urls = '';
-
-                    if (tweet.entities.urls.length > 0) {
-                        const urlData = tweet.entities.urls.map(function (a) {
-                            return a.expanded_url;
-                        });
-
-                        urls = '\n:link: Weitere Links aus dem Tweet: <' + urlData.join('>, <') + '>';
-                    }
-
-                    channel.sendMessage(':bird: Neuer Tweet von **`@' + tweet.user.screen_name + '` (' + tweet.user.name + ')** | <https://twitter.com/' + tweet.user.screen_name + '/status/' + tweet.id_str + '>\n' + urls + '\n```' + tweet.text + '```');
+                    channel.sendEmbed(parent.getEmbedByTweet(tweet));
                     callback();
                 });
             }
@@ -110,11 +101,11 @@ Twitter.prototype.postNewTweets = function () {
     });
 };
 
-Twitter.prototype.getTestTweet = function (user, rts, mentions) {
+Twitter.prototype.getTestTweet = function (user) {
     const parent = this;
 
-    rts = rts || true;
-    mentions = mentions || true;
+    let rts = true;
+    let mentions = false;
 
     const options = {
         screen_name: user,
@@ -140,20 +131,31 @@ Twitter.prototype.getTestTweet = function (user, rts, mentions) {
         if (jsonData.length >= 1) {
 
             async.each(jsonData, function (tweet, callback) {
-                let urls = '';
-
-                if (tweet.entities.urls.length > 0) {
-                    const urlData = tweet.entities.urls.map(function (a) {
-                        return a.expanded_url;
-                    });
-
-                    urls = '\n:link: Weitere Links aus dem Tweet: <' + urlData.join('>, <') + '>';
-                }
-
-                console.log(':bird: Neuer Tweet von **`@' + tweet.user.screen_name + '` (' + tweet.user.name + ')** | <https://twitter.com/' + tweet.user.screen_name + '/status/' + tweet.id_str + '>\n' + urls + '\n```' + tweet.text + '```');
+                console.log(parent.getEmbedByTweet(tweet));
+                callback();
             });
         }
     });
+};
+
+Twitter.prototype.getEmbedByTweet = function(tweet) {
+    let embed = new Discord.RichEmbed({
+        title: `Neuer Tweet von @${tweet.user.screen_name} (${tweet.user.name})`,
+        color: 0x2084EE,
+        description: tweet.text,
+        thumbnail: {
+            url: tweet.user.profile_image_url_https
+        },
+        url: `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
+    });
+
+    if (tweet.entities.urls.length > 0) {
+        tweet.entities.urls.map(function (a) {
+            embed.addField('Link aus Tweet', a.expanded_url);
+        });
+    }
+
+    return embed;
 };
 
 if (!(typeof exports === 'undefined')) {
