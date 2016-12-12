@@ -49,8 +49,8 @@ bot.on('ready', function () {
     let interval = config.DEBUG ? 5000 : 60000;
 
     if (twitterTimer != null) {
-        clearInterval(twitterTimer);
         console.log('Stopping Twitter service');
+        clearInterval(twitterTimer);
     }
 
     twitterTimer = setInterval(function () {
