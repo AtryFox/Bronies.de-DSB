@@ -9,7 +9,8 @@ let Discord = require('discord.js'),
     server,
     version,
     exec,
-    sbBusy = false;
+    sbBusy = false,
+    twitterTimer = null;
 
 /* VERSION */
 function getVersion(callback) {
@@ -45,9 +46,15 @@ bot.on('ready', function () {
 
     const twitter = new Twitter(config.TWITTER_API, server);
 
-    let interval = config.DEBUG ? 5000 : 60000 * 5
+    let interval = config.DEBUG ? 5000 : 60000;
 
-    setInterval(function () {
+    if (twitterTimer != null) {
+        clearInterval(twitterTimer);
+        console.log('Stopping Twitter service');
+    }
+
+    twitterTimer = setInterval(function () {
+        console.log('Starting Twitter service');
         twitter.postNewTweets();
     }, interval);
 });
