@@ -71,7 +71,7 @@ bot.on('guildMemberAdd', function (member) {
 });
 
 bot.on('guildMemberRemove', function (member) {
-    testEmbed = new Discord.RichEmbed({
+    embed = new Discord.RichEmbed({
         title: 'Ein Mitglied hat uns verlassen.',
         description: `${member} hat den Server verlassen. Bye bye ${member}...`,
         thumbnail: {
@@ -80,7 +80,7 @@ bot.on('guildMemberRemove', function (member) {
         color: 0xF04747
     }).setFooter('DERPY WANTS MUFFINS!');
 
-    bot.channels.get(config.DEFAULT_CH).sendEmbed(testEmbed);
+    bot.channels.get(config.DEFAULT_CH).sendEmbed(embed);
 });
 
 function onMessage(message) {
