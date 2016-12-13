@@ -58,7 +58,29 @@ bot.on('ready', function () {
 });
 
 bot.on('guildMemberAdd', function (member) {
-    //bot.channels.get( config.DEFAULT_CH).sendMessage(member + ' Willkommen auf dem offiziellen Discord Server von Bronies.de ... Wirf doch für den Anfang einen Blick in den #info Bereich. :lyra_1:');
+    let embed = new Discord.RichEmbed({
+        title: 'Ein neues Mitglied ist zu uns gestoßen!',
+        description: `Hey ${member}, willkommen auf dem offiziellen Discord Server von [Bronies.de](http://bronies.de/). Wirf doch zunächst einen Blick in **#info** für alle wichtigen Informationen und Bot-Befehle.`,
+        thumbnail: {
+            url: 'https://deratrox.de/dev/Bronies.de-DSB/_join.png'
+        },
+        color: 0x43B581
+    }).setFooter('Viel Spaß auf dem Server!');
+
+    bot.channels.get(config.DEFAULT_CH).sendEmbed(embed);
+});
+
+bot.on('guildMemberRemove', function (member) {
+    testEmbed = new Discord.RichEmbed({
+        title: 'Ein Mitglied hat uns verlassen.',
+        description: `${member} hat den Server verlassen. Bye bye ${member}...`,
+        thumbnail: {
+            url: 'https://deratrox.de/dev/Bronies.de-DSB/_leave.png'
+        },
+        color: 0xF04747
+    }).setFooter('DERPY WANTS MUFFINS!');
+
+    bot.channels.get(config.DEFAULT_CH).sendEmbed(testEmbed);
 });
 
 function onMessage(message) {
