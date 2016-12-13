@@ -464,7 +464,8 @@ const sounds = {
     'notcool': 'Rainbow Dash/not cool.mp3',
     'wrong': 'Derpy/i just dont know what went wrong.mp3',
     '20percent': 'Rainbow Dash/it needs to be about 20% cooler.mp3',
-    'timecandy': 'Pinkie Pie/time is candy.mp3'
+    'timecandy': 'Pinkie Pie/time is candy.mp3',
+    'awesome': 'Rainbow Dash/so awesome.mp3'
 };
 
 /* GENERAL APPLICATION STUFF */
