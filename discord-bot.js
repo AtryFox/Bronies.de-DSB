@@ -60,7 +60,7 @@ bot.on('ready', function () {
 bot.on('guildMemberAdd', function (member) {
     let embed = new Discord.RichEmbed({
         title: 'Ein neues Mitglied ist zu uns gestoßen!',
-        description: `Hey ${member}, willkommen auf dem offiziellen Discord Server von [Bronies.de](http://bronies.de/). Wirf doch zunächst einen Blick in **#info** für alle wichtigen Informationen und Bot-Befehle.`,
+        description: `Hey **${member.user.username}**, willkommen auf dem offiziellen Discord Server von [Bronies.de](http://bronies.de/). Wirf doch zunächst einen Blick in **#info** für alle wichtigen Informationen und Bot-Befehle.`,
         thumbnail: {
             url: 'https://deratrox.de/dev/Bronies.de-DSB/_join.png'
         },
@@ -71,9 +71,9 @@ bot.on('guildMemberAdd', function (member) {
 });
 
 bot.on('guildMemberRemove', function (member) {
-    embed = new Discord.RichEmbed({
+    let embed = new Discord.RichEmbed({
         title: 'Ein Mitglied hat uns verlassen.',
-        description: `${member} hat den Server verlassen. Bye bye ${member}...`,
+        description: `**${member.user.username}** hat den Server verlassen. Bye bye **${member.user.username}**...`,
         thumbnail: {
             url: 'https://deratrox.de/dev/Bronies.de-DSB/_leave.png'
         },
