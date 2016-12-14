@@ -458,7 +458,7 @@ const commands = {
         name: 'playradio',
         help: 'Startet den Radiostream neu.',
         aliases: ['pr'],
-        role: roles.brgteam,
+        role: roles.community,
         ignore: true
     }
 };
@@ -487,7 +487,8 @@ const sounds = {
     'wrong': 'Derpy/i just dont know what went wrong.mp3',
     '20percent': 'Rainbow Dash/it needs to be about 20% cooler.mp3',
     'timecandy': 'Pinkie Pie/time is candy.mp3',
-    'awesome': 'Rainbow Dash/so awesome.mp3'
+    'awesome': 'Rainbow Dash/so awesome.mp3',
+    'louder': 'Rainbow Dash/louder.mp3'
 };
 
 /* GENERAL APPLICATION STUFF */
