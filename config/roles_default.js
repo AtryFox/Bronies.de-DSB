@@ -2,5 +2,6 @@ module.exports = {
     admin: '',
     moderator: '',
     brgteam: '',
-    community: ''
+    community: '',
+    bot: ''
 };

@@ -46,7 +46,7 @@ bot.on('ready', function () {
 
     const twitter = new Twitter(config.TWITTER_API, server);
 
-    let interval = config.DEBUG ? 5000 : 60000;
+    let interval = config.DEBUG ? 20000 : 60000;
 
     if (twitterTimer != null) {
         clearInterval(twitterTimer);
@@ -412,6 +412,54 @@ function processCommand(message, cmd, cmdObj, args) {
 
             })();
             break;
+        case 'stats':
+            (function () {
+                const botCount = server.roles.find('name', roles.bot).members.size,
+                    memberCount = server.memberCount,
+                    onlineCount = server.presences.findAll('status', 'online').length,
+                    awayCount = server.presences.findAll('status', 'idle').length,
+                    dndCount = server.presences.findAll('status', 'dnd').length,
+                    offlineCount = memberCount - onlineCount - awayCount - dndCount;
+
+                let embed = new Discord.RichEmbed({
+                    author: {
+                        name: server.name,
+                        icon_url: server.iconURL,
+                        url: 'http://bronies.de/'
+                    },
+                    thumbnail: {
+                        url: server.iconURL
+                    },
+                    title: `${memberCount} Clients verbunden`,
+                    description: `davon ${memberCount - botCount} :busts_in_silhouette: Nutzer und ${botCount} :robot: Bots`,
+                    fields: [
+                        {
+                            name: 'Online',
+                            value: onlineCount,
+                            inline: true
+                        },
+                        {
+                            name: 'Abwesend',
+                            value: awayCount,
+                            inline: true
+                        },
+                        {
+                            name: 'Beschäftigt',
+                            value: dndCount,
+                            inline: true
+                        },
+                        {
+                            name: 'Offline',
+                            value: offlineCount,
+                            inline: true
+                        }
+                    ],
+                    color: 0xffd400
+                });
+
+                message.channel.sendEmbed(embed);
+            })();
+            break;
     }
 }
 
@@ -445,6 +493,13 @@ const commands = {
         ' - Reihenfolge  o:<desc|asc>\n' +
         ' - Sortierung   by:<score|relevance|width|height|comments|random>',
         aliases: ['db'],
+        server: true,
+        role: roles.community
+    },
+    stats: {
+        name: 'stats',
+        help: 'Zeigt Statistiken zum Server an.',
+        aliases: ['st'],
         server: true,
         role: roles.community
     },
