@@ -10,7 +10,8 @@ let Discord = require('discord.js'),
     version,
     exec,
     sbBusy = false,
-    twitterTimer = null;
+    twitterTimer = null,
+    cooldowns = {};
 
 /* VERSION */
 function getVersion(callback) {
@@ -53,7 +54,7 @@ bot.on('ready', function () {
     }
 
     twitterTimer = setInterval(function () {
-        twitter.postNewTweets();
+        //twitter.postNewTweets();
     }, interval);
 });
 
@@ -131,7 +132,44 @@ function onMessage(message) {
 
             if ('role' in cmdObj) {
                 if (!checkPermissions(cmdObj.role, message.author)) {
-                    return respond(message, 'Du besitzt nicht genügend Rechte um diesen Befehl auszuführen!', true);
+                    respondPm(message, 'Du besitzt nicht genügend Rechte um diesen Befehl auszuführen!');
+                    if (message.guild == server) {
+                        message.delete();
+                    }
+                    return;
+                }
+            }
+
+            if ('cooldown' in cmdObj) {
+                let check = true;
+
+                if ('skip' in cmdObj) {
+                    if (checkPermissions(cmdObj.skip, message.author)) {
+                        check = false;
+                    }
+                }
+
+                if (check) {
+                    let cooldown = false;
+
+                    if (cmd in cooldowns) {
+                        cooldown = cooldowns[cmd];
+                    }
+
+                    if (cooldown) {
+                        respondPm(message, 'Dieser Befehl wurde erst vor kurzem ausgeführt. Bitte versuche es später erneut.');
+                        if (message.guild == server) {
+                            message.delete();
+                        }
+
+                        return;
+                    }
+
+                    cooldowns[cmd] = true;
+
+                    setTimeout(function () {
+                        cooldowns[cmd] = false;
+                    }, cmdObj.cooldown * 1000);
                 }
             }
 
@@ -494,14 +532,18 @@ const commands = {
         ' - Sortierung   by:<score|relevance|width|height|comments|random>',
         aliases: ['db'],
         server: true,
-        role: roles.community
+        role: roles.community,
+        cooldown: 15,
+        skip: roles.moderator
     },
     stats: {
         name: 'stats',
         help: 'Zeigt Statistiken zum Server an.',
         aliases: ['st'],
         server: true,
-        role: roles.community
+        role: roles.community,
+        cooldown: 60,
+        skip: roles.moderator
     },
     nowplaying: {
         name: 'nowplaying',
