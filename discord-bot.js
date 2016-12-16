@@ -54,7 +54,7 @@ bot.on('ready', function () {
     }
 
     twitterTimer = setInterval(function () {
-        //twitter.postNewTweets();
+        twitter.postNewTweets();
     }, interval);
 });
 
