@@ -585,7 +585,9 @@ const sounds = {
     '20percent': 'Rainbow Dash/it needs to be about 20% cooler.mp3',
     'timecandy': 'Pinkie Pie/time is candy.mp3',
     'awesome': 'Rainbow Dash/so awesome.mp3',
-    'louder': 'Rainbow Dash/louder.mp3'
+    'louder': 'Rainbow Dash/louder.mp3',
+    'trixie': 'Trixie/the g and p t.mp3',
+    'swear': 'Pinkie Pie/pinkie pie swear.mp3'
 };
 
 /* GENERAL APPLICATION STUFF */
