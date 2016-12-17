@@ -328,7 +328,7 @@ function processCommand(message, cmd, cmdObj, args) {
                         },
                         {
                             name: 'Letzter Commit',
-                            value: 'https://github.com/DerAtrox/Bronies.de-DSB/commit/' + version
+                            value: 'https://github.com/DerAtrox/Bronies.de-DSB/commit/' + version,
                             inline: true
                         }
                     ],
