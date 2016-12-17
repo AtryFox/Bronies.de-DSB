@@ -309,7 +309,33 @@ function processCommand(message, cmd, cmdObj, args) {
             break;
         case 'version':
             (function () {
-                respond(message, "Bronies.de DSB version `" + version + "`.\nAktuellster Commit: https://github.com/DerAtrox/Bronies.de-DSB/commit/" + version);
+                let embed = new Discord.RichEmbed({
+                    author: {
+                        name: server.name,
+                        icon_url: server.iconURL,
+                        url: 'http://bronies.de/'
+                    },
+                    thumbnail: {
+                        url: bot.user.avatarURL
+                    },
+                    title: `DerAtrox/Bronies.de-DSB@` + version,
+                    description: 'Umgesetzt mit Hilfe von [Node.js](https://nodejs.org/) und [discord.js](https://discord.js.org/).',
+                    fields: [
+                        {
+                            name: 'Version',
+                            value: version,
+                            inline: true
+                        },
+                        {
+                            name: 'Letzter Commit',
+                            value: 'https://github.com/DerAtrox/Bronies.de-DSB/commit/' + version
+                            inline: true
+                        }
+                    ],
+                    color: 0x632E86
+                });
+
+                message.channel.sendEmbed(embed);
             })();
             break;
         case 'nsfw':
