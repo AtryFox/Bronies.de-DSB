@@ -65,7 +65,7 @@ bot.on('guildMemberAdd', function (member) {
         thumbnail: {
             url: 'https://deratrox.de/dev/Bronies.de-DSB/_join.png'
         },
-        color: 0x43B581
+        color: 0x5FBB4E
     }).setFooter('Viel Spaß auf dem Server!');
 
     bot.channels.get(config.DEFAULT_CH).sendEmbed(embed);
@@ -78,7 +78,7 @@ bot.on('guildMemberRemove', function (member) {
         thumbnail: {
             url: 'https://deratrox.de/dev/Bronies.de-DSB/_leave.png'
         },
-        color: 0xF04747
+        color: 0xEC4141
     }).setFooter('DERPY WANTS MUFFINS!');
 
     bot.channels.get(config.DEFAULT_CH).sendEmbed(embed);
@@ -518,7 +518,7 @@ function processCommand(message, cmd, cmdObj, args) {
                             inline: true
                         }
                     ],
-                    color: 0xffd400
+                    color: 0xEF7135
                 });
 
                 message.channel.sendEmbed(embed);

@@ -141,7 +141,7 @@ Twitter.prototype.getTestTweet = function (user) {
 Twitter.prototype.getEmbedByTweet = function(tweet) {
     let embed = new Discord.RichEmbed({
         title: `Neuer Tweet von @${tweet.user.screen_name} (${tweet.user.name})`,
-        color: 0x2084EE,
+        color: 0x1B98D1,
         description: tweet.text,
         thumbnail: {
             url: tweet.user.profile_image_url_https
