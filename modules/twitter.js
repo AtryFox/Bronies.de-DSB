@@ -131,16 +131,22 @@ Twitter.prototype.getTestTweet = function (user) {
         if (jsonData.length >= 1) {
 
             async.each(jsonData, function (tweet, callback) {
-                console.log(parent.getEmbedByTweet(tweet));
+                const embed = parent.getEmbedByTweet(tweet);
+                console.log(embed);
+                parent.server.channels.get(require('../config/config').BOT_CH).sendEmbed(embed);
                 callback();
             });
         }
     });
 };
 
-Twitter.prototype.getEmbedByTweet = function(tweet) {
+Twitter.prototype.getEmbedByTweet = function (tweet) {
     let embed = new Discord.RichEmbed({
-        title: `Neuer Tweet von @${tweet.user.screen_name} (${tweet.user.name})`,
+        author: {
+            name: `Neuer Tweet von @${tweet.user.screen_name} (${tweet.user.name})`,
+            icon_url: tweet.user.profile_image_url_https,
+            url: `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
+        },
         color: 0x1B98D1,
         description: tweet.text,
         thumbnail: {
@@ -153,6 +159,21 @@ Twitter.prototype.getEmbedByTweet = function(tweet) {
         tweet.entities.urls.map(function (a) {
             embed.addField('Link aus Tweet', a.expanded_url);
         });
+    }
+
+    let photo = null;
+    if (tweet.entities.media.length > 0) {
+        tweet.entities.media.forEach((media) => {
+            if (photo != null) return;
+
+            if (media.type == 'photo') {
+                photo = media;
+            }
+        });
+    }
+
+    if (photo != null) {
+        embed.setThumbnail(photo.media_url_https);
     }
 
     return embed;
