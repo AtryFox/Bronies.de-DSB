@@ -162,14 +162,16 @@ Twitter.prototype.getEmbedByTweet = function (tweet) {
     }
 
     let photo = null;
-    if (tweet.entities.media.length > 0) {
-        tweet.entities.media.forEach((media) => {
-            if (photo != null) return;
+    if ('media' in tweet.entities) {
+        if (tweet.entities.media.length > 0) {
+            tweet.entities.media.forEach((media) => {
+                if (photo != null) return;
 
-            if (media.type == 'photo') {
-                photo = media;
-            }
-        });
+                if (media.type == 'photo') {
+                    photo = media;
+                }
+            });
+        }
     }
 
     if (photo != null) {
