@@ -28,10 +28,10 @@ function getVersion(callback) {
 }
 
 /* BOT EVENTS */
-bot.on('ready', function () {
+bot.on('ready', () => {
     online();
     console.log(getDateTime() + 'I am ready!');
-    getVersion(function (v) {
+    getVersion((v) => {
         version = v;
         bot.user.setGame('version ' + version);
 
@@ -53,12 +53,12 @@ bot.on('ready', function () {
         clearInterval(twitterTimer);
     }
 
-    twitterTimer = setInterval(function () {
+    twitterTimer = setInterval(() => {
         twitter.postNewTweets();
     }, interval);
 });
 
-bot.on('guildMemberAdd', function (member) {
+bot.on('guildMemberAdd', (member) => {
     let embed = new Discord.RichEmbed({
         title: 'Ein neues Mitglied ist zu uns gestoßen!',
         description: `Hey **${member}**, willkommen auf dem offiziellen Discord Server von [Bronies.de](http://bronies.de/). Wirf doch zunächst einen Blick in **#info** für alle wichtigen Informationen und Bot-Befehle.`,
@@ -71,7 +71,7 @@ bot.on('guildMemberAdd', function (member) {
     bot.channels.get(config.DEFAULT_CH).sendEmbed(embed);
 });
 
-bot.on('guildMemberRemove', function (member) {
+bot.on('guildMemberRemove', (member) => {
     let embed = new Discord.RichEmbed({
         title: 'Ein Mitglied hat uns verlassen.',
         description: `**${member.user.username}** hat den Server verlassen. Bye bye **${member.user.username}**...`,
@@ -105,7 +105,7 @@ function onMessage(message) {
             let cmd = match[1].toLowerCase();
 
             if (!(cmd in commands)) {
-                const resolved = resolveAlias(cmd)
+                const resolved = resolveAlias(cmd);
 
                 if (!resolved) {
                     return
@@ -167,7 +167,7 @@ function onMessage(message) {
 
                     cooldowns[cmd] = true;
 
-                    setTimeout(function () {
+                    setTimeout(() => {
                         cooldowns[cmd] = false;
                     }, cmdObj.cooldown * 1000);
                 }
@@ -190,7 +190,7 @@ function onMessage(message) {
 
 bot.on('message', onMessage);
 
-bot.on('messageUpdate', function (oldMessage, newMessage) {
+bot.on('messageUpdate', (oldMessage, newMessage) => {
     if (typeof newMessage.author === 'undefined')
         return;
 
@@ -243,7 +243,7 @@ function getEmoji(name) {
 function resolveAlias(resolvable) {
     let result = false;
 
-    Object.keys(commands).some(function (cmd) {
+    Object.keys(commands).some((cmd) => {
         const cmdObj = commands[cmd];
 
         if (!('aliases' in cmdObj)) {
@@ -252,7 +252,7 @@ function resolveAlias(resolvable) {
 
         let resolved = false;
 
-        cmdObj.aliases.some(function (alias) {
+        cmdObj.aliases.some((alias) => {
             if (resolvable == alias) {
                 resolved = true;
                 return true;
@@ -276,12 +276,12 @@ function resolveAlias(resolvable) {
 function processCommand(message, cmd, cmdObj, args) {
     switch (cmd) {
         case 'help':
-            (function () {
+            (() => {
                 let text = '\n\nBefehle müssen `/` oder `!` vorangestellt haben. Groß- und Kleinschreibung wird nicht beachtet.\nIn PMs wird kein Präfix benötigt.\n\n';
 
                 text += 'Liste aller Befehle, die **du** nutzen kannst:\n\n';
 
-                Object.keys(commands).forEach(function (command) {
+                Object.keys(commands).forEach((command) => {
                     command = commands[command];
 
                     if ('role' in command) {
@@ -308,7 +308,7 @@ function processCommand(message, cmd, cmdObj, args) {
             })();
             break;
         case 'version':
-            (function () {
+            (() => {
                 let embed = new Discord.RichEmbed({
                     author: {
                         name: server.name,
@@ -339,7 +339,7 @@ function processCommand(message, cmd, cmdObj, args) {
             })();
             break;
         case 'nsfw':
-            (function () {
+            (() => {
                 const msg = message;
                 message.delete();
 
@@ -368,7 +368,7 @@ function processCommand(message, cmd, cmdObj, args) {
             })();
             break;
         case 'soundboard':
-            (function () {
+            (() => {
                 if (args.length != 1) {
                     respondPm(message, 'Spiele Pony Sounds in deinem aktuellen Voicechannel ab. Nutze `!sb help` um alle Sounds anzuzeigen.\nBeispiel: `!sb lunafun`');
                     return message.delete();
@@ -396,19 +396,19 @@ function processCommand(message, cmd, cmdObj, args) {
 
                     const soundPath = './sounds/' + sounds[arg];
 
-                    fs.access(soundPath, fs.constants.R_OK, function (err) {
+                    fs.access(soundPath, fs.constants.R_OK, (err) => {
                         if (!err) {
                             sbBusy = true;
-                            member.voiceChannel.join().then(function (connection) {
+                            member.voiceChannel.join().then((connection) => {
                                 const options = {volume: 0.5};
                                 const dispatcher = connection.playFile('./sounds/' + sounds[arg], options);
 
-                                dispatcher.on('end', function () {
+                                dispatcher.on('end', () => {
                                     sbBusy = false;
                                     connection.disconnect();
                                 });
 
-                                dispatcher.on('error', function (message) {
+                                dispatcher.on('error', (message) => {
                                     console.log(message);
                                 });
                             })
@@ -422,7 +422,7 @@ function processCommand(message, cmd, cmdObj, args) {
             })();
             break;
         case 'derpi':
-            (function () {
+            (() => {
                 if (args.length < 1) {
                     return respond(message, 'Dieser Befehl benötigt zusätzliche Parameter. Mehr unter `!help`');
                 }
@@ -454,7 +454,7 @@ function processCommand(message, cmd, cmdObj, args) {
 
                 unirest.get(url)
                     .header("Accept", "application/json")
-                    .end(function (result) {
+                    .end((result) => {
                         if (result.error || typeof result.body !== 'object') {
                             console.log(result.error, result.body);
                             return respond(message, 'Derpibooru Anfrage fehlgeschlagen (HTTP ' + result.status + ')');
@@ -477,7 +477,7 @@ function processCommand(message, cmd, cmdObj, args) {
             })();
             break;
         case 'stats':
-            (function () {
+            (() => {
                 const botCount = server.roles.find('name', roles.bot).members.size,
                     memberCount = server.memberCount,
                     onlineCount = server.presences.findAll('status', 'online').length,
@@ -620,7 +620,7 @@ const sounds = {
 /* GENERAL APPLICATION STUFF */
 process.on('exit', idle);
 
-process.on('SIGINT', function () {
+process.on('SIGINT', () => {
     idle();
     process.exit();
 

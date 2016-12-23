@@ -23,8 +23,8 @@ function Twitter(config, server) {
 Twitter.prototype.initTwitter = function () {
     const parent = this;
 
-    async.each(this.profiles, function (profile, callback) {
-        parent.client.getUserTimeline({screen_name: profile.name, count: '1'}, function (err) {
+    async.each(this.profiles, (profile, callback) => {
+        parent.client.getUserTimeline({screen_name: profile.name, count: '1'}, (err) => {
             console.log('Could not initialize twitter for ' + profile.name + "! " + err);
         }, function (data) {
             let jsonData;
@@ -55,7 +55,7 @@ Twitter.prototype.postNewTweets = function () {
         return;
     }
 
-    async.each(parent.profiles, function (profile, callback) {
+    async.each(parent.profiles, (profile, callback) => {
         if (!(profile.name in parent.lastTweets)) {
             return callback();
         }
@@ -68,7 +68,7 @@ Twitter.prototype.postNewTweets = function () {
             exclude_replies: !profile.mentions
         };
 
-        parent.client.getUserTimeline(options, function (err) {
+        parent.client.getUserTimeline(options, (err) => {
             console.log('Could not fetch new tweets for' + profile.name + "! " + err);
         }, function (data) {
             let jsonData;
@@ -101,7 +101,7 @@ Twitter.prototype.postNewTweets = function () {
     });
 };
 
-Twitter.prototype.getTestTweet = function (user) {
+Twitter.prototype.getTestTweet = function(user) {
     const parent = this;
 
     let rts = true;
@@ -114,7 +114,7 @@ Twitter.prototype.getTestTweet = function (user) {
         exclude_replies: !mentions
     };
 
-    parent.client.getUserTimeline(options, function (err) {
+    parent.client.getUserTimeline(options, (err)  =>{
         console.log('Could not fetch new tweets for' + profile.name + "! " + err);
     }, function (data) {
         let jsonData;
@@ -130,7 +130,7 @@ Twitter.prototype.getTestTweet = function (user) {
 
         if (jsonData.length >= 1) {
 
-            async.each(jsonData, function (tweet, callback) {
+            async.each(jsonData, (tweet, callback) => {
                 const embed = parent.getEmbedByTweet(tweet);
                 console.log(embed);
                 parent.server.channels.get(require('../config/config').BOT_CH).sendEmbed(embed);
@@ -156,7 +156,7 @@ Twitter.prototype.getEmbedByTweet = function (tweet) {
     });
 
     if (tweet.entities.urls.length > 0) {
-        tweet.entities.urls.map(function (a) {
+        tweet.entities.urls.map((a) => {
             embed.addField('Link aus Tweet', a.expanded_url);
         });
     }
