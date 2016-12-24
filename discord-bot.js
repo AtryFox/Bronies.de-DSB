@@ -61,12 +61,12 @@ bot.on('ready', () => {
 bot.on('guildMemberAdd', (member) => {
     let embed = new Discord.RichEmbed({
         title: 'Ein neues Mitglied ist zu uns gestoßen!',
-        description: `Hey **${member}**, willkommen auf dem offiziellen Discord Server von [Bronies.de](http://bronies.de/). Wirf doch zunächst einen Blick in **#info** für alle wichtigen Informationen und Bot-Befehle.`,
+        description: `Hey **${member.user.username}**, willkommen auf dem offiziellen Discord Server von [Bronies.de](http://bronies.de/). Wirf doch zunächst einen Blick in **#info** für alle wichtigen Informationen und Bot-Befehle.`,
         thumbnail: {
             url: 'https://deratrox.de/dev/Bronies.de-DSB/_join.png'
         },
         color: 0x5FBB4E
-    }).setFooter(`Viel Spaß auf dem Server, ${member.user.username}!`);
+    }).setFooter('Viel Spaß auf dem Server!');
 
     bot.channels.get(config.DEFAULT_CH).sendEmbed(embed);
 });
