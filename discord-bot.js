@@ -615,7 +615,8 @@ const sounds = {
     'trixie': 'Trixie/the g and p t.mp3',
     'swear': 'Pinkie Pie/pinkie pie swear.mp3',
     'shoosh': 'Other/shoosh.mp3',
-    'love': 'Fluttershy/youre going to love me.mp3'
+    'love': 'Fluttershy/youre going to love me.mp3',
+    'soos': 'Other/soos.mp3'
 };
 
 /* GENERAL APPLICATION STUFF */
