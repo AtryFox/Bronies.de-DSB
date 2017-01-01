@@ -148,7 +148,6 @@ Twitter.prototype.getEmbedByTweet = function (tweet) {
             url: `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
         },
         color: 0x1B98D1,
-        description: tweet.text,
         thumbnail: {
             url: tweet.user.profile_image_url_https
         },
@@ -157,7 +156,8 @@ Twitter.prototype.getEmbedByTweet = function (tweet) {
 
     if (tweet.entities.urls.length > 0) {
         tweet.entities.urls.map((a) => {
-            embed.addField('Link aus Tweet', a.expanded_url);
+            tweet.text = tweet.text.replace(a.url, `[${a.url}](${a.url})`);
+            embed.addField('Link aus Tweet', `[${a.expanded_url}](${a.expanded_url})`);
         });
     }
 
@@ -165,6 +165,8 @@ Twitter.prototype.getEmbedByTweet = function (tweet) {
     if ('media' in tweet.entities) {
         if (tweet.entities.media.length > 0) {
             tweet.entities.media.forEach((media) => {
+                tweet.text = tweet.text.replace(media.url, `[${media.url}](${media.url})`);
+
                 if (photo != null) return;
 
                 if (media.type == 'photo') {
@@ -177,6 +179,8 @@ Twitter.prototype.getEmbedByTweet = function (tweet) {
     if (photo != null) {
         embed.setThumbnail(photo.media_url_https);
     }
+
+    embed.setDescription(tweet.text);
 
     return embed;
 };
