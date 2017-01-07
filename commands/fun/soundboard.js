@@ -5,7 +5,7 @@ const roles = require('../../config/roles'),
 let busy = false;
 
 exports.run = (bot, message, args) => {
-    if (args.length != 1) {
+    if (args.length < 1) {
         this.run(bot, message, ['help']);
         return message.delete();
     }
@@ -20,9 +20,12 @@ exports.run = (bot, message, args) => {
         for (let ix = 0; ix < soundsKeys.length; ix += columns)
             soundsTable.push(soundsKeys.slice(ix, ix + columns));
 
-        bot.respondPm(message, 'Nutze `!sb soundname` um Sounds in einem Voicechannel abzuspielen.\n\nFolgende Sounds können abgespielt werden:\n```' + table(soundsTable, {hsep: '    '}) + '```');
-
-        return message.delete();
+        if(args.includes('here')) {
+            bot.respond(message, 'Nutze `!sb soundname` um Sounds in einem Voicechannel abzuspielen.\n\nFolgende Sounds können abgespielt werden:\n```' + table(soundsTable, {hsep: '    '}) + '```', false);
+        } else {
+            bot.respondPm(message, 'Nutze `!sb soundname` um Sounds in einem Voicechannel abzuspielen.\n\nFolgende Sounds können abgespielt werden:\n```' + table(soundsTable, {hsep: '    '}) + '```');
+            return message.delete();
+        }
     } else {
         if (busy) {
             return;
@@ -73,7 +76,7 @@ exports.config = {
 exports.help = {
     name: 'soundboard',
     description: 'Sound in aktuellem Sprachchannel abspielen. Die Liste aller Sounds kann mit `!sb help` angezeigt werden.',
-    usage: ['!soundboard lunafun', '!sb choochoo']
+    usage: ['!soundboard lunafun', '!sb choochoo', '!sb help']
 };
 
 const sounds = {

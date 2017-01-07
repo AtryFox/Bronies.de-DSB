@@ -3,7 +3,9 @@ const roles = require('../../config/roles'),
     Discord = require('discord.js');
 
 exports.run = (bot, message, args) => {
-    if (args.length != 1) {
+    const here = args.includes('here');
+
+    if (args.length < 1 || (args.length == 1 && here)) {
         let text = '\n\nBefehle müssen `/` oder `!` vorangestellt haben. Groß- und Kleinschreibung wird nicht beachtet.\nIn PMs wird kein Präfix benötigt.\n\n';
 
         text += 'Liste aller Befehle, die **du** nutzen kannst:\n\n';
@@ -29,10 +31,14 @@ exports.run = (bot, message, args) => {
 
         text += '\nUm mehr Infos zu einem Befehl zu erhalte nutze `!help commandname`, also zum Beispiel: `!help nsfw`.';
 
-        bot.respondPm(message, text);
+        if (here) {
+            bot.respond(message, text, false);
+        } else {
+            bot.respondPm(message, text);
 
-        if (message.channel.type == 'text') {
-            message.delete();
+            if (message.channel.type == 'text') {
+                message.delete();
+            }
         }
     } else {
         const cmd = args[0].toLowerCase();
@@ -65,8 +71,8 @@ exports.run = (bot, message, args) => {
         if ('cooldown' in cmdObj.config) {
             embed.addField('Cooldown', cmdObj.config.cooldown + ' Sekunden', true);
 
-            if('skip' in cmdObj.config) {
-                embed.addField('Cooldown wird übersprungen ab Rang', cmdObj.config.skip, true);
+            if ('skip' in cmdObj.config) {
+                embed.addField('Cooldown wird ignoriert ab', cmdObj.config.skip, true);
             }
         }
 
@@ -76,7 +82,15 @@ exports.run = (bot, message, args) => {
 
         embed.addField('Beispiele', '```' + cmdObj.help.usage.join('\n') + '```');
 
-        message.channel.sendEmbed(embed);
+        if (here) {
+            message.channel.sendEmbed(embed);
+        } else {
+            message.author.sendEmbed(embed);
+
+            if (message.channel.type == 'text') {
+                message.delete();
+            }
+        }
     }
 };
 
@@ -84,6 +98,6 @@ exports.config = {};
 
 exports.help = {
     name: 'help',
-    description: 'Zeigt alle verfügbaren Befehle bzw. Informationen zu einzelnen Befehlen an.',
-    usage: ['!help', '!help version']
+    description: 'Zeigt alle verfügbaren Befehle bzw. Informationen zu einzelnen Befehlen an.\n\nMit dem Parameter `here` wird die Hilfe im aktuellen Channel und nicht im privaten Chat angezeigt. Dieser Parameter muss immer am Ende stehen.',
+    usage: ['!help', '!help version', '!help nsfw here']
 };
