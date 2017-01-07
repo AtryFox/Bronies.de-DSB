@@ -35,7 +35,7 @@ exports.run = (bot, message, args) => {
             message.delete();
         }
     } else {
-        const cmd = args[0];
+        const cmd = args[0].toLowerCase();
 
         if (!bot.commands.has(cmd) && !bot.aliases.has(cmd)) {
             return this.run(bot, message, []);
