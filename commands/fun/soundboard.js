@@ -1,4 +1,5 @@
 const roles = require('../../config/roles'),
+    table = require('text-table'),
     fs = require('fs');
 
 let busy = false;
@@ -12,7 +13,15 @@ exports.run = (bot, message, args) => {
     const arg = args[0].toLowerCase();
 
     if (arg == 'help') {
-        bot.respondPm(message, 'Folgende Sounds können abgespielt werden:\n```' + Object.keys(sounds).join(' ') + '```');
+        const soundsKeys = Object.keys(sounds);
+
+        let soundsTable = [],
+            columns = 5;
+        for (let ix = 0; ix < soundsKeys.length; ix += columns)
+            soundsTable.push(soundsKeys.slice(ix, ix + columns));
+
+        bot.respondPm(message, 'Folgende Sounds können abgespielt werden:\n```' + table(soundsTable, {hsep: '    '}) + '```');
+
         return message.delete();
     } else {
         if (busy) {
@@ -63,7 +72,7 @@ exports.config = {
 
 exports.help = {
     name: 'soundboard',
-    description: 'Sound in aktuellem Sprachchannel abspielen. Liste aller Sounds mit !sb help',
+    description: 'Sound in aktuellem Sprachchannel abspielen. Die Liste aller Sounds kann mit `!sb help` angezeigt werden.',
     usage: ['!soundboard lunafun', '!sb choochoo']
 };
 

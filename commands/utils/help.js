@@ -55,7 +55,7 @@ exports.run = (bot, message, args) => {
             },
             title: `Hilfe für den Befehl \`${cmdObj.help.name}\`:`,
             description: cmdObj.help.description,
-            color: 0x632E86
+            color: 0xEA428B
         });
 
         if ('role' in cmdObj.config) {
