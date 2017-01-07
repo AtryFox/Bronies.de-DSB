@@ -34,7 +34,7 @@ exports.run = (bot, message, args) => {
     }
 
     if('timestamp' in bot.versionInfo) {
-        embed.addField('Erstellt', (moment(bot.versionInfo.timestamp).locale('de').fromNow()), true);
+        embed.addField('Erstellt', (moment(bot.versionInfo.timestamp, 'YYYY-MM-DD HH:mm:ss Z').locale('de').fromNow()), true);
     }
 
     message.channel.sendEmbed(embed);
