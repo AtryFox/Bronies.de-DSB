@@ -2,8 +2,8 @@ let TwitterClient = require('twitter-node-client').Twitter,
     Discord = require('discord.js'),
     async = require('async');
 
-function Twitter(config, server) {
-    this.server = server;
+function Twitter(config, bot) {
+    this.bot = bot;
     this.profiles = require('../config/twitter');
     this.init = false;
     this.lastTweets = {};
@@ -25,18 +25,18 @@ Twitter.prototype.initTwitter = function () {
 
     async.each(this.profiles, (profile, callback) => {
         parent.client.getUserTimeline({screen_name: profile.name, count: '1'}, (err) => {
-            console.log('Could not initialize twitter for ' + profile.name + "! " + err);
+            bot.log('Could not initialize twitter for ' + profile.name + "! " + err);
         }, function (data) {
             let jsonData;
             try {
                 jsonData = JSON.parse(data);
             } catch (err) {
-                console.log(err);
+                bot.log(err);
                 return callback();
             }
 
             if (jsonData.length < 1) {
-                console.log('Could not initialize twitter for ' + profile.name + ', no tweets fetched...');
+                bot.log('Could not initialize twitter for ' + profile.name + ', no tweets fetched...');
             } else {
                 parent.lastTweets[profile.name] = jsonData[0].id_str;
             }
@@ -69,26 +69,26 @@ Twitter.prototype.postNewTweets = function () {
         };
 
         parent.client.getUserTimeline(options, (err) => {
-            console.log('Could not fetch new tweets for' + profile.name + "! " + err);
+            bot.log('Could not fetch new tweets for' + profile.name + "! " + err);
         }, function (data) {
             let jsonData;
 
             try {
                 jsonData = JSON.parse(data);
             } catch (err) {
-                console.log('Could not fetch new tweets for' + profile.name + '! ' + err);
+                bot.log('Could not fetch new tweets for' + profile.name + '! ' + err);
                 return callback();
             }
 
             if (jsonData.length >= 1) {
                 parent.lastTweets[profile.name] = jsonData[0].id_str;
 
-                if (!parent.server.channels.has(profile.channel)) {
-                    console.log('Could not find channel id ' + profile.channel + ' for ' + profile.name);
+                if (!parent.bot.server.channels.has(profile.channel)) {
+                    bot.log('Could not find channel id ' + profile.channel + ' for ' + profile.name);
                     return callback();
                 }
 
-                const channel = parent.server.channels.get(profile.channel);
+                const channel = parent.bot.server.channels.get(profile.channel);
 
                 async.each(jsonData, function (tweet, callback) {
                     channel.sendEmbed(parent.getEmbedByTweet(tweet));
@@ -115,25 +115,25 @@ Twitter.prototype.getTestTweet = function(user) {
     };
 
     parent.client.getUserTimeline(options, (err)  =>{
-        console.log('Could not fetch new tweets for' + profile.name + "! " + err);
+        bot.log('Could not fetch new tweets for' + profile.name + "! " + err);
     }, function (data) {
         let jsonData;
 
         try {
             jsonData = JSON.parse(data);
         } catch (err) {
-            console.log('Could not fetch new tweets for' + profile.name + '! ' + err);
+            bot.log('Could not fetch new tweets for' + profile.name + '! ' + err);
         }
 
 
-        console.log(data);
+        bot.log(data);
 
         if (jsonData.length >= 1) {
 
             async.each(jsonData, (tweet, callback) => {
                 const embed = parent.getEmbedByTweet(tweet);
-                console.log(embed);
-                parent.server.channels.get(require('../config/config').BOT_CH).sendEmbed(embed);
+                bot.log(embed);
+                parent.bot.server.channels.get(require('../config/config').BOT_CH).sendEmbed(embed);
                 callback();
             });
         }
