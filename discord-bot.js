@@ -59,7 +59,7 @@ function getVersion(callback) {
                 info.message = message.trim();
             }
 
-            exec('git log -1 --date=short --pretty=format:%ci', function (error, timestamp) {
+            exec('git log -1 --date=short --pretty=format:%cI', function (error, timestamp) {
                 if (error) {
                     console.log('Error getting creation time', error);
                 } else {
