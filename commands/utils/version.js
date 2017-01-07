@@ -3,6 +3,8 @@ const roles = require('../../config/roles'),
     Discord = require('discord.js');
 
 exports.run = (bot, message, args) => {
+    const linkLastCommit = 'https://github.com/DerAtrox/Bronies.de-DSB/commit/' + bot.versionInfo.version;
+
     let embed = new Discord.RichEmbed({
         author: {
             name: bot.server.name,
@@ -22,7 +24,7 @@ exports.run = (bot, message, args) => {
             },
             {
                 name: 'Letzter Commit',
-                value: 'https://github.com/DerAtrox/Bronies.de-DSB/commit/' + bot.versionInfo.version,
+                value: `[${linkLastCommit}](${linkLastCommit})`,
                 inline: true
             }
         ],
