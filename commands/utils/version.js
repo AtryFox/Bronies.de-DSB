@@ -38,5 +38,5 @@ exports.config = {
 exports.help = {
     name: 'version',
     description: 'Zeigt die aktuelle Version des Bots an.',
-    usage: 'version'
+    usage: ['!version']
 };

@@ -59,5 +59,5 @@ exports.config = {
 exports.help = {
     name: 'stats',
     description: 'Zeigt Statistiken zum Server an.',
-    usage: 'stats'
+    usage: ['!stats']
 };

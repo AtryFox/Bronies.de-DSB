@@ -66,7 +66,7 @@ exports.help = {
     name: 'derpi',
     description: 'Gibt das erste Bild einer Derpibooru Suche zurück.\n\n' +
     'Optionen:\n' +
-    ' - Reihenfolge  o:<desc|asc>\n' +
+    ' - Reihenfolge  `o:<desc|asc>`\n' +
     ' - Sortierung   by:<score|relevance|width|height|comments|random>',
-    usage: 'derpi <search>'
+    usage: ['!derpi Rainbow Dash', '!derpi rd,aj by:score', '!db discord,score.gt:500']
 };

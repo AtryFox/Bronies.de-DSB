@@ -36,5 +36,5 @@ exports.config = {
 exports.help = {
     name: 'nsfw',
     description: '#nsfw betreten oder verlassen.',
-    usage: 'nsfw <join|leave>'
+    usage: ['!nsfw join', '!nsfw leave']
 };

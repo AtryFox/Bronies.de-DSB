@@ -9,5 +9,5 @@ exports.config = {
 exports.help = {
     name: 'playradio',
     description: 'Startet den Radiostream neu.',
-    usage: 'playradio'
+    usage: ['playradio']
 };

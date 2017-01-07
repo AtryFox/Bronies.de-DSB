@@ -8,5 +8,5 @@ exports.config = {
 exports.help = {
     name: 'nowplaying',
     description: 'Zeigt den aktuell gespielten Track des BRG-Musikbots an.',
-    usage: 'nowplaying'
+    usage: ['!nowplaying']
 };

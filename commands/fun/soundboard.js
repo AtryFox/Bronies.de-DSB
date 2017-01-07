@@ -64,7 +64,7 @@ exports.config = {
 exports.help = {
     name: 'soundboard',
     description: 'Sound in aktuellem Sprachchannel abspielen. Liste aller Sounds mit !sb help',
-    usage: 'soundboard <sound>'
+    usage: ['!soundboard lunafun', '!sb choochoo']
 };
 
 const sounds = {
