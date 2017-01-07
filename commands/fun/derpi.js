@@ -3,7 +3,7 @@ const roles = require('../../config/roles'),
 
 exports.run = (bot, message, args) => {
     if (args.length < 1) {
-        return bot.respond(message, 'Dieser Befehl benötigt zusätzliche Parameter. Mehr unter `!help`');
+        return bot.respond(message, 'Dieser Befehl benötigt zusätzliche Parameter. Mehr unter `!help derpi`');
     }
 
     let regexOrder = /\bo:(desc|asc)\b/i,

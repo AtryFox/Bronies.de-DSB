@@ -6,7 +6,7 @@ let busy = false;
 
 exports.run = (bot, message, args) => {
     if (args.length != 1) {
-        bot.respondPm(message, 'Spiele Pony Sounds in deinem aktuellen Voicechannel ab. Nutze `!sb help` um alle Sounds anzuzeigen.\nBeispiel: `!sb lunafun`');
+        this.run(bot, message, ['help']);
         return message.delete();
     }
 
@@ -20,7 +20,7 @@ exports.run = (bot, message, args) => {
         for (let ix = 0; ix < soundsKeys.length; ix += columns)
             soundsTable.push(soundsKeys.slice(ix, ix + columns));
 
-        bot.respondPm(message, 'Folgende Sounds können abgespielt werden:\n```' + table(soundsTable, {hsep: '    '}) + '```');
+        bot.respondPm(message, 'Nutze `!sb soundname` um Sounds in einem Voicechannel abzuspielen.\n\nFolgende Sounds können abgespielt werden:\n```' + table(soundsTable, {hsep: '    '}) + '```');
 
         return message.delete();
     } else {

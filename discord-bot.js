@@ -42,13 +42,33 @@ commandLoader('./commands');
 
 /* VERSION */
 function getVersion(callback) {
+    let info = {};
+
     exec('git rev-parse --short=4 HEAD', function (error, version) {
         if (error) {
             bot.log('Error getting version', error);
-            return callback('unknown');
+            info.version = 'unknown';
+        } else {
+            info.version = version.trim();
         }
 
-        callback(version.trim());
+        exec('git log -1 --pretty=%B', function (error, message) {
+            if (error) {
+                bot.log('Error getting commit message', error);
+            } else {
+                info.message = message.trim();
+            }
+
+            exec('git log -1 --date=short --pretty=format:%ci', function (error, timestamp) {
+                if (error) {
+                    console.log('Error getting creation time', error);
+                } else {
+                    info.timestamp = timestamp;
+                }
+
+                callback(info);
+            });
+        });
     });
 }
 
@@ -56,11 +76,11 @@ function getVersion(callback) {
 bot.on('ready', () => {
     online();
     bot.log('I am ready!');
-    getVersion((v) => {
-        bot.version = v;
-        bot.user.setGame('version ' + bot.version);
+    getVersion((info) => {
+        bot.versionInfo = info;
+        bot.user.setGame('version ' + bot.versionInfo.version);
 
-        if (config.DEBUG) bot.channels.get(config.BOT_CH).sendMessage('I am ready, running version `' + bot.version + '`! 👌');
+        if (config.DEBUG) bot.channels.get(config.BOT_CH).sendMessage('I am ready, running version `' + bot.versionInfo.version + '`! 👌');
     });
 
     if (!bot.guilds.has(config.SERVER_ID)) {

@@ -1,4 +1,5 @@
 const roles = require('../../config/roles'),
+    moment = require('moment'),
     Discord = require('discord.js');
 
 exports.run = (bot, message, args) => {
@@ -11,28 +12,36 @@ exports.run = (bot, message, args) => {
         thumbnail: {
             url: bot.user.avatarURL
         },
-        title: `DerAtrox/Bronies.de-DSB@` + bot.version,
+        title: `DerAtrox/Bronies.de-DSB@` + bot.versionInfo.version,
         description: 'Umgesetzt mit Hilfe von [Node.js](https://nodejs.org/) und [discord.js](https://discord.js.org/).',
         fields: [
             {
                 name: 'Version',
-                value: bot.version,
+                value: bot.versionInfo.version,
                 inline: true
             },
             {
                 name: 'Letzter Commit',
-                value: 'https://github.com/DerAtrox/Bronies.de-DSB/commit/' + bot.version,
+                value: 'https://github.com/DerAtrox/Bronies.de-DSB/commit/' + bot.versionInfo.version,
                 inline: true
             }
         ],
         color: 0x632E86
     });
 
+    if('message' in bot.versionInfo) {
+        embed.addField('Letzte Commitnachricht', bot.versionInfo.message, true);
+    }
+
+    if('timestamp' in bot.versionInfo) {
+        embed.addField('Erstellt', (moment(bot.versionInfo.timestamp).lang('de').fromNow()), true);
+    }
+
     message.channel.sendEmbed(embed);
 };
 
 exports.config = {
-    aliases: ['v']
+    aliases: ['ver']
 };
 
 exports.help = {
