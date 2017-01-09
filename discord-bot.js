@@ -4,12 +4,17 @@ let Discord = require('discord.js'),
     Twitter = require('./modules/twitter').Twitter,
     fs = require('fs'),
     unirest = require('unirest'),
+    async = require('async'),
     token = config.TOKEN,
     bot = new Discord.Client(),
     exec = require('child_process').exec,
     moment = require('moment'),
     twitterTimer = null,
     cooldowns = {};
+
+bot.r = require('rethinkdbdash')({host: 'localhost', db: 'bronies_DSB'});
+
+moment.locale('de');
 
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
@@ -69,6 +74,35 @@ function getVersion(callback) {
                 callback(info);
             });
         });
+    });
+}
+
+function getEmotesOfMessage(message, callback) {
+    let emotes = [];
+
+    async.each(bot.emotes, (emote, callback) => {
+        let safeEmote = emote.id.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+
+        let count = (message.match(new RegExp(safeEmote, 'g')) || []).length;
+
+        for (let i = 0; i < count; i++) {
+            emotes.push(emote.id);
+        }
+        callback();
+    }, () => {
+        const matchEmoji = /(:[a-zA-Z\_0-9]{2,}:)/g;
+        let match;
+
+        do {
+            match = matchEmoji.exec(message);
+            if (match) {
+                if (bot.server.emojis.exists('name', match[1].replace(/:/g, ''))) {
+                    emotes.push(match[1]);
+                }
+            }
+        } while (match);
+
+        callback(emotes);
     });
 }
 
@@ -228,7 +262,61 @@ function onMessage(message) {
             }
 
             cmdObj.run(bot, message, args);
+        } else {
+            if (bot.server.channels.has(message.channel.id)) {
+                handleMessage();
+            }
         }
+    }
+
+    function handleMessage() {
+        getEmotesOfMessage(message.content, emotes => {
+            async.each(emotes, emote => {
+                bot.r.table('emotes_stats').get(emote).run().then(result => {
+                    if (result == null) {
+                        bot.r.table('emotes_stats').insert({
+                            'id': emote,
+                            'count': 1,
+                            'first': bot.r.now().toISO8601(),
+                            'last': bot.r.now().toISO8601(),
+                            'lastBy': message.author.id
+                        }).run().then(result => {
+                            if (result.errors > 0) {
+                                bot.log(`Could not insert emote "${emote}" into db:\n${result.first_error}`);
+                            }
+                        }).error(error => {
+                            bot.log(`Could not insert emote "${emote}" into db:\n${error}`);
+                        });
+                    } else {
+                        bot.r.table('emotes_stats').get(emote).update({
+                            'count': bot.r.row('count').add(1),
+                            'last': bot.r.now().toISO8601(),
+                            'lastBy': message.author.id
+                        }).run().then(result => {
+                            if (result.errors > 0) {
+                                bot.log(`Could not update emote "${emote}" in db:\n${result.first_error}`);
+                            }
+                        }).error(error => {
+                            bot.log(`Could not update emote "${emote}" in db:\n${error}`);
+                        });
+                    }
+                }).error(error => {
+                    bot.log(`Could not get emote "${emote}" of db:\n${error}`);
+                });
+
+                bot.r.table('emotes_users').insert({
+                    'user': message.author.id,
+                    'emote': emote,
+                    'added': bot.r.now().toISO8601()
+                }).run().then(result => {
+                    if (result.errors > 0) {
+                        bot.log(`Could not insert emote "${emote}" into users db:\n${result.first_error}`);
+                    }
+                }).error(error => {
+                    bot.log(`Could not insert emote "${emote}" into users db:\n${error}`);
+                });
+            });
+        });
     }
 
     if (bot.server.channels.has(message.channel.id)) {
@@ -243,7 +331,6 @@ function onMessage(message) {
 }
 
 /* BOT METHODS */
-
 bot.checkPermissions = (role, user) => {
     const member = bot.server.members.get(user.id);
 
@@ -286,6 +373,15 @@ bot.getEmoji = (name) => {
     }
 };
 
+bot.loadEmotes = () => {
+    bot.emotes = [];
+
+    bot.r.table('emotes').run().then(emotes => {
+        bot.emotes = emotes;
+    });
+};
+
+
 /* GENERAL APPLICATION STUFF */
 process.on('exit', idle);
 
@@ -304,4 +400,5 @@ function online() {
 }
 
 /* LOGIN */
+bot.loadEmotes();
 bot.login(token);

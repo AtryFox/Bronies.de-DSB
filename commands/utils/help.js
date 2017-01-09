@@ -77,7 +77,7 @@ exports.run = (bot, message, args) => {
         }
 
         if ('aliases' in cmdObj.config) {
-            embed.addField('Alias', cmdObj.config.aliases.join(' / '), true);
+            embed.addField('Alias', '`' + cmdObj.config.aliases.join('`  `') + '`', true);
         }
 
         embed.addField('Beispiele', '```' + cmdObj.help.usage.join('\n') + '```');
