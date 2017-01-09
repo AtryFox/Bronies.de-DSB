@@ -39,7 +39,7 @@ exports.run = (bot, message, args) => {
                 const messagesString = result.messages == 1 ? 'Nachricht' : 'Nachrichten';
                 const commandsString = result.commands == 1 ? 'Befehl' : 'Befehle';
 
-                embed.addField('Gestern', `${result.messages} ${messagesString} gesendet, ${result.commands} ${commandsString} verwendet.`);
+                embed.addField('Gestern:', `${result.messages} ${messagesString} gesendet, ${result.commands} ${commandsString} verwendet.`);
             }
 
             bot.r.table(table).avg('messages').run().then(result => {
@@ -52,7 +52,7 @@ exports.run = (bot, message, args) => {
                         const messagesString = messages == 1 ? 'Nachricht' : 'Nachrichten';
                         const commandsString = commands == 1 ? 'Befehl' : 'Befehle';
 
-                        embed.addField('Durchschnitt', `${messages} ${messagesString} pro Tag, ${commands} ${commandsString} pro Tag.`);
+                        embed.addField('Durchschnitt:', `${messages} ${messagesString} pro Tag, ${commands} ${commandsString} pro Tag.`);
                     }
 
                     message.channel.sendEmbed(embed);
