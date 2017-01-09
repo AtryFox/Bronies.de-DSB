@@ -34,7 +34,7 @@ exports.run = (bot, message, args) => {
 
         bot.r.table(table).get(bot.momentToReDate(now.subtract(1, 'days'))).run().then(result => {
             if (result == null) {
-                embed.addField('Gestern', 'Keine Nachrichten oder Befehle');
+                embed.addField('Gestern', 'Keine Nachrichten gesendet oder Befehle verwendet.');
             } else {
                 const messagesString = result.messages == 1 ? 'Nachricht' : 'Nachrichten';
                 const commandsString = result.commands == 1 ? 'Befehl' : 'Befehle';
