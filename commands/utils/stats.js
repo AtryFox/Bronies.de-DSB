@@ -1,13 +1,13 @@
 const roles = require('../../config/roles'),
+    moment = require('moment'),
     Discord = require('discord.js');
 
+moment.locale('de');
+
 exports.run = (bot, message, args) => {
-    const botCount = bot.server.roles.find('name', roles.bot).members.size,
-        memberCount = bot.server.memberCount,
-        onlineCount = bot.server.presences.findAll('status', 'online').length,
-        awayCount = bot.server.presences.findAll('status', 'idle').length,
-        dndCount = bot.server.presences.findAll('status', 'dnd').length,
-        offlineCount = memberCount - onlineCount - awayCount - dndCount;
+    function respondError() {
+        return bot.respond(message, `Datenbankabfrage fehlgeschlagen, die Protokolle könnten mehr Infos enthalten. (${bot.admin})`, true);
+    }
 
     let embed = new Discord.RichEmbed({
         author: {
@@ -15,37 +15,64 @@ exports.run = (bot, message, args) => {
             icon_url: bot.server.iconURL,
             url: 'http://bronies.de/'
         },
-        thumbnail: {
-            url: bot.server.iconURL
-        },
-        title: `${memberCount} Clients verbunden`,
-        description: `davon ${memberCount - botCount} :busts_in_silhouette: Nutzer und ${botCount} :robot: Bots`,
-        fields: [
-            {
-                name: 'Online',
-                value: onlineCount,
-                inline: true
-            },
-            {
-                name: 'Abwesend',
-                value: awayCount,
-                inline: true
-            },
-            {
-                name: 'Beschäftigt',
-                value: dndCount,
-                inline: true
-            },
-            {
-                name: 'Offline',
-                value: offlineCount,
-                inline: true
-            }
-        ],
-        color: 0xEF7135
+        title: `Statistiken:`,
+        color: 0x243870
     });
 
-    message.channel.sendEmbed(embed);
+    const table = 'stats';
+    const now = moment();
+
+    bot.r.table(table).get(bot.momentToReDate(now)).run().then(result => {
+        if (result == null) {
+            embed.setDescription('Heute wurden noch keine Nachrichten gesendet oder Befehle verwendet.');
+        } else {
+            const messagesString = result.messages == 1 ? 'Nachricht' : 'Nachrichten';
+            const commandsString = result.commands == 1 ? 'Befehl' : 'Befehle';
+
+            embed.setDescription(`Heute wurden bereits **${result.messages} ${messagesString}** gesendet und **${result.commands} ${commandsString}** verwendet.`);
+        }
+
+        bot.r.table(table).get(bot.momentToReDate(now.subtract(1, 'days'))).run().then(result => {
+            if (result == null) {
+                embed.addField('Gestern', 'Keine Nachrichten oder Befehle');
+            } else {
+                const messagesString = result.messages == 1 ? 'Nachricht' : 'Nachrichten';
+                const commandsString = result.commands == 1 ? 'Befehl' : 'Befehle';
+
+                embed.addField('Gestern', `${result.messages} ${messagesString} gesendet, ${result.commands} ${commandsString} verwendet.`);
+            }
+
+            bot.r.table(table).avg('messages').run().then(result => {
+                const messages = Math.round(result * 100) / 100;
+
+                bot.r.table(table).avg('commands').run().then(result => {
+                    const commands = Math.round(result * 100) / 100;
+
+                    if (result != null) {
+                        const messagesString = messages == 1 ? 'Nachricht' : 'Nachrichten';
+                        const commandsString = commands == 1 ? 'Befehl' : 'Befehle';
+
+                        embed.addField('Durchschnitt', `${messages} ${messagesString} pro Tag, ${commands} ${commandsString} pro Tag.`);
+                    }
+
+                    message.channel.sendEmbed(embed);
+                }).error(error => {
+                    bot.log('Could not get date in db: ' + error);
+                    return respondError();
+                });
+            }).error(error => {
+                bot.log('Could not get date in db: ' + error);
+                return respondError();
+            });
+        }).error(error => {
+            bot.log('Could not get date in db: ' + error);
+            return respondError();
+        });
+    }).error(error => {
+        bot.log('Could not get date in db: ' + error);
+        return respondError();
+    });
+
 };
 
 exports.config = {

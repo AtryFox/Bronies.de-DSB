@@ -11,6 +11,10 @@ let Discord = require('discord.js'),
     twitterTimer = null,
     cooldowns = {};
 
+moment.locale('de');
+
+bot.r = require('rethinkdbdash')({host: 'localhost', db: 'bronies_DSB'});
+
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 
@@ -90,6 +94,10 @@ bot.on('ready', () => {
 
     bot.server = bot.guilds.get(config.SERVER_ID);
 
+    if(bot.server.members.has(config.BOT_ADMIN)) {
+        bot.admin = bot.server.members.get(config.BOT_ADMIN);
+    }
+
     const twitter = new Twitter(config.TWITTER_API, bot);
 
     let interval = config.DEBUG ? 20000 : 60000;
@@ -129,16 +137,18 @@ bot.on('guildMemberRemove', (member) => {
     bot.channels.get(config.DEFAULT_CH).sendEmbed(embed);
 });
 
-bot.on('message', onMessage);
+bot.on('message', (message) => {
+    onMessage(message, false);
+});
 
 bot.on('messageUpdate', (oldMessage, newMessage) => {
     if (typeof newMessage.author === 'undefined')
         return;
 
-    onMessage(newMessage);
+    onMessage(newMessage, true);
 });
 
-function onMessage(message) {
+function onMessage(message, isUpdate) {
     if (message.author.id == bot.user.id) {
         return;
     }
@@ -228,7 +238,48 @@ function onMessage(message) {
             }
 
             cmdObj.run(bot, message, args);
+
+            addStats(true);
+        } else {
+            addStats(false);
         }
+    }
+
+    function addStats(isCommand) {
+        if (isUpdate || (!bot.server.channels.has(message.channel.id) && !isCommand)) return;
+
+        const table = 'stats';
+        const addCommand = isCommand ? 1 : 0;
+        const addMessage = isCommand ? 0 : 1;
+        const date = bot.momentToReDate(moment());
+
+
+        bot.r.table(table).get(date).run().then(result => {
+            if (result == null) {
+                const data = {id: date, commands: addCommand, messages: addMessage};
+
+                bot.r.table(table).insert(data).run().then(result => {
+                    if (result.errors > 0) {
+                        bot.log('Could not insert new date into db: ' + result.first_error);
+                    }
+                }).error(error => {
+                    bot.log('Could not insert new date into db: ' + error);
+                });
+            } else {
+                bot.r.table(table).get(date).update({
+                    commands: bot.r.row('commands').add(addCommand),
+                    messages: bot.r.row('messages').add(addMessage)
+                }).run().then(result => {
+                    if (result.errors > 0) {
+                        bot.log('Could not update date in db: ' + result.first_error);
+                    }
+                }).error(error => {
+                    bot.log('Could not update date in db: ' + error);
+                });
+            }
+        }).error(error => {
+            bot.log('Could not check if current date in db: ' + error);
+        });
     }
 
     if (bot.server.channels.has(message.channel.id)) {
@@ -284,6 +335,10 @@ bot.getEmoji = (name) => {
     } else {
         return ':robot:';
     }
+};
+
+bot.momentToReDate = (momentObj) => {
+    return bot.r.time(momentObj.year(), momentObj.month() + 1, momentObj.date(), 'Z');
 };
 
 /* GENERAL APPLICATION STUFF */
