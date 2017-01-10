@@ -165,6 +165,7 @@ function onMessage(message, isUpdate) {
         }
 
         if (match) {
+
             const args = message.content.split(' ').splice(1);
             let cmd = match[1].toLowerCase();
 
@@ -179,6 +180,8 @@ function onMessage(message, isUpdate) {
             if (cmdObj == null) {
                 return;
             }
+            
+            addStats(true);
 
             if ('handled' in cmdObj.config) {
                 if (cmdObj.config.handled == false) {
@@ -238,8 +241,6 @@ function onMessage(message, isUpdate) {
             }
 
             cmdObj.run(bot, message, args);
-
-            addStats(true);
         } else {
             addStats(false);
         }
