@@ -180,7 +180,7 @@ function onMessage(message, isUpdate) {
             if (cmdObj == null) {
                 return;
             }
-            
+
             addStats(true);
 
             if ('handled' in cmdObj.config) {
