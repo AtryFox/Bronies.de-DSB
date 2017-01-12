@@ -3,6 +3,8 @@ const roles = require('../../config/roles'),
     fs = require('fs');
 
 exports.run = (bot, message, args) => {
+    bot.log(this.help.name + ': Stream restarted by ' + message.author.username + '#' + message.author.discriminator);
+
     fs.access(bot.radio, fs.constants.R_OK, (err) => {
         if (!err) {
             try{
