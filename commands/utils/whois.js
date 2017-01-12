@@ -92,6 +92,6 @@ exports.config = {
 
 exports.help = {
     name: 'whois',
-    description: 'Zeigt Informationen zu sich selber oder einem beliebigen Nutzer an.',
+    description: 'Zeigt Informationen zu sich selber an.\nModeratoren oder höher können auch Infos zu anderen Nutzern anzeigen.',
     usage: ['!whois', '!who username']
 };

@@ -15,6 +15,8 @@ moment.locale('de');
 
 bot.r = require('rethinkdbdash')({host: 'localhost', db: 'bronies_DSB'});
 
+bot.radio = config.RADIO_START;
+
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 
