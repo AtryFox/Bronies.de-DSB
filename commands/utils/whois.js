@@ -10,6 +10,12 @@ exports.run = (bot, message, args) => {
     if (args.length == 0) {
         member = bot.server.members.get(message.author.id);
     } else {
+        if(!bot.checkPermissions(roles.moderator, message.author)) {
+            bot.respondPm(message, 'Du besitzt nicht genügend Rechte um Informationen zu anderen Nutzern abzufragen.');
+            message.delete();
+            return;
+        }
+
         const arg = args[0];
 
         if (/(\d{18})/.test(arg)) {
@@ -78,12 +84,14 @@ exports.run = (bot, message, args) => {
 
 exports.config = {
     aliases: ['who', 'about', 'a'],
-    role: roles.moderator,
+    role: roles.community,
+    cooldown: 15,
+    skip: roles.moderator,
     server: true
 };
 
 exports.help = {
     name: 'whois',
-    description: 'Zeigt Informationen zu einem Nutzer an.',
-    usage: ['!whois @Username', '!who userid']
+    description: 'Zeigt Informationen zu sich selber oder einem beliebigen Nutzer an.',
+    usage: ['!whois', '!who username']
 };
