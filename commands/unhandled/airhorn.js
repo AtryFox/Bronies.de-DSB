@@ -1,6 +1,7 @@
 const roles = require('../../config/roles');
 
 exports.config = {
+    aliases: ['cena', 'anotha', 'eb', 'stan', 'bday', 'wtc'],
     handled: false,
 };
 
