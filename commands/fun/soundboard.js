@@ -111,4 +111,5 @@ const sounds = {
     'love': 'Fluttershy/youre going to love me.mp3',
     'soos': 'Other/soos.mp3',
     'sweep': 'Twilight Sparkle/sweep.mp3',
+    'boop': 'Other/boop.mp3',
 };
