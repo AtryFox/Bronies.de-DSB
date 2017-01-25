@@ -82,6 +82,10 @@ exports.run = (bot, message, args) => {
 
         embed.addField('Beispiele', '```' + cmdObj.help.usage.join('\n') + '```');
 
+        if ('thumbnail' in cmdObj.help) {
+            embed.setThumbnail(cmdObj.help.thumbnail);
+        }
+
         if (here) {
             message.channel.sendEmbed(embed);
         } else {
