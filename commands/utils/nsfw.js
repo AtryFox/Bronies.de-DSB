@@ -10,16 +10,16 @@ exports.run = (bot, message, args) => {
 
     const arg = args[0].toLowerCase();
 
-    const nsfwRole = bot.server.roles.find('name', 'NSFW');
+    const nsfwRole = bot.server.roles.get(roles.nsfw);
     const member = bot.getGuildMember(msg.author);
 
     if (arg == 'join') {
-        if (!member.roles.exists('name', 'NSFW')) {
+        if (!member.roles.has(roles.nsfw)) {
             member.addRole(nsfwRole);
             return bot.respondPm(msg, 'Bronies.de NSFW Bereich beigetreten. :smirk:');
         }
     } else if (arg == 'leave') {
-        if (member.roles.exists('name', 'NSFW')) {
+        if (member.roles.has(roles.nsfw)) {
             member.removeRole(nsfwRole);
             return bot.respondPm(msg, 'Bronies.de NSFW Bereich verlassen.');
         }

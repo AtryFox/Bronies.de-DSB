@@ -3,5 +3,6 @@ module.exports = {
     moderator: '',
     brgteam: '',
     community: '',
-    bot: ''
+    bot: '',
+    nsfw: ''
 };

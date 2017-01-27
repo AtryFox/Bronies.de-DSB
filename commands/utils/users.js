@@ -2,7 +2,7 @@ const roles = require('../../config/roles'),
     Discord = require('discord.js');
 
 exports.run = (bot, message, args) => {
-    const botCount = bot.server.roles.find('name', roles.bot).members.size,
+    const botCount = bot.server.roles.get(roles.bot).members.size,
         memberCount = bot.server.memberCount,
         onlineCount = bot.server.presences.findAll('status', 'online').length,
         awayCount = bot.server.presences.findAll('status', 'idle').length,

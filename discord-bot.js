@@ -305,11 +305,11 @@ bot.checkPermissions = (role, user) => {
         return true;
     }
 
-    if (!bot.server.roles.exists('name', role)) {
+    if (!bot.server.roles.has(role)) {
         return false;
     }
 
-    return member.highestRole.comparePositionTo(bot.server.roles.find('name', role)) >= 0;
+    return member.highestRole.comparePositionTo(bot.server.roles.get(role)) >= 0;
 };
 
 bot.getGuildMember = (user) => {

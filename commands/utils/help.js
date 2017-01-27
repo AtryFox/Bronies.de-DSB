@@ -65,14 +65,14 @@ exports.run = (bot, message, args) => {
         });
 
         if ('role' in cmdObj.config) {
-            embed.addField('Benötiger Rang', cmdObj.config.role, true);
+            embed.addField('Benötiger Rang', bot.server.roles.get(cmdObj.config.role).name, true);
         }
 
         if ('cooldown' in cmdObj.config) {
             embed.addField('Cooldown', cmdObj.config.cooldown + ' Sekunden', true);
 
             if ('skip' in cmdObj.config) {
-                embed.addField('Cooldown wird ignoriert ab', cmdObj.config.skip, true);
+                embed.addField('Cooldown wird ignoriert ab', bot.server.roles.get(cmdObj.config.skip).name, true);
             }
         }
 
