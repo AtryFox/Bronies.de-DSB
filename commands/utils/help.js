@@ -6,7 +6,7 @@ exports.run = (bot, message, args) => {
     const here = args.includes('here');
 
     if (args.length < 1 || (args.length == 1 && here)) {
-        let text = '\n\nBefehle müssen `/` oder `!` vorangestellt haben. Groß- und Kleinschreibung wird nicht beachtet.\nIn PMs wird kein Präfix benötigt.\n\n';
+        let text = '\n\nBefehle müssen `!` vorangestellt haben. Groß- und Kleinschreibung wird nicht beachtet.\nIn PMs wird kein Präfix benötigt.\n\n';
 
         text += 'Liste aller Befehle, die **du** nutzen kannst:\n\n';
 

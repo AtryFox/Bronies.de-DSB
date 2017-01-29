@@ -162,10 +162,10 @@ function onMessage(message, isUpdate) {
     }
 
     function handleCommand() {
-        let match = /^[\/!]([a-zA-Z]+).*$/.exec(message.content);
+        let match = /^!([a-zA-Z]+).*$/.exec(message.content);
 
         if (message.channel.type == 'dm') {
-            match = /^[\/!]?([a-zA-Z]+).*$/.exec(message.content);
+            match = /^!?([a-zA-Z]+).*$/.exec(message.content);
         }
 
         if (match) {
@@ -246,6 +246,15 @@ function onMessage(message, isUpdate) {
 
             cmdObj.run(bot, message, args);
         } else {
+            match = /^\/([a-zA-Z]+).*$/.exec(message.content);
+
+            if(match) {
+                bot.respondPm(message, 'Befehle können nur noch mit `!` vorangestellt ausgeführt werden. Beispiel: `' + message.content.replace('/', '!')+ '`');
+                if (message.channel.type == 'dm') {
+                    message.delete();
+                }
+            }
+
             addStats(false);
         }
     }
