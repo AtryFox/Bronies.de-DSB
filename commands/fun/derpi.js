@@ -41,7 +41,7 @@ exports.run = (bot, message, args) => {
 
             const data = result.body;
             if (typeof data.search === 'undefined' || typeof data.search[0] === 'undefined')
-                return bot.respond(message, 'Keine Suchergebnisse gefunden.');
+                return bot.respond(message, 'Keine Suchergebnisse auf **Derpibooru** gefunden.');
 
             const img = data.search[0];
 

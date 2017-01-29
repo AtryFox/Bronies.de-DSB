@@ -20,6 +20,8 @@ bot.radio = config.RADIO_START;
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 
+bot.config = config;
+
 bot.log = (msg) => {
     console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${msg}`);
 };
