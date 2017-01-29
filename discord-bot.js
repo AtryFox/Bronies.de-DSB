@@ -98,7 +98,7 @@ bot.on('ready', () => {
 
     bot.server = bot.guilds.get(config.SERVER_ID);
 
-    if(bot.server.members.has(config.BOT_ADMIN)) {
+    if (bot.server.members.has(config.BOT_ADMIN)) {
         bot.admin = bot.server.members.get(config.BOT_ADMIN);
     }
 
@@ -248,14 +248,14 @@ function onMessage(message, isUpdate) {
         } else {
             match = /^\/([a-zA-Z]+).*$/.exec(message.content);
 
-            if(match) {
-                bot.respondPm(message, 'Befehle können nur noch mit `!` vorangestellt ausgeführt werden. Beispiel: `' + message.content.replace('/', '!')+ '`');
+            if (match) {
+                bot.respondPm(message, 'Befehle können nur noch mit `!` vorangestellt ausgeführt werden. Beispiel: `' + message.content.replace('/', '!') + '`');
                 if (message.channel.type != 'dm') {
                     message.delete();
                 }
+            } else {
+                addStats(false);
             }
-
-            addStats(false);
         }
     }
 
