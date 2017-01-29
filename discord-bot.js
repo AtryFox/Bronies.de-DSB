@@ -250,7 +250,7 @@ function onMessage(message, isUpdate) {
 
             if(match) {
                 bot.respondPm(message, 'Befehle können nur noch mit `!` vorangestellt ausgeführt werden. Beispiel: `' + message.content.replace('/', '!')+ '`');
-                if (message.channel.type == 'dm') {
+                if (message.channel.type != 'dm') {
                     message.delete();
                 }
             }
