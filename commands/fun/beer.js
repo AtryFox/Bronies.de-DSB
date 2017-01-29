@@ -7,7 +7,7 @@ exports.run = (bot, message, args) => {
             url: 'https://deratrox.de/dev/Bronies.de-DSB/_beer.png'
         },
         title: ':beer: Eine Runde Bier wird im Chat verteilt!',
-        color: 0x6f4e37
+        color: 0xD1973D
     });
 
     message.channel.sendEmbed(embed);

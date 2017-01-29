@@ -7,7 +7,7 @@ exports.run = (bot, message, args) => {
             url: 'https://deratrox.de/dev/Bronies.de-DSB/_muffins.png'
         },
         title: 'Derpy war da! It\'s Muffin time!',
-        color: 0x6f4e37
+        color: 0x808AA7
     });
 
     message.channel.sendEmbed(embed);

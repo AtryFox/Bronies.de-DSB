@@ -13,7 +13,7 @@ exports.run = (bot, message, args) => {
             url: 'https://deratrox.de/dev/Bronies.de-DSB/' + file
         },
         title: ':cookie: Eine Runde Kekse wird im Chat verteilt!',
-        color: 0x6f4e37
+        color: 0x6C4733
     });
 
     message.channel.sendEmbed(embed);
