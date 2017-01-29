@@ -42,6 +42,6 @@ exports.config = {
 
 exports.help = {
     name: 'youtube',
-    description: 'Gibt das erste Ergebnis einer Suche auf YouTube zurück',
-    usage: ['!youtube Rainbow Dash', '!yt pony', '!yt YouTube Kacke']
+    description: 'Gibt das erste Ergebnis einer Suche auf YouTube zurück.',
+    usage: ['!youtube Rainbow Dash', '!yt pony', '!yt boop']
 };
