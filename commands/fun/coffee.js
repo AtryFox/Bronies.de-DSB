@@ -6,7 +6,7 @@ exports.run = (bot, message, args) => {
         thumbnail: {
             url: 'https://deratrox.de/dev/Bronies.de-DSB/_coffee.png'
         },
-        title: ':coffee: Eine Kanne brühend heißer Kaffees steht bereit!',
+        title: ':coffee: Eine Kanne brühend heißer Kaffee steht bereit!',
         color: 0x6f4e37
     });
 
