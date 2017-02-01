@@ -19,7 +19,7 @@ exports.run = (bot, message, args) => {
             url: bot.server.iconURL
         },
         title: `${memberCount} Clients verbunden`,
-        description: `davon ${memberCount - botCount} :busts_in_silhouette: Nutzer und ${botCount} :robot: Bots`,
+        description: `davon ${memberCount - botCount} 👥 Nutzer und ${botCount} 🤖 Bots`,
         fields: [
             {
                 name: 'Online',
