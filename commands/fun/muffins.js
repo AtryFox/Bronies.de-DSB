@@ -6,7 +6,7 @@ exports.run = (bot, message, args) => {
         thumbnail: {
             url: 'https://deratrox.de/dev/Bronies.de-DSB/_muffins.png'
         },
-        title: 'Derpy war da! It\'s Muffin time!',
+        description: '**Derpy war da! It\'s Muffin time!**',
         color: 0x808AA7
     });
 

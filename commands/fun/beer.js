@@ -6,7 +6,7 @@ exports.run = (bot, message, args) => {
         thumbnail: {
             url: 'https://deratrox.de/dev/Bronies.de-DSB/_beer.png'
         },
-        title: ':beer: Eine Runde Bier wird im Chat verteilt!',
+        description: '**🍺 Eine Runde Bier wird im Chat verteilt!**',
         color: 0xD1973D
     });
 
