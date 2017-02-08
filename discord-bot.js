@@ -2,6 +2,7 @@ let Discord = require('discord.js'),
     config = require('./config/config'),
     roles = require('./config/roles'),
     Twitter = require('./modules/twitter').Twitter,
+    YouTube = require('./modules/youtube').YouTube,
     fs = require('fs'),
     unirest = require('unirest'),
     token = config.TOKEN,
@@ -21,6 +22,8 @@ bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 
 bot.config = config;
+
+bot.youtube = new YouTube(bot);
 
 bot.log = (msg) => {
     console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${msg}`);
