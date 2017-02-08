@@ -60,12 +60,12 @@ exports.run = (bot, message, args) => {
             } else if (result.current_event == 'DJ-Pony Mary') {
                 preString = bot.getEmoji('brgMary') + ' **DJ-Pony Mary**';
             } else {
-                preString = `\n🔴 **${result.current_event}**`;
+                preString = `🔴 **${result.current_event}**`;
             }
 
             const listenerString = result.listener == 1 ? 'Zuhörer' : 'Zuhörern';
 
-            text += `${preString} mit ${result.listener} ${listenerString}.`;
+            text += `\n${preString} mit ${result.listener} ${listenerString}.`;
 
             const votes = result.upvotes - result.downvotes;
             const votesEmote = votes >= 0 ? '❤' : '💔';
