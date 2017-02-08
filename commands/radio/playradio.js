@@ -37,5 +37,6 @@ exports.config = {
 exports.help = {
     name: 'playradio',
     description: 'Startet den Radiostream neu.',
-    usage: ['!playradio']
+    usage: ['!playradio'],
+    thumbnail: 'https://deratrox.de/dev/Bronies.de-DSB/_brgi.png'
 };

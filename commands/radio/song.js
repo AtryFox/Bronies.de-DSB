@@ -36,7 +36,7 @@ exports.run = (bot, message, args) => {
         }
 
         if (!success) {
-            return bot.respond(message, 'Aktueller Song konnte nicht abgerufen werden.', false);
+            return bot.respond(message, 'Aktueller Song konnte nicht abgerufen werden.', true);
         }
 
         let songString, searchQuery;
@@ -103,5 +103,6 @@ exports.config = {
 exports.help = {
     name: 'song',
     description: 'Zeigt den aktuell gespielten Track des BRG-Musikbots an.',
-    usage: ['!np']
+    usage: ['!np'],
+    thumbnail: 'https://deratrox.de/dev/Bronies.de-DSB/_brgi.png'
 };
