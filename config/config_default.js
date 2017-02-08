@@ -11,6 +11,8 @@ module.exports = {
     BOT_ADMIN: '',
     // PATH TO RADIO START.SH
     RADIO_START: '',
+    // ID OF RADIO BOT
+    RADIO_BOT: '',
     // YOUTUBE API KEY
     YOUTUBE_KEY: '',
     // TWITTER API KEY
