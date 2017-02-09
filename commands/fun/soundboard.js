@@ -112,4 +112,5 @@ const sounds = {
     'soos': 'Other/soos.mp3',
     'sweep': 'Twilight Sparkle/sweep.mp3',
     'boop': 'Other/boop.mp3',
+    'ccc': 'Pinkie Pie/chimicherrychanga.mp3',
 };
