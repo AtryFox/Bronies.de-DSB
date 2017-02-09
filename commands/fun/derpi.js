@@ -7,7 +7,7 @@ exports.run = (bot, message, args) => {
     }
 
     let regexOrder = /\bo:(desc|asc)\b/i,
-        regexSort = /\bby:(score|relevance|width|height|comments|random)\b/i,
+        regexSort = /\bby:(score|relevance|width|height|comments|created_at|random)\b/i,
         parameters = '',
         query = args.join(' ');
 
@@ -67,6 +67,6 @@ exports.help = {
     description: 'Gibt das erste Bild einer Derpibooru Suche zurück.\n\n' +
     'Optionen:\n' +
     ' - Reihenfolge: `o:<desc|asc>`\n' +
-    ' - Sortierung: `by:<score|relevance|width|height|comments|random>`',
+    ' - Sortierung: `by:<score|relevance|width|height|comments|created_at|random>`',
     usage: ['!derpi Rainbow Dash', '!derpi rd,aj by:score', '!db discord,score.gt:500']
 };
