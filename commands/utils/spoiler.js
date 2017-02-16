@@ -10,7 +10,7 @@ exports.run = (bot, message, args) => {
     const member = bot.server.members.get(message.author.id);
 
     const url = 'http://s.equestriadev.de/post.php';
-    bot.log(message.author.username + '#' + message.author.discriminator + ' - Spoiler: ' + url);
+    bot.log(message.author.username + '#' + message.author.discriminator + ' - Spoiler: ' + url + ' Message ID: ' + message.id);
 
     unirest.post(url)
         .header("Accept", "application/json")
