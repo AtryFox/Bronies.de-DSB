@@ -15,6 +15,8 @@ module.exports = {
     RADIO_BOT: '',
     // YOUTUBE API KEY
     YOUTUBE_KEY: '',
+    // KEY FOR SPOILER COMMAND API
+    SPOILER_KEY: '',
     // TWITTER API KEY
     TWITTER_API: {
         CONSUMER_KEY: '',

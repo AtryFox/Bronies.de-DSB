@@ -165,10 +165,10 @@ function onMessage(message, isUpdate) {
     }
 
     function handleCommand() {
-        let match = /^!([a-zA-Z]+).*$/.exec(message.content);
+        let match = /^!([a-zA-Z]+).*/.exec(message.content);
 
         if (message.channel.type == 'dm') {
-            match = /^!?([a-zA-Z]+).*$/.exec(message.content);
+            match = /^!?([a-zA-Z]+).*/.exec(message.content);
         }
 
         if (match) {
