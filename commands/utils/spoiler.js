@@ -9,11 +9,20 @@ exports.run = (bot, message, args) => {
 
     const member = bot.server.members.get(message.author.id);
 
-    const url = `http://s.equestriadev.de/message.php?message=${encodeURIComponent(args.join(' '))}&message_id=${message.id}&user=${member.user.username}&user_discriminator=${member.user.discriminator}&user_id=${member.id}&user_avatar=${member.user.displayAvatarURL}&key=${bot.config.SPOILER_KEY}`;
+    const url = 'http://s.equestriadev.de/post.php';
     bot.log(message.author.username + '#' + message.author.discriminator + ' - Spoiler: ' + url);
 
-    unirest.get(url)
+    unirest.post(url)
         .header("Accept", "application/json")
+        .send({
+            message: args.join(' '),
+            message_id: message.id,
+            user: member.user.username,
+            user_discriminator: member.user.discriminator,
+            user_id: member.id,
+            user_avatar: member.user.displayAvatarURL,
+            key: bot.config.SPOILER_KEY
+        })
         .end((result) => {
             if (result.error || typeof result.body !== 'object') {
                 bot.log(result.error, result.body);
