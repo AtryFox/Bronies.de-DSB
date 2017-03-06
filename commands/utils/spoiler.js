@@ -9,7 +9,7 @@ exports.run = (bot, message, args) => {
 
     const member = bot.server.members.get(message.author.id);
 
-    const url = 'http://s.equestriadev.de/post.php';
+    const url = 'https://s.equestriadev.de/post.php';
     bot.log(message.author.username + '#' + message.author.discriminator + ' - Spoiler: ' + url + ' Message ID: ' + message.id);
 
     unirest.post(url)
@@ -32,7 +32,7 @@ exports.run = (bot, message, args) => {
             const data = result.body;
 
             if (data.status == 'success') {
-                bot.respond(message, `Nachricht von ${message.author} wurde in Spoiler versteckt. http://s.equestriadev.de/${message.id}`, false);
+                bot.respond(message, `Nachricht von ${message.author} wurde in Spoiler versteckt. https://s.equestriadev.de/${message.id}`, false);
                 message.delete();
             } else {
                 bot.log('Could not create spoiler: ' + JSON.stringify(data));
