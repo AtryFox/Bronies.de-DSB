@@ -41,7 +41,7 @@ exports.run = (bot, message, args) => {
 
             const data = result.body;
             if (typeof data.search === 'undefined' || typeof data.search[0] === 'undefined')
-                return bot.respond(message, 'Keine Suchergebnisse auf **Derpibooru** gefunden.');
+                return bot.respond(message, 'Keine Suchergebnisse auf **Derpibooru** gefunden. Info: Künstler und OC Tags müssen `artist:` bzw. `oc:` als Präfix haben.');
 
             const img = data.search[0];
 
