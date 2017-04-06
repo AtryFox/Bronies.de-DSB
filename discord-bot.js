@@ -10,6 +10,7 @@ let Discord = require('discord.js'),
     exec = require('child_process').exec,
     moment = require('moment'),
     mysql = require('mysql'),
+    schedule = require('node-schedule'),
     twitterTimer = null,
     cooldowns = {};
 
@@ -19,6 +20,7 @@ bot.radio = config.RADIO_START;
 
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
+bot.jobs = new Discord.Collection();
 
 bot.config = config;
 
@@ -58,6 +60,29 @@ let commandLoader = function (currentPath) {
     }
 };
 commandLoader('./commands');
+
+/* JOB LOADER */
+let jobLoader = function (currentPath) {
+    bot.log("Searching for Jobs... " + currentPath);
+    let files = fs.readdirSync(currentPath);
+    for (let i in files) {
+        let currentFile = currentPath + '/' + files[i];
+        let stats = fs.statSync(currentFile);
+        if (stats.isFile()) {
+            let loader = require(`${currentFile}`);
+            if (loader.config.enabled) {
+                let job = schedule.scheduleJob(loader.config.schedule, () => {
+                    loader.run(bot);
+                });
+                loader.job = job;
+            }
+            bot.jobs.set(loader.config.name.toLowerCase(), loader);
+        } else if (stats.isDirectory()) {
+            jobLoader(currentFile);
+        }
+    }
+};
+jobLoader('./jobs');
 
 /* VERSION */
 function getVersion(callback) {
@@ -279,13 +304,13 @@ function onMessage(message, isUpdate) {
 
 
         bot.pool.getConnection((error, con) => {
-            if(error) {
+            if (error) {
                 return bot.log('Could not get connection! ' + error);
             }
 
             con.query(`INSERT INTO daily (DATE, MESSAGES, COMMANDS) VALUES (CURDATE(), ${addMessage}, ${addCommand}) ON DUPLICATE KEY UPDATE MESSAGES = MESSAGES + ${addMessage}, COMMANDS = COMMANDS + ${addCommand}`, (err, results, fields) => {
                 con.release();
-                if(error) {
+                if (error) {
                     return bot.log('Could not update/insert stats! ' + error);
                 }
             });
