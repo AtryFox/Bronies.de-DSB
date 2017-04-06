@@ -74,6 +74,6 @@ exports.run = (bot) => {
 
 exports.config = {
     name: 'stats',
-    schedule: '5 0 * * *',
+    schedule: '2 0 * * *',
     enabled: true
 };
