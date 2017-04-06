@@ -9,12 +9,11 @@ let Discord = require('discord.js'),
     bot = new Discord.Client(),
     exec = require('child_process').exec,
     moment = require('moment'),
+    mysql = require('mysql'),
     twitterTimer = null,
     cooldowns = {};
 
 moment.locale('de');
-
-bot.r = require('rethinkdbdash')({host: 'localhost', db: 'bronies_DSB'});
 
 bot.radio = config.RADIO_START;
 
@@ -24,6 +23,15 @@ bot.aliases = new Discord.Collection();
 bot.config = config;
 
 bot.youtube = new YouTube(bot);
+
+bot.pool = mysql.createPool({
+    host: bot.config.MYSQL_SERVER.HOSTNAME,
+    port: bot.config.MYSQL_SERVER.PORT,
+    user: bot.config.MYSQL_SERVER.USERNAME,
+    password: bot.config.MYSQL_SERVER.PASSWORD,
+    database: bot.config.MYSQL_SERVER.DATABASE,
+    timezone: 'Z'
+});
 
 bot.log = (msg) => {
     console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${msg}`);
@@ -86,6 +94,7 @@ function getVersion(callback) {
 /* BOT EVENTS */
 bot.on('ready', () => {
     online();
+
     bot.log('I am ready!');
     getVersion((info) => {
         bot.versionInfo = info;
@@ -265,38 +274,22 @@ function onMessage(message, isUpdate) {
     function addStats(isCommand) {
         if (isUpdate || (!bot.server.channels.has(message.channel.id) && !isCommand)) return;
 
-        const table = 'stats';
         const addCommand = isCommand ? 1 : 0;
         const addMessage = isCommand ? 0 : 1;
-        const date = bot.momentToReDate(moment());
 
 
-        bot.r.table(table).get(date).run().then(result => {
-            if (result == null) {
-                const data = {id: date, commands: addCommand, messages: addMessage};
-
-                bot.r.table(table).insert(data).run().then(result => {
-                    if (result.errors > 0) {
-                        bot.log('Could not insert new date into db: ' + result.first_error);
-                    }
-                }).error(error => {
-                    bot.log('Could not insert new date into db: ' + error);
-                });
-            } else {
-                bot.r.table(table).get(date).update({
-                    commands: bot.r.row('commands').add(addCommand),
-                    messages: bot.r.row('messages').add(addMessage)
-                }).run().then(result => {
-                    if (result.errors > 0) {
-                        bot.log('Could not update date in db: ' + result.first_error);
-                    }
-                }).error(error => {
-                    bot.log('Could not update date in db: ' + error);
-                });
+        bot.pool.getConnection((error, con) => {
+            if(error) {
+                return bot.log('Could not get connection! ' + error);
             }
-        }).error(error => {
-            bot.log('Could not check if current date in db: ' + error);
-        });
+
+            con.query(`INSERT INTO daily (DATE, MESSAGES, COMMANDS) VALUES (CURDATE(), ${addMessage}, ${addCommand}) ON DUPLICATE KEY UPDATE MESSAGES = MESSAGES + ${addMessage}, COMMANDS = COMMANDS + ${addCommand}`, (err, results, fields) => {
+                con.release();
+                if(error) {
+                    return bot.log('Could not update/insert stats! ' + error);
+                }
+            });
+        })
     }
 
     if (bot.server.channels.has(message.channel.id)) {
@@ -352,10 +345,6 @@ bot.getEmoji = (name) => {
     } else {
         return ':robot:';
     }
-};
-
-bot.momentToReDate = (momentObj) => {
-    return bot.r.time(momentObj.year(), momentObj.month() + 1, momentObj.date(), 'Z');
 };
 
 /* GENERAL APPLICATION STUFF */

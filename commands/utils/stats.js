@@ -19,59 +19,83 @@ exports.run = (bot, message, args) => {
         color: 0x243870
     });
 
-    const table = 'stats';
-    const now = moment();
-
-    bot.r.table(table).get(bot.momentToReDate(now)).run().then(result => {
-        if (result == null) {
-            embed.setDescription('Heute wurden noch keine Nachrichten gesendet oder Befehle verwendet.');
-        } else {
-            const messagesString = result.messages == 1 ? 'Nachricht' : 'Nachrichten';
-            const commandsString = result.commands == 1 ? 'Befehl' : 'Befehle';
-
-            embed.setDescription(`Heute wurden bereits **${result.messages} ${messagesString}** gesendet und **${result.commands} ${commandsString}** verwendet.`);
+    bot.pool.getConnection((error, con) => {
+        if (error) {
+            return bot.log('Could not get connection! ' + error);
         }
 
-        bot.r.table(table).get(bot.momentToReDate(now.subtract(1, 'days'))).run().then(result => {
-            if (result == null) {
-                embed.addField('Gestern:', 'Keine Nachrichten gesendet oder Befehle verwendet.');
-            } else {
-                const messagesString = result.messages == 1 ? 'Nachricht' : 'Nachrichten';
-                const commandsString = result.commands == 1 ? 'Befehl' : 'Befehle';
+        function getStatsToday() {
+            con.query('SELECT * FROM daily WHERE DATE = CURDATE()', (err, results, fields) => {
+                if (error) {
+                    err.release();
+                    respondError();
+                    return bot.log('Could not get stats! ' + error);
+                }
 
-                embed.addField('Gestern:', `${result.messages} ${messagesString} gesendet, ${result.commands} ${commandsString} verwendet.`);
-            }
+                if (results.length < 1) {
+                    embed.setDescription('Heute wurden noch keine Nachrichten gesendet oder Befehle verwendet.');
+                } else {
+                    results = results[0];
+                    const messagesString = results.MESSAGES == 1 ? 'Nachricht' : 'Nachrichten';
+                    const commandsString = results.COMMANDS == 1 ? 'Befehl' : 'Befehle';
 
-            bot.r.table(table).avg('messages').run().then(result => {
-                const messages = Math.round(result * 100) / 100;
+                    embed.setDescription(`Heute wurden bereits **${results.MESSAGES} ${messagesString}** gesendet und **${results.COMMANDS} ${commandsString}** verwendet.`);
+                }
 
-                bot.r.table(table).avg('commands').run().then(result => {
-                    const commands = Math.round(result * 100) / 100;
+                getStatsYesterday();
+            });
+        }
 
-                    if (result != null) {
-                        const messagesString = messages == 1 ? 'Nachricht' : 'Nachrichten';
-                        const commandsString = commands == 1 ? 'Befehl' : 'Befehle';
+        function getStatsYesterday() {
+            con.query('SELECT * FROM daily WHERE DATE = DATE_ADD(CURDATE(), INTERVAL -1 DAY)', (err, results, fields) => {
+                if (err) {
+                    con.release();
+                    respondError();
+                    return bot.log('Could not get stats! ' + error);
+                }
 
-                        embed.addField('Durchschnitt:', `${messages} ${messagesString} pro Tag, ${commands} ${commandsString} pro Tag.`);
-                    }
+                if (results.length < 1) {
+                    embed.addField('Gestern:', 'Keine Nachrichten gesendet oder Befehle verwendet.');
+                } else {
+                    results = results[0];
+                    const messagesString = results.MESSAGES == 1 ? 'Nachricht' : 'Nachrichten';
+                    const commandsString = results.COMMANDS == 1 ? 'Befehl' : 'Befehle';
+
+                    embed.addField('Gestern:', `${results.MESSAGES} ${messagesString} gesendet, ${results.COMMANDS} ${commandsString} verwendet.`);
+                }
+
+                getStatsAverage();
+            });
+        }
+
+        function getStatsAverage() {
+            con.query('SELECT AVG(MESSAGES) AS MESSAGES, AVG(COMMANDS) AS COMMANDS FROM `daily` WHERE DATE != CURDATE()', (err, results, fields) => {
+                con.release();
+
+                if (err) {
+                    respondError();
+                    return bot.log('Could not get stats! ' + error);
+                }
+
+                if (results.length < 1) {
+                    embed.addField('Gestern:', 'Keine Nachrichten gesendet oder Befehle verwendet.');
+                } else {
+                    results = results[0];
+                    const messages = Math.round(results.MESSAGES * 100) / 100;
+                    const commands = Math.round(results.COMMANDS * 100) / 100;
+
+                    const messagesString = messages == 1 ? 'Nachricht' : 'Nachrichten';
+                    const commandsString = commands == 1 ? 'Befehl' : 'Befehle';
+
+                    embed.addField('Durchschnitt:', `${messages} ${messagesString} pro Tag, ${commands} ${commandsString} pro Tag.`);
 
                     message.channel.sendEmbed(embed);
-                }).error(error => {
-                    bot.log('Could not get date in db: ' + error);
-                    return respondError();
-                });
-            }).error(error => {
-                bot.log('Could not get date in db: ' + error);
-                return respondError();
+                }
             });
-        }).error(error => {
-            bot.log('Could not get date in db: ' + error);
-            return respondError();
-        });
-    }).error(error => {
-        bot.log('Could not get date in db: ' + error);
-        return respondError();
-    });
+        }
+
+        getStatsToday();
+    })
 
 };
 

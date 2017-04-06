@@ -7,11 +7,11 @@ module.exports = {
     DEFAULT_CH: '',
     // CHANNEL FOR DEBUG/INFO MESSAGES
     BOT_CH: '',
-    // ID OF ADMIN USER
+    // CLIENT ID OF ADMIN USER
     BOT_ADMIN: '',
-    // PATH TO RADIO START.SH
+    // PATH TO RADIO START SCRIPT
     RADIO_START: '',
-    // ID OF RADIO BOT
+    // CLIENT ID OF RADIO BOT
     RADIO_BOT: '',
     // YOUTUBE API KEY
     YOUTUBE_KEY: '',
@@ -23,6 +23,16 @@ module.exports = {
         CONSUMER_SECRET: '',
         ACCESS_TOKEN_KEY: '',
         ACCESS_TOKEN_SECRET: ''
+    },
+    // MYSQL SERVER CREDENTIALS
+    // DATABASE SETUP:
+    // CREATE TABLE `daily` (`DATE` date NOT NULL,`MESSAGES` int(11) NOT NULL,`COMMANDS` int(11) NOT NULL,PRIMARY KEY (`DATE`)) ENGINE=InnoDB DEFAULT CHARSET=utf8
+    MYSQL_SERVER: {
+        HOSTNAME: '',
+        PORT: '',
+        USERNAME: '',
+        PASSWORD: '',
+        DATABASE: ''
     },
     // SEND MORE DEBUG MESSAGES
     DEBUG: false
