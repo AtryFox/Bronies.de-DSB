@@ -8,13 +8,14 @@ exports.run = (bot, message, args) => {
         },
         description: '**☕ Eine Kanne brühend heißer Kaffee steht bereit!**',
         color: 0x6f4e37
-    });
+    }).setFooter(`Kaffee angefordert von ${bot.server.members.get(message.author.id).displayName} | Art by Assiel`);
 
     message.channel.sendEmbed(embed);
 };
 
 exports.config = {
     cooldown: 15,
+    aliases: ['kaffee'],
     skip: roles.moderator
 };
 

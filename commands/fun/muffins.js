@@ -8,13 +8,14 @@ exports.run = (bot, message, args) => {
         },
         description: '**Derpy war da! It\'s Muffin time!**',
         color: 0x808AA7
-    });
+    }).setFooter(`Muffins angefordert von ${bot.server.members.get(message.author.id).displayName} | Art by Heartwarmer-MLP`);
 
     message.channel.sendEmbed(embed);
 };
 
 exports.config = {
     cooldown: 15,
+    aliases: ['muffin'],
     skip: roles.moderator
 };
 

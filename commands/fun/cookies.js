@@ -14,13 +14,14 @@ exports.run = (bot, message, args) => {
         },
         description: '**🍪 Eine Runde Kekse wird im Chat verteilt!**',
         color: 0x6C4733
-    });
+    }).setFooter(`Kekse angefordert von ${bot.server.members.get(message.author.id).displayName} | Art by FilPaperSoul`);
 
     message.channel.sendEmbed(embed);
 };
 
 exports.config = {
     cooldown: 15,
+    aliases: ['kekse', 'keks'],
     skip: roles.moderator
 };
 

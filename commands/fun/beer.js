@@ -8,13 +8,14 @@ exports.run = (bot, message, args) => {
         },
         description: '**🍺 Eine Runde Bier wird im Chat verteilt!**',
         color: 0xD1973D
-    });
+    }).setFooter(`Bier angefordert von ${bot.server.members.get(message.author.id).displayName} | Art by Gretsch1962 & Axelak47 & Joey-Darkmeat`);
 
     message.channel.sendEmbed(embed);
 };
 
 exports.config = {
     cooldown: 15,
+    aliases: ['bier'],
     skip: roles.moderator
 };
 
