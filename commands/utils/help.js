@@ -87,9 +87,9 @@ exports.run = (bot, message, args) => {
         }
 
         if (here) {
-            message.channel.sendEmbed(embed);
+            message.channel.send({embed});
         } else {
-            message.author.sendEmbed(embed);
+            message.author.send({embed});
 
             if (message.channel.type == 'text') {
                 message.delete();

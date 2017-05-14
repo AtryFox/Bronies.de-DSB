@@ -91,7 +91,8 @@ Twitter.prototype.postNewTweets = function () {
                 const channel = parent.bot.server.channels.get(profile.channel);
 
                 async.each(jsonData, function (tweet, callback) {
-                    channel.sendEmbed(parent.getEmbedByTweet(tweet));
+                    const embed = parent.getEmbedByTweet(tweet);
+                    channel.send({embed});
                     callback();
                 });
             }
@@ -133,7 +134,7 @@ Twitter.prototype.getTestTweet = function(user) {
             async.each(jsonData, (tweet, callback) => {
                 const embed = parent.getEmbedByTweet(tweet);
                 parent.bot.log(embed);
-                parent.bot.server.channels.get(require('../config/config').BOT_CH).sendEmbed(embed);
+                parent.bot.server.channels.get(require('../config/config').BOT_CH).send({embed});
                 callback();
             });
         }

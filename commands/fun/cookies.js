@@ -16,7 +16,7 @@ exports.run = (bot, message, args) => {
         color: 0x6C4733
     }).setFooter(`Kekse angefordert von ${bot.server.members.get(message.author.id).displayName} | Art by FilPaperSoul`);
 
-    message.channel.sendEmbed(embed);
+    message.channel.send({embed});
 };
 
 exports.config = {

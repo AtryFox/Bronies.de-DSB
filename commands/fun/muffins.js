@@ -10,7 +10,7 @@ exports.run = (bot, message, args) => {
         color: 0x808AA7
     }).setFooter(`Muffins angefordert von ${bot.server.members.get(message.author.id).displayName} | Art by Heartwarmer-MLP`);
 
-    message.channel.sendEmbed(embed);
+    message.channel.send({embed});
 };
 
 exports.config = {

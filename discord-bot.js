@@ -125,7 +125,7 @@ bot.on('ready', () => {
         bot.versionInfo = info;
         bot.user.setGame('version ' + bot.versionInfo.version);
 
-        if (config.DEBUG) bot.channels.get(config.BOT_CH).sendMessage('I am ready, running version `' + bot.versionInfo.version + '`! 👌');
+        if (config.DEBUG) bot.channels.get(config.BOT_CH).send('I am ready, running version `' + bot.versionInfo.version + '`! 👌');
     });
 
     if (!bot.guilds.has(config.SERVER_ID)) {
@@ -162,7 +162,7 @@ bot.on('guildMemberAdd', (member) => {
         color: 0x5FBB4E
     }).setFooter('Viel Spaß auf dem Server!');
 
-    bot.channels.get(config.DEFAULT_CH).sendEmbed(embed);
+    bot.channels.get(config.DEFAULT_CH).send({embed});
 });
 
 bot.on('guildMemberRemove', (member) => {
@@ -175,7 +175,7 @@ bot.on('guildMemberRemove', (member) => {
         color: 0xEC4141
     }).setFooter('DERPY WANTS MUFFINS!');
 
-    bot.channels.get(config.DEFAULT_CH).sendEmbed(embed);
+    bot.channels.get(config.DEFAULT_CH).send({embed});
 });
 
 bot.on('message', (message) => {
@@ -310,8 +310,8 @@ function onMessage(message, isUpdate) {
 
             con.query(`INSERT INTO daily (DATE, MESSAGES, COMMANDS) VALUES (CURDATE(), ${addMessage}, ${addCommand}) ON DUPLICATE KEY UPDATE MESSAGES = MESSAGES + ${addMessage}, COMMANDS = COMMANDS + ${addCommand}`, (err, results, fields) => {
                 con.release();
-                if (error) {
-                    return bot.log('Could not update/insert stats! ' + error);
+                if (err) {
+                    return bot.log('Could not update/insert stats! ' + err);
                 }
             });
         })
@@ -323,7 +323,7 @@ function onMessage(message, isUpdate) {
         if (bot.server.members.has(message.author.id)) {
             handleCommand();
         } else {
-            return message.channel.sendMessage('You have to be member of ' + bot.server.name + '!');
+            return message.channel.send('You have to be member of ' + bot.server.name + '!');
         }
     }
 }
@@ -356,12 +356,12 @@ bot.respond = (message, response, mention) => {
     if (mention) {
         message.reply(response);
     } else {
-        message.channel.sendMessage(response);
+        message.channel.send(response);
     }
 };
 
 bot.respondPm = (message, response) => {
-    message.author.sendMessage(response);
+    message.author.send(response);
 };
 
 bot.getEmoji = (name) => {

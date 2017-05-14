@@ -45,7 +45,7 @@ exports.run = (bot, message, args) => {
         color: 0xEF7135
     });
 
-    message.channel.sendEmbed(embed);
+    message.channel.send({embed});
 };
 
 exports.config = {

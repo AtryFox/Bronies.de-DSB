@@ -63,7 +63,7 @@ exports.run = (bot) => {
 
                     embed.addField('Durchschnitt:', `${messages} ${messagesString} pro Tag, ${commands} ${commandsString} pro Tag.`);
 
-                    bot.server.channels.get(bot.config.BOT_CH).sendEmbed(embed);
+                    bot.server.channels.get(bot.config.BOT_CH).send({embed});
                 }
             });
         }

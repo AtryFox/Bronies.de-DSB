@@ -10,7 +10,7 @@ exports.run = (bot, message, args) => {
         color: 0x6f4e37
     }).setFooter(`Kaffee angefordert von ${bot.server.members.get(message.author.id).displayName} | Art by Assiel`);
 
-    message.channel.sendEmbed(embed);
+    message.channel.send({embed});
 };
 
 exports.config = {
