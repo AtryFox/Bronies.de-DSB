@@ -13,8 +13,6 @@ Database.prototype.updateUser = function (user, exp, callback) {
 
         let data = [user.id, user.username, member.nickname, user.discriminator, user.displayAvatarURL, exp, user.username, member.nickname, user.discriminator, user.displayAvatarURL, exp];
 
-        console.log(user.displayAvatarURL);
-
         con.query(`INSERT INTO member (ID, USERNAME, NICKNAME, DISCRIMINATOR, AVATAR, EXP) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE USERNAME = ?, NICKNAME = ?, DISCRIMINATOR = ?, AVATAR = ?, EXP = EXP + ?`, data, (err, results, fields) => {
             con.release();
             if (err) {
