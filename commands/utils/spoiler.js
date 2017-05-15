@@ -11,24 +11,30 @@ exports.run = (bot, message, args) => {
 
     bot.log(message.author.username + '#' + message.author.discriminator + ' - Message ID: ' + message.id);
 
-    bot.pool.getConnection((error, con) => {
-        if (error) {
-            bot.respond(message, 'Spoiler konnte nicht erstellt werden.');
-            return bot.log('Could not get connection! ' + error);
+    bot.database.updateUser(message.author, 0, error_ => {
+        if(error_) {
+            return bot.respond(message, 'Spoiler konnte nicht erstellt werden.');
         }
 
-
-        let data = [args.join(' '), message.id, member.user.username + '#' + member.user.discriminator, member.id, member.user.displayAvatarURL];
-
-        con.query(`INSERT INTO spoiler (MESSAGE, MESSAGE_ID, MESSAGE_DATE, USER, USER_ID, USER_AVATAR) VALUES (?, ?, NOW(), ?, ?, ?)`, data, (err, results, fields) => {
-            con.release();
-            if (err) {
-                bot.log('Could not insert spoiler! ' + err);
+        bot.pool.getConnection((error, con) => {
+            if (error) {
                 bot.respond(message, 'Spoiler konnte nicht erstellt werden.');
-            } else {
-                bot.respond(message, `Nachricht von ${message.author} wurde in Spoiler versteckt. https://s.equestriadev.de/${message.id}`, false);
-                message.delete();
+                return bot.log('Could not get connection! ' + error);
             }
+
+
+            let data = [message.id, args.join(' '), member.id];
+
+            con.query(`INSERT INTO spoiler (MESSAGE_ID, MESSAGE_DATE, MESSAGE, MEMBER_ID) VALUES (?, NOW(), ?, ?)`, data, (err, results, fields) => {
+                con.release();
+                if (err) {
+                    bot.log('Could not insert spoiler! ' + err);
+                    bot.respond(message, 'Spoiler konnte nicht erstellt werden.');
+                } else {
+                    bot.respond(message, `Nachricht von ${message.author} wurde in Spoiler versteckt. https://s.equestriadev.de/${message.id}`, false);
+                    message.delete();
+                }
+            });
         });
     });
 };

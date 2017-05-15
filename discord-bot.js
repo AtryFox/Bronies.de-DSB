@@ -3,6 +3,7 @@ let Discord = require('discord.js'),
     roles = require('./config/roles'),
     Twitter = require('./modules/twitter').Twitter,
     YouTube = require('./modules/youtube').YouTube,
+    Database = require('./modules/database').Database,
     fs = require('fs'),
     unirest = require('unirest'),
     token = config.TOKEN,
@@ -12,7 +13,8 @@ let Discord = require('discord.js'),
     mysql = require('mysql'),
     schedule = require('node-schedule'),
     twitterTimer = null,
-    cooldowns = {};
+    cooldowns = {},
+    lvl_cooldowns = {};
 
 moment.locale('de');
 
@@ -34,6 +36,8 @@ bot.pool = mysql.createPool({
     database: bot.config.MYSQL_SERVER.DATABASE,
     timezone: 'Z'
 });
+
+bot.database = new Database(bot);
 
 bot.log = (msg) => {
     console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${msg}`);
@@ -83,6 +87,31 @@ let jobLoader = function (currentPath) {
     }
 };
 jobLoader('./jobs');
+
+let dbSetup = function () {
+    bot.log('Setting up database...');
+    fs.readFile('./db_setup.sql', 'utf8', (err, data) => {
+        if (err) {
+            return bot.log('Failed to open setup sql file: ' + err);
+        }
+        bot.pool.getConnection((error, con) => {
+            if (error) {
+                return bot.log('Failed to get db connection: ' + error);
+            }
+
+            const statements = data.split(';');
+
+            statements.forEach(data => {
+                con.query(data, (err, results, fields) => {
+                    if (err) {
+                        return bot.log('Failed to setup db: ' + err);
+                    }
+                })
+            });
+        });
+    });
+};
+dbSetup();
 
 /* VERSION */
 function getVersion(callback) {
@@ -297,7 +326,7 @@ function onMessage(message, isUpdate) {
     }
 
     function addStats(isCommand) {
-        if (isUpdate || (!bot.server.channels.has(message.channel.id) && !isCommand)) return;
+        if (isUpdate || !bot.server.channels.has(message.channel.id)) return;
 
         const addCommand = isCommand ? 1 : 0;
         const addMessage = isCommand ? 0 : 1;
@@ -370,6 +399,10 @@ bot.getEmoji = (name) => {
     } else {
         return ':robot:';
     }
+};
+
+bot.randomInt = (low, high) => {
+    return Math.floor(Math.random() * (high - low + 1) + low);
 };
 
 /* GENERAL APPLICATION STUFF */
