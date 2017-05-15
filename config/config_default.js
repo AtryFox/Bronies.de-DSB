@@ -15,6 +15,8 @@ module.exports = {
     RADIO_BOT: '',
     // YOUTUBE API KEY
     YOUTUBE_KEY: '',
+    // BASE URL FOR SPOILER/LEADERBOARD/ETC (W/O SLASH)
+    BASE_URL: '',
     // TWITTER API KEY
     TWITTER_API: {
         CONSUMER_KEY: '',
