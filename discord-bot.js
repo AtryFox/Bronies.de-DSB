@@ -343,7 +343,7 @@ function onMessage(message, isUpdate) {
                     return bot.log('Could not update/insert stats! ' + err);
                 }
             });
-        })
+        });
     }
 
     if (bot.server.channels.has(message.channel.id)) {
