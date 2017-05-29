@@ -222,11 +222,11 @@ bot.randomInt = (low, high) => {
 
 /* GENERAL APPLICATION STUFF */
 process.on('exit', () => {
-    this.idle();
+    bot.idle();
 });
 
 process.on('SIGINT', () => {
-    this.idle();
+    bot.idle();
     process.exit();
 
 });
