@@ -11,10 +11,7 @@ let Discord = require('discord.js'),
     exec = require('child_process').exec,
     moment = require('moment'),
     mysql = require('mysql'),
-    schedule = require('node-schedule'),
-    twitterTimer = null,
-    cooldowns = {},
-    lvl_cooldowns = {};
+    schedule = require('node-schedule');
 
 moment.locale('de');
 
@@ -23,6 +20,7 @@ bot.radio = config.RADIO_START;
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 bot.jobs = new Discord.Collection();
+bot.events = new Discord.Collection();
 
 bot.config = config;
 
@@ -38,6 +36,10 @@ bot.pool = mysql.createPool({
 });
 
 bot.database = new Database(bot);
+
+bot.twitter = new Twitter(config.TWITTER_API, bot);
+
+bot.cooldowns = {};
 
 bot.log = (msg) => {
     console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${msg}`);
@@ -75,7 +77,11 @@ let jobLoader = function (currentPath) {
         if (stats.isFile()) {
             let loader = require(`${currentFile}`);
             if (loader.config.enabled) {
-                let job = schedule.scheduleJob(loader.config.schedule, () => {
+                let time = loader.config.schedule;
+                if('schedule_dev' in loader.config && bot.config.DEBUG) {
+                    time = loader.config.schedule_dev;
+                }
+                let job = schedule.scheduleJob(time, () => {
                     loader.run(bot);
                 });
                 loader.job = job;
@@ -88,6 +94,28 @@ let jobLoader = function (currentPath) {
 };
 jobLoader('./jobs');
 
+/* EVENT LOADER */
+let eventLoader = function (currentPath) {
+    bot.log("Searching for Events... " + currentPath);
+    let files = fs.readdirSync(currentPath);
+    for (let i in files) {
+        let currentFile = currentPath + '/' + files[i];
+        let stats = fs.statSync(currentFile);
+        if (stats.isFile()) {
+            let loader = require(`${currentFile}`);
+            if (loader.config.enabled) {
+                loader.Event(bot);
+                bot.on(loader.config.name, loader.run);
+            }
+            bot.events.set(loader.config.name.toLowerCase(), loader);
+        } else if (stats.isDirectory()) {
+            eventLoader(currentFile);
+        }
+    }
+};
+eventLoader('./events');
+
+/* DB SETUP */
 let dbSetup = function () {
     bot.log('Setting up database...');
     fs.readFile('./db_setup.sql', 'utf8', (err, data) => {
@@ -114,7 +142,7 @@ let dbSetup = function () {
 dbSetup();
 
 /* VERSION */
-function getVersion(callback) {
+bot.getVersion = (callback) => {
     let info = {};
 
     exec('git rev-parse --short=4 HEAD', function (error, version) {
@@ -143,222 +171,9 @@ function getVersion(callback) {
             });
         });
     });
-}
-
-/* BOT EVENTS */
-bot.on('ready', () => {
-    online();
-
-    bot.log('I am ready!');
-    getVersion((info) => {
-        bot.versionInfo = info;
-        bot.user.setGame('version ' + bot.versionInfo.version);
-
-        if (config.DEBUG) bot.channels.get(config.BOT_CH).send('I am ready, running version `' + bot.versionInfo.version + '`! 👌');
-    });
-
-    if (!bot.guilds.has(config.SERVER_ID)) {
-        bot.log('Bot is not connected to the selected server!');
-        process.exit();
-    }
-
-    bot.server = bot.guilds.get(config.SERVER_ID);
-
-    if (bot.server.members.has(config.BOT_ADMIN)) {
-        bot.admin = bot.server.members.get(config.BOT_ADMIN);
-    }
-
-    const twitter = new Twitter(config.TWITTER_API, bot);
-
-    let interval = config.DEBUG ? 20000 : 60000;
-
-    if (twitterTimer != null) {
-        clearInterval(twitterTimer);
-    }
-
-    twitterTimer = setInterval(() => {
-        twitter.postNewTweets();
-    }, interval);
-});
-
-bot.on('guildMemberAdd', (member) => {
-    let embed = new Discord.RichEmbed({
-        title: 'Ein neues Mitglied ist zu uns gestoßen!',
-        description: `Hey **${member.user.username}**, willkommen auf dem offiziellen Discord Server von [Bronies.de](http://bronies.de/). Wirf doch zunächst einen Blick in **#info** für alle wichtigen Informationen und Bot-Befehle.`,
-        thumbnail: {
-            url: 'https://deratrox.de/dev/Bronies.de-DSB/_join.png'
-        },
-        color: 0x5FBB4E
-    }).setFooter('Viel Spaß auf dem Server!');
-
-    bot.channels.get(config.DEFAULT_CH).send({embed});
-});
-
-bot.on('guildMemberRemove', (member) => {
-    let embed = new Discord.RichEmbed({
-        title: 'Ein Mitglied hat uns verlassen.',
-        description: `**${member.user.username}** hat den Server verlassen. Bye bye **${member.user.username}**...`,
-        thumbnail: {
-            url: 'https://deratrox.de/dev/Bronies.de-DSB/_leave.png'
-        },
-        color: 0xEC4141
-    }).setFooter('DERPY WANTS MUFFINS!');
-
-    bot.channels.get(config.DEFAULT_CH).send({embed});
-});
-
-bot.on('message', (message) => {
-    onMessage(message, false);
-});
-
-bot.on('messageUpdate', (oldMessage, newMessage) => {
-    if (typeof newMessage.author === 'undefined')
-        return;
-
-    onMessage(newMessage, true);
-});
-
-function onMessage(message, isUpdate) {
-    if (message.author.id == bot.user.id) {
-        return;
-    }
-
-    if (message.channel.type == 'group') {
-        return;
-    }
-
-    function handleCommand() {
-        let match = /^!([a-zA-Z]+).*/.exec(message.content);
-
-        if (message.channel.type == 'dm') {
-            match = /^!?([a-zA-Z]+).*/.exec(message.content);
-        }
-
-        if (match) {
-
-            const args = message.content.split(' ').splice(1);
-            let cmd = match[1].toLowerCase();
-
-            let cmdObj = null;
-
-            if (bot.commands.has(cmd)) {
-                cmdObj = bot.commands.get(cmd);
-            } else if (bot.aliases.has(cmd)) {
-                cmdObj = bot.commands.get(bot.aliases.get(cmd));
-            }
-
-            if (cmdObj == null) {
-                return;
-            }
-
-            addStats(true);
-
-            if ('handled' in cmdObj.config) {
-                if (cmdObj.config.handled == false) {
-                    return;
-                }
-            }
-
-            if ('server' in cmdObj.config) {
-                if (cmdObj.config.server == true) {
-                    if (message.guild != bot.server) {
-                        return bot.respondPm(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!');
-                    }
-                }
-            }
-
-            if ('role' in cmdObj.config) {
-                if (!bot.checkPermissions(cmdObj.config.role, message.author)) {
-                    bot.respondPm(message, 'Du besitzt nicht genügend Rechte um diesen Befehl auszuführen!');
-                    if (message.guild == bot.server) {
-                        message.delete();
-                    }
-                    return;
-                }
-            }
-
-            if ('cooldown' in cmdObj.config) {
-                let check = true;
-
-                if ('skip' in cmdObj.config) {
-                    if (bot.checkPermissions(cmdObj.config.skip, message.author)) {
-                        check = false;
-                    }
-                }
-
-                if (check) {
-                    let cooldown = false;
-
-                    if (cmdObj.config.name in cooldowns) {
-                        cooldown = cooldowns[cmdObj.config.name];
-                    }
-
-                    if (cooldown) {
-                        bot.respondPm(message, 'Dieser Befehl wurde erst vor kurzem ausgeführt. Bitte versuche es später erneut.');
-                        if (message.guild == bot.server) {
-                            message.delete();
-                        }
-
-                        return;
-                    }
-
-                    cooldowns[cmdObj.config.name] = true;
-
-                    setTimeout(() => {
-                        cooldowns[cmdObj.config.name] = false;
-                    }, cmdObj.config.cooldown * 1000);
-                }
-            }
-
-            cmdObj.run(bot, message, args);
-        } else {
-            match = /^\/([a-zA-Z]+).*$/.exec(message.content);
-
-            if (match) {
-                bot.respondPm(message, 'Befehle können nur noch mit `!` vorangestellt ausgeführt werden. Beispiel: `' + message.content.replace('/', '!') + '`');
-                if (message.channel.type != 'dm') {
-                    message.delete();
-                }
-            } else {
-                addStats(false);
-            }
-        }
-    }
-
-    function addStats(isCommand) {
-        if (isUpdate || !bot.server.channels.has(message.channel.id)) return;
-
-        const addCommand = isCommand ? 1 : 0;
-        const addMessage = isCommand ? 0 : 1;
-
-
-        bot.pool.getConnection((error, con) => {
-            if (error) {
-                return bot.log('Could not get connection! ' + error);
-            }
-
-            con.query(`INSERT INTO daily (DATE, MESSAGES, COMMANDS) VALUES (CURDATE(), ${addMessage}, ${addCommand}) ON DUPLICATE KEY UPDATE MESSAGES = MESSAGES + ${addMessage}, COMMANDS = COMMANDS + ${addCommand}`, (err, results, fields) => {
-                con.release();
-                if (err) {
-                    return bot.log('Could not update/insert stats! ' + err);
-                }
-            });
-        });
-    }
-
-    if (bot.server.channels.has(message.channel.id)) {
-        handleCommand();
-    } else {
-        if (bot.server.members.has(message.author.id)) {
-            handleCommand();
-        } else {
-            return message.channel.send('You have to be member of ' + bot.server.name + '!');
-        }
-    }
-}
+};
 
 /* BOT METHODS */
-
 bot.checkPermissions = (role, user) => {
     const member = bot.server.members.get(user.id);
 
@@ -406,21 +221,23 @@ bot.randomInt = (low, high) => {
 };
 
 /* GENERAL APPLICATION STUFF */
-process.on('exit', idle);
+process.on('exit', () => {
+    this.idle();
+});
 
 process.on('SIGINT', () => {
-    idle();
+    this.idle();
     process.exit();
 
 });
 
-function idle() {
+bot.idle = () => {
     bot.user.setStatus('idle');
-}
+};
 
-function online() {
+bot.online = () => {
     bot.user.setStatus('online');
-}
+};
 
 /* LOGIN */
 bot.login(token);
