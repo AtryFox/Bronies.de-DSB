@@ -11,7 +11,7 @@ exports.run = (bot, message, args) => {
 
             const data = result.body;
 
-            message.channel.send('Meow :cat: ' + data.file);
+            bot.respond(message, 'Meow :cat: ' + data.file, true);
         });
 
 };

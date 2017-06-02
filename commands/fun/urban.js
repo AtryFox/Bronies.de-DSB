@@ -2,14 +2,17 @@ const roles = require('../../config/roles'),
     Discord = require('discord.js'),
     urban = require('urban');
 
-exports.run = (bot, message, args) => {
+exports.run = (bot, _message, args) => {
+    const message = _message
+    _message.delete();
+
     if (args.length < 1) {
-        return bot.respond(message, 'Dieser Befehl benötigt zusätzliche Parameter. Mehr unter `!help urban`');
+        return bot.respond(message, 'Dieser Befehl benötigt zusätzliche Parameter. Mehr unter `!help urban`', true, 5);
     }
 
     urban(args.join(' ')).res(res => {
         if (res.length == 0) {
-            return bot.respond(message, `Keine Definition für den Begriff \`${args.join(' ')}\` gefunden.`, false);
+            return bot.respond(message, `Keine Definition für den Begriff \`${args.join(' ')}\` gefunden.`, true, 5);
         }
 
         let current = 0;
@@ -30,12 +33,13 @@ exports.run = (bot, message, args) => {
         let embed = genEmbedForDef(data);
 
         message.channel.send({embed}).then(msg => {
-            msg.react('1⃣').then(() => msg.react('⬅').then(() => msg.react('➡')));
+            msg.react('1⃣').then(() => msg.react('⬅').then(() => msg.react('➡').then(() => msg.react('🇽'))));
 
             const collector = msg.createReactionCollector(
                 (reaction, user) => user.id == message.author.id,
-                {time: 5 * 60000}
+                {time: 5 * 120000}
             );
+
             collector.on('collect', r => {
                 r.remove(message.author.id);
 
@@ -54,13 +58,15 @@ exports.run = (bot, message, args) => {
 
                         current--;
                         break;
+                    case '🇽':
+                        return collector.stop();
                 }
 
                 embed = genEmbedForDef(res[current]);
                 msg.edit({embed});
             });
             collector.on('end', () => {
-                msg.clearReactions();
+                msg.delete();
             });
         });
     });

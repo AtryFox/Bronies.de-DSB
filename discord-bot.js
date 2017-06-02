@@ -78,7 +78,7 @@ let jobLoader = function (currentPath) {
             let loader = require(`${currentFile}`);
             if (loader.config.enabled) {
                 let time = loader.config.schedule;
-                if('schedule_dev' in loader.config && bot.config.DEBUG) {
+                if ('schedule_dev' in loader.config && bot.config.DEBUG) {
                     time = loader.config.schedule_dev;
                 }
                 let job = schedule.scheduleJob(time, () => {
@@ -192,15 +192,26 @@ bot.getGuildMember = (user) => {
     return bot.server.members.get(user.id);
 };
 
-bot.respond = (message, response, mention) => {
+bot.respond = (message, response, mention, autodel) => {
+    console.log(autodel);
+
     if (typeof mention === 'undefined') {
         mention = false;
     }
 
+    if (typeof autodel === 'undefined') {
+        autodel = 0;
+    }
+
+    function del(msg) {
+        if(autodel <= 0) return;
+        setTimeout(() => msg.delete(), autodel * 1000);
+    }
+
     if (mention) {
-        message.reply(response);
+        message.reply(response).then(msg => del(msg));
     } else {
-        message.channel.send(response);
+        message.channel.send(response).then(msg => del(msg));
     }
 };
 
