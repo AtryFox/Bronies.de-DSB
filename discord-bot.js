@@ -193,8 +193,6 @@ bot.getGuildMember = (user) => {
 };
 
 bot.respond = (message, response, mention, autodel) => {
-    console.log(autodel);
-
     if (typeof mention === 'undefined') {
         mention = false;
     }

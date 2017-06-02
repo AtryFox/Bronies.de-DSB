@@ -37,7 +37,7 @@ exports.run = (bot, _message, args) => {
 
             const collector = msg.createReactionCollector(
                 (reaction, user) => user.id == message.author.id,
-                {time: 5 * 120000}
+                {time: 120000}
             );
 
             collector.on('collect', r => {
