@@ -1,0 +1,31 @@
+const roles = require('../../config/roles'),
+    unirest = require('unirest');
+
+exports.run = (bot, message, args) => {
+    unirest.get('http://random.cat/meow')
+        .end((result) => {
+            if (result.error || typeof result.body !== 'object') {
+                bot.log(result.error, result.body);
+                return bot.respond(message, 'RandomCat Anfrage fehlgeschlagen (HTTP ' + result.status + ')');
+            }
+
+            const data = result.body;
+
+            message.channel.send('Meow :cat: ' + data.file);
+        });
+
+};
+
+exports.config = {
+    cooldown: 300,
+    role: roles.community,
+    skip: roles.moderator,
+    aliases: ['c']
+};
+
+
+exports.help = {
+    name: 'cat',
+    description: 'Postet ein zufälliges Katzenbild.',
+    usage: ['!cat']
+};
