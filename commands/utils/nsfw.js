@@ -2,7 +2,10 @@ const roles = require('../../config/roles');
 
 exports.run = (bot, message, args) => {
     const msg = message;
-    message.delete();
+
+    if (message.channel.type != 'dm') {
+        message.delete();
+    }
 
     if (args.length != 1) {
         return bot.respondPm(msg, 'Nutze `!nsfw <join|leave>` um den NSFW Bereich zu betreten bzw. zu verlassen. Beispiel: `!nsfw join`');
