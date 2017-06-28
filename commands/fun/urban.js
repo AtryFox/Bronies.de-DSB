@@ -28,6 +28,15 @@ exports.run = (bot, _message, args) => {
             return embed;
         }
 
+        function genEmbedForLinkOnly(data) {
+            let embed = new Discord.RichEmbed({
+                description: `Definition für den Begriff \`${data.word}\`: [Öffnen](${data.permalink})`,
+                color: 0xEFFF00
+            }).setFooter(`Definiert für ${bot.server.members.get(message.author.id).displayName} | Logo by Urban Dictionary`, 'https://deratrox.de/dev/Bronies.de-DSB/_urban.png');
+
+            return embed;
+        }
+
         let data = res[current];
 
         let embed = genEmbedForDef(data);
@@ -66,7 +75,10 @@ exports.run = (bot, _message, args) => {
                 msg.edit({embed});
             });
             collector.on('end', () => {
-                msg.delete();
+                msg.clearReactions();
+
+                embed = genEmbedForLinkOnly(res[0]);
+                msg.edit({embed});
             });
         });
     });
