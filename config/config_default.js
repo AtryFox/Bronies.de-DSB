@@ -25,7 +25,7 @@ module.exports = {
     // YouTube API key
     YOUTUBE_KEY: '',
 
-    // Base URL for e.g. spoiler command (without appended slash)
+    // Base URL for e.g. spoiler command and images used in commands (without appended slash)
     BASE_URL: '',
 
     // Twitter API key

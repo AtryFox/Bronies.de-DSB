@@ -9,7 +9,7 @@ exports.run = (bot, message, args) => {
 
     const member = bot.server.members.get(message.author.id);
 
-    bot.log(message.author.username + '#' + message.author.discriminator + ' - Message ID: ' + message.id);
+    bot.log(message.author.tag + ' - Message ID: ' + message.id);
 
     bot.database.updateUser(message.author, 0, error_ => {
         if(error_) {
@@ -49,6 +49,6 @@ exports.config = {
 
 exports.help = {
     name: 'spoiler',
-    description: 'Speichert die eingegebene Nachricht extern um Spoiler zu neuen Folgen o.ä. zu verstecken.\n\nMit `!spoiler` gesendete Nachrichten können nicht mehr bearbeitet und nur manuell von **@DerAtrox#1257** gelöscht werden.',
+    description: 'Speichert die eingegebene Nachricht extern um Spoiler zu neuen Folgen o.ä. zu verstecken.\n\nMit `!spoiler` gesendete Nachrichten können nicht mehr bearbeitet und nur manuell von einem Admin gelöscht werden.',
     usage: ['!spoiler Versteckte Nachricht']
 };

@@ -3,7 +3,7 @@ const roles = require('../../config/roles'),
     fs = require('fs');
 
 exports.run = (bot, message, args) => {
-    bot.log(this.help.name + ': Stream restarted by ' + message.author.username + '#' + message.author.discriminator);
+    bot.log(`${this.help.name}: Stream restarted by ${message.author.tag}`);
 
     fs.access(bot.radio, fs.constants.R_OK, (err) => {
         if (!err) {
@@ -37,6 +37,5 @@ exports.config = {
 exports.help = {
     name: 'playradio',
     description: 'Startet den Radiostream neu.',
-    usage: ['!playradio'],
-    thumbnail: 'https://deratrox.de/dev/Bronies.de-DSB/_brgi.png'
+    usage: ['!playradio']
 };

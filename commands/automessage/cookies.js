@@ -10,7 +10,7 @@ exports.run = (bot, message, args) => {
 
     let embed = new Discord.RichEmbed({
         thumbnail: {
-            url: 'https://deratrox.de/dev/Bronies.de-DSB/' + file
+            url: bot.config.BASE_URL + '/i/Bronies.de-DSB/' + file
         },
         description: '**🍪 Eine Runde Kekse wird im Chat verteilt!**',
         color: 0x6C4733

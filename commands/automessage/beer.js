@@ -4,7 +4,7 @@ const roles = require('../../config/roles'),
 exports.run = (bot, message, args) => {
     let embed = new Discord.RichEmbed({
         thumbnail: {
-            url: 'https://deratrox.de/dev/Bronies.de-DSB/_beer.png'
+            url: bot.config.BASE_URL + '/i/_beer.png'
         },
         description: '**🍺 Eine Runde Bier wird im Chat verteilt!**',
         color: 0xD1973D

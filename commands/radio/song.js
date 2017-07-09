@@ -103,6 +103,5 @@ exports.config = {
 exports.help = {
     name: 'song',
     description: 'Zeigt den aktuell gespielten Track des BRG-Musikbots an.',
-    usage: ['!np'],
-    thumbnail: 'https://deratrox.de/dev/Bronies.de-DSB/_brgi.png'
+    usage: ['!np']
 };

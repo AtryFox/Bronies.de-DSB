@@ -42,42 +42,56 @@ exports.run = (bot, message, args) => {
 
     let embed = new Discord.RichEmbed({
         author: {
-            name: bot.server.name,
-            icon_url: bot.server.iconURL,
-            url: 'http://bronies.de/'
+            name: member.user.tag,
+            icon_url: member.user.displayAvatarURL,
         },
         thumbnail: {
             url: member.user.displayAvatarURL
         },
-        title: `Informationen zu \`${member.user.username}\`#\`${member.user.discriminator}\`:`,
         fields: [
             {
-                name: 'Nutzer ID:',
-                value: member.id
+                name: 'ID',
+                value: member.id,
+                inline: true
             },
             {
-                name: 'Anzeigename:',
-                value: member.displayName
+                name: 'Nickname',
+                value: member.displayName,
+                inline: true
             },
             {
-                name: 'Nutzer erstellt am:',
-                value: `${moment(member.user.createdAt).format('LLL')} (${moment(member.user.createdAt).fromNow()})`
+                name: 'Status',
+                value: member.presence.status ,
+                inline: true
             },
             {
-                name: 'Nutzer beigetreten am:',
-                value: `${moment(member.joinedAt).format('LLL')} (${moment(member.joinedAt).fromNow()})`
+                name: 'Spiel',
+                value: member.presence.game != null ? member.presence.game.name : "Kein Spiel aktiv" ,
+                inline: true
             },
             {
-                name: 'Höchste Rolle:',
-                value: member.highestRole.name
+                name: 'Registriert',
+                value: `${moment(member.user.createdAt).format('lll')}`,
+                inline: true
             },
             {
-                name: 'Link zum Avatar:',
-                value: `[${member.user.displayAvatarURL}](${member.user.displayAvatarURL})`
+                name: 'Beigetreten',
+                value: `${moment(member.joinedAt).format('lll')}`,
+                inline: true
+            },
+            {
+                name: 'Höchste Rolle',
+                value: member.highestRole.name,
+                inline: true
+            },
+            {
+                name: 'Link zum Avatar',
+                value: `[${member.user.displayAvatarURL}](${member.user.displayAvatarURL})`,
+                inline: true
             }
         ],
         color: 0xFF9916
-    });
+    }).setFooter(moment().format('LLLL'));
 
     message.channel.send({embed});
 };

@@ -45,6 +45,5 @@ exports.config = {
 exports.help = {
     name: 'history',
     description: 'Zeigt die zuletzt gespielten Songs des BRG-Musikbots an.',
-    usage: ['!lp'],
-    thumbnail: 'https://deratrox.de/dev/Bronies.de-DSB/_brgi.png'
+    usage: ['!lp']
 };

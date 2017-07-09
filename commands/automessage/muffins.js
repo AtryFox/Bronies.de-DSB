@@ -4,7 +4,7 @@ const roles = require('../../config/roles'),
 exports.run = (bot, message, args) => {
     let embed = new Discord.RichEmbed({
         thumbnail: {
-            url: 'https://deratrox.de/dev/Bronies.de-DSB/_muffins.png'
+            url: bot.config.BASE_URL + '/i/_muffins.png'
         },
         description: '**Derpy war da! It\'s Muffin time!**',
         color: 0x808AA7
@@ -22,6 +22,5 @@ exports.config = {
 exports.help = {
     name: 'muffins',
     description: 'Derpy bringt Muffins vorbei.',
-    usage: ['!muffins'],
-    thumbnail: 'https://deratrox.de/dev/Bronies.de-DSB/_muffins.png'
+    usage: ['!muffins']
 };

@@ -3,7 +3,7 @@ const roles = require('../../config/roles'),
     urban = require('urban');
 
 exports.run = (bot, _message, args) => {
-    const message = _message
+    const message = _message;
     _message.delete();
 
     if (args.length < 1) {
@@ -22,7 +22,7 @@ exports.run = (bot, _message, args) => {
                 title: `Definition für den Begriff \`${data.word}\`:`,
                 description: `[Zur Definition](${data.permalink}) | ${data.thumbs_up} Upvotes | ${data.thumbs_down} Downvotes | Seite ${current + 1}/${res.length}\r\n\r\n${data.definition}`,
                 color: 0xEFFF00
-            }).setFooter(`Definiert für ${bot.server.members.get(message.author.id).displayName} | Logo by Urban Dictionary`, 'https://deratrox.de/dev/Bronies.de-DSB/_urban.png')
+            }).setFooter(`Definiert für ${bot.server.members.get(message.author.id).displayName} | Logo by Urban Dictionary`, bot.config.BASE_URL + '/i/_urban.png')
                 .addField('Beispiel:', data.example);
 
             return embed;
@@ -32,7 +32,7 @@ exports.run = (bot, _message, args) => {
             let embed = new Discord.RichEmbed({
                 description: `Definition für den Begriff \`${data.word}\`: [Öffnen](${data.permalink})`,
                 color: 0xEFFF00
-            }).setFooter(`Definiert für ${bot.server.members.get(message.author.id).displayName} | Logo by Urban Dictionary`, 'https://deratrox.de/dev/Bronies.de-DSB/_urban.png');
+            }).setFooter(`Definiert für ${bot.server.members.get(message.author.id).displayName} | Logo by Urban Dictionary`, bot.config.BASE_URL + '/i/_urban.png');
 
             return embed;
         }

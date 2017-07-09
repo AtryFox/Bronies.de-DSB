@@ -27,7 +27,6 @@ exports.onMessage = (message, isUpdate) => {
         }
 
         if (match) {
-
             const args = message.content.split(' ').splice(1);
             let cmd = match[1].toLowerCase();
 

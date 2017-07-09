@@ -29,7 +29,7 @@ exports.run = (bot, message, args) => {
 
     query = query.replace(/,{2,}/g, ',').replace(/(^,|,$)/, '').replace(/ *, *$/, '');
     const url = 'https://derpibooru.org/search.json?q=' + encodeURIComponent(query) + parameters;
-    bot.log(message.author.username + '#' + message.author.discriminator + ' - Derpibooru search: ' + url);
+    bot.log(message.author.tag + ' - Derpibooru search: ' + url);
 
     unirest.get(url)
         .header("Accept", "application/json")
