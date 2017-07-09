@@ -1,5 +1,8 @@
 const roles = require('../../config/roles'),
-    Discord = require('discord.js');
+    Discord = require('discord.js'),
+    moment = require('moment');
+
+moment.locale('de');
 
 exports.run = (bot, message, args) => {
     const botCount = bot.server.roles.get(roles.bot).members.size,
@@ -11,7 +14,7 @@ exports.run = (bot, message, args) => {
 
     let embed = new Discord.RichEmbed({
         author: {
-            name: bot.server.name,
+            name: bot.server.name + ' - Nutzer',
             icon_url: bot.server.iconURL,
             url: 'http://bronies.de/'
         },
@@ -43,7 +46,7 @@ exports.run = (bot, message, args) => {
             }
         ],
         color: 0xEF7135
-    });
+    }).setFooter(moment().format('LLLL'));
 
     message.channel.send({embed});
 };

@@ -16,11 +16,11 @@ exports.run = (bot, message, args) => {
     const nsfwRole = bot.server.roles.get(roles.nsfw);
     const member = bot.getGuildMember(msg.author);
 
-    if (arg == 'join') {
+    if (arg == 'join_alt') {
         if (!member.roles.has(roles.nsfw)) {
-            return bot.respondPm(msg, 'Du bist im Begriff den NSFW-Bereich des Bronies.de Discord Servers bezutreten. Dieser Bereich enthält pornografische Inhalte und ist für Nutzer unter 18 Jahren nicht geeignet. Möchtest du beitreten antworte mit `!nsfw join!`.');
+            return bot.respondPm(msg, 'Du bist im Begriff den NSFW-Bereich des Bronies.de Discord Servers bezutreten. Dieser Bereich enthält pornografische Inhalte und ist für Nutzer unter 18 Jahren nicht geeignet. Möchtest du beitreten antworte mit `!nsfw join`.');
         }
-    } else if (arg == 'join!') {
+    } else if (arg == 'join') {
         if (!member.roles.has(roles.nsfw)) {
             member.addRole(nsfwRole);
             return bot.respondPm(msg, 'Bronies.de NSFW Bereich beigetreten. :smirk:');

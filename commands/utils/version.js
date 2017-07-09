@@ -7,14 +7,12 @@ exports.run = (bot, message, args) => {
 
     let embed = new Discord.RichEmbed({
         author: {
-            name: bot.server.name,
-            icon_url: bot.server.iconURL,
-            url: 'http://bronies.de/'
+            name: `DerAtrox/Bronies.de-DSB@` + bot.versionInfo.version,
+            icon_url: bot.user.avatarURL
         },
         thumbnail: {
             url: bot.user.avatarURL
         },
-        title: `DerAtrox/Bronies.de-DSB@` + bot.versionInfo.version,
         description: 'Umgesetzt mit Hilfe von [Node.js](https://nodejs.org/) und [discord.js](https://discord.js.org/).',
         fields: [
             {
@@ -24,19 +22,19 @@ exports.run = (bot, message, args) => {
             },
             {
                 name: 'Letzter Commit',
-                value: `[${linkLastCommit}](${linkLastCommit})`,
+                value: `[Öffnen](${linkLastCommit})`,
                 inline: true
             }
         ],
         color: 0x632E86
-    });
+    }).setFooter(moment().format('LLLL'));
 
     if('message' in bot.versionInfo) {
-        embed.addField('Letzte Commitnachricht', bot.versionInfo.message, true);
+        embed.addField('Letzte Commitnachricht', bot.versionInfo.message, false);
     }
 
     if('timestamp' in bot.versionInfo) {
-        embed.addField('Erstellt', (moment(bot.versionInfo.timestamp, 'YYYY-MM-DD HH:mm:ss Z').locale('de').fromNow()), true);
+        embed.addField('Erstellt', (moment(bot.versionInfo.timestamp, 'YYYY-MM-DD HH:mm:ss Z').locale('de').fromNow()), false);
     }
 
     message.channel.send({embed});
