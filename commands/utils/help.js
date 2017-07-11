@@ -12,8 +12,6 @@ exports.run = (bot, message, args) => {
 
         let canRun = [];
 
-        console.log(bot.checkTrusted(message.author));
-
         bot.commands.forEach(command => {
             if ('role' in command.config) {
                 if (!bot.checkPermissions(command.config.role, message.author)) {

@@ -130,6 +130,10 @@ exports.onMessage = (message, isUpdate) => {
                 }
             } else {
                 addStats(false);
+                
+                if(!bot.checkPermissions(roles.user, message.author)) {
+                    bot.getGuildMember(message.author).addRole(bot.server.roles.get(roles.user));
+                }
             }
         }
     }
