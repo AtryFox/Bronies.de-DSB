@@ -13,6 +13,9 @@ module.exports = {
     // Channel ID of channel for debug/info messages
     BOT_CH: '',
 
+    // Channel ID of channel for admin logs
+    LOG_CH: '',
+
     // Client ID of admin user
     BOT_ADMIN: '',
 

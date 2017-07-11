@@ -35,7 +35,7 @@ exports.onMessage = (message, isUpdate) => {
                 try {
                     if (message._edits.length == 0) {
                         bot.respond(message, 'Bitte versende keine Selfbot Embeds auf diesem Server!', true, 10);
-                        bot.server.channels.get(bot.config.BOT_CH).send(`${moment().format('LLLL')}\n${message.author} sendete ein Embed in ${message.channel.name}. Nachricht wurde entfernt.`);
+                        bot.server.channels.get(bot.config.LOG_CH).send(`${moment().format('LLLL')}\n${message.author} sendete ein Embed in ${message.channel.name}. Nachricht wurde entfernt.`);
                         message.delete();
                     }
                 } catch (e) {
