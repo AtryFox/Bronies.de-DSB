@@ -31,6 +31,10 @@ exports.run = (bot, message, args) => {
 
         text += '\nUm mehr Infos zu einem Befehl zu erhalte nutze `!help commandname`, also zum Beispiel: `!help nsfw`.';
 
+        if (bot.checkPermissions(roles.moderator, message.author)) {
+            text += '\n\nWeitere **Moderationsbefehle** von <@155149108183695360> sind über `?help` verfügbar.';
+        }
+
         if (here) {
             bot.respond(message, text, false);
         } else {
