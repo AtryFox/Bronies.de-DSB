@@ -3,7 +3,7 @@
 module.exports = {
     admin: '',
     moderator: '',
-    brgteam: '',
+    trusted: '',
     community: '',
     bot: '',
     nsfw: ''
