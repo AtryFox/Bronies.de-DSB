@@ -175,7 +175,7 @@ bot.getVersion = (callback) => {
 
 /* BOT METHODS */
 bot.checkPermissions = (role, user) => {
-    const member = bot.server.members.get(user.id);
+    const member = bot.getGuildMember(user);
 
     if (bot.server.owner == member && !config.DEBUG) {
         return true;
@@ -186,6 +186,16 @@ bot.checkPermissions = (role, user) => {
     }
 
     return member.highestRole.comparePositionTo(bot.server.roles.get(role)) >= 0;
+};
+
+bot.checkTrusted = (user) => {
+    const member = bot.getGuildMember(user);
+
+    if (bot.server.owner == member && !config.DEBUG) {
+        return true;
+    }
+
+    return member.roles.has(bot.server.roles.get(roles.trusted).id);
 };
 
 bot.getGuildMember = (user) => {

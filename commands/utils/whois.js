@@ -99,6 +99,7 @@ exports.run = (bot, message, args) => {
 exports.config = {
     aliases: ['who', 'about', 'a'],
     role: roles.user,
+    trusted: false,
     cooldown: 15,
     skip: roles.moderator,
     server: true

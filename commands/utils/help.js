@@ -12,11 +12,22 @@ exports.run = (bot, message, args) => {
 
         let canRun = [];
 
+        console.log(bot.checkTrusted(message.author));
+
         bot.commands.forEach(command => {
             if ('role' in command.config) {
                 if (!bot.checkPermissions(command.config.role, message.author)) {
                     return;
                 }
+            }
+
+            let trusted = true;
+            if('trusted' in command.config) {
+                trusted = command.config.trusted;
+            }
+
+            if(trusted && !bot.checkTrusted(message.author)){
+                return;
             }
 
             canRun.push(command.help.name);
@@ -35,7 +46,11 @@ exports.run = (bot, message, args) => {
             text += '\n\nWeitere **Moderationsbefehle** von <@155149108183695360> sind über `?help` verfügbar.';
         }
 
-        if (here) {
+        if(!bot.checkTrusted(message.author)) {
+            text += '\n\n:pushpin: Du schaltest weitere Befehle frei, sobald du **Level 3** erreichst.';
+        }
+
+        if (here && bot.checkTrusted(message.author)) {
             bot.respond(message, text, false);
         } else {
             bot.respondPm(message, text);
@@ -102,7 +117,9 @@ exports.run = (bot, message, args) => {
     }
 };
 
-exports.config = {};
+exports.config = {
+    trusted: false
+};
 
 exports.help = {
     name: 'help',

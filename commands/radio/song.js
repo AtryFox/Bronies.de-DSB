@@ -95,7 +95,6 @@ exports.run = (bot, message, args) => {
 
 exports.config = {
     aliases: ['nowplaying', 'np'],
-    role: roles.user,
     cooldown: 60,
     skip: roles.moderator
 };

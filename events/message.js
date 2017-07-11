@@ -1,4 +1,5 @@
-const Discord = require('discord.js');
+const Discord = require('discord.js'),
+    roles = require('../config/roles');
 
 exports.Event = function (bot) {
     this.bot = bot;
@@ -61,11 +62,26 @@ exports.onMessage = (message, isUpdate) => {
             if ('role' in cmdObj.config) {
                 if (!bot.checkPermissions(cmdObj.config.role, message.author)) {
                     bot.respondPm(message, 'Du besitzt nicht genügend Rechte um diesen Befehl auszuführen!');
+
                     if (message.guild == bot.server) {
                         message.delete();
                     }
                     return;
                 }
+            }
+
+            let trusted = true;
+            if ('trusted' in cmdObj.config) {
+                trusted = cmdObj.config.trusted;
+            }
+
+            if (trusted && !bot.checkTrusted(message.author)) {
+                bot.respondPm(message, 'Du musst erst Level 3 erreichen um diesen Befehl nutzen zu können.');
+
+                if (message.guild == bot.server) {
+                    message.delete();
+                }
+                return;
             }
 
             if ('cooldown' in cmdObj.config) {
@@ -94,11 +110,11 @@ exports.onMessage = (message, isUpdate) => {
                     }
 
                     bot.cooldowns[cmdObj.help.name] = true;
-                    if(bot.config.DEBUG) bot.log("Cooldown " + cmdObj.help.name);
+                    if (bot.config.DEBUG) bot.log("Cooldown " + cmdObj.help.name);
 
                     setTimeout(() => {
                         bot.cooldowns[cmdObj.help.name] = false;
-                        if(bot.config.DEBUG) bot.log("Cooldown END " + cmdObj.help.name);
+                        if (bot.config.DEBUG) bot.log("Cooldown END " + cmdObj.help.name);
                     }, cmdObj.config.cooldown * 1000);
                 }
             }
