@@ -1,5 +1,8 @@
 const Discord = require('discord.js'),
-    roles = require('../config/roles');
+    roles = require('../config/roles'),
+    moment = require('moment');
+
+moment.locale('de');
 
 exports.Event = function (bot) {
     this.bot = bot;
@@ -18,6 +21,28 @@ exports.onMessage = (message, isUpdate) => {
 
     if (message.channel.type == 'group') {
         return;
+    }
+
+    function handleMessage() {
+        addStats(false);
+
+        if (!bot.checkPermissions(roles.user, message.author)) {
+            bot.getGuildMember(message.author).addRole(bot.server.roles.get(roles.user));
+        }
+
+        if (message.content == "" && message.embeds.length > 0) {
+            if (!message.author.bot && !bot.checkPermissions(roles.moderator, message.author) && bot.checkTrusted(message.author)) {
+                try {
+                    if (message._edits.length == 0) {
+                        bot.respond(message, 'Bitte versende keine Selfbot Embeds auf diesem Server!', true, 5);
+                        bot.server.channels.get(bot.config.BOT_CH).send(`${moment().format('LLLL')}\n${message.author} sendete ein Embed in ${message.channel.name}. Nachricht wurde entfernt.`);
+                        message.delete();
+                    }
+                } catch (e) {
+                    bot.log('Error removing embed!!\n' + e);
+                }
+            }
+        }
     }
 
     function handleCommand() {
@@ -129,11 +154,7 @@ exports.onMessage = (message, isUpdate) => {
                     message.delete();
                 }
             } else {
-                addStats(false);
-                
-                if(!bot.checkPermissions(roles.user, message.author)) {
-                    bot.getGuildMember(message.author).addRole(bot.server.roles.get(roles.user));
-                }
+                handleMessage();
             }
         }
     }

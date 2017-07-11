@@ -16,7 +16,7 @@ exports.run = (bot, message, args) => {
             url: 'http://bronies.de/'
         },
         color: 0x243870
-    }).setFooter(moment().format('LLLL'));;
+    }).setFooter(moment().format('LLLL'));
 
     bot.pool.getConnection((error, con) => {
         if (error) {
