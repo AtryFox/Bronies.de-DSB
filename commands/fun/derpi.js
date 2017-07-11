@@ -64,7 +64,7 @@ exports.config = {
 exports.help = {
     name: 'derpi',
     description: 'Gibt das erste Bild einer Derpibooru Suche zurück.\n\n' +
-    'Optionen:\n' +
+    '__Optionen:__\n' +
     ' - Reihenfolge: `o:<desc|asc>`\n' +
     ' - Sortierung: `by:<score|relevance|width|height|comments|created_at|random>`',
     usage: ['!derpi Rainbow Dash', '!derpi rd,aj by:score', '!db discord,score.gt:500']

@@ -77,9 +77,21 @@ exports.run = (bot, message, args) => {
                 url: bot.user.avatarURL
             },
             title: `Hilfe für den Befehl \`${cmdObj.help.name}\`:`,
-            description: cmdObj.help.description,
             color: 0xEA428B
         });
+
+        let description = cmdObj.help.description;
+
+        let trusted = true;
+        if('trusted' in cmdObj.config) {
+            trusted = cmdObj.config.trusted;
+        }
+
+        if(trusted) {
+            description += '\n\n__Info:__\nErfordert die **`@Trusted`**-Rolle.';
+        }
+
+        embed.setDescription(description);
 
         if ('role' in cmdObj.config) {
             embed.addField('Benötiger Rang', bot.server.roles.get(cmdObj.config.role).name, true);
