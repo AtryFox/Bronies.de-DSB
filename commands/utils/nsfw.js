@@ -37,7 +37,7 @@ exports.run = (bot, message, args) => {
 
 exports.config = {
     server: false,
-    role: roles.community
+    role: roles.user
 };
 
 exports.help = {

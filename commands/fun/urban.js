@@ -88,7 +88,7 @@ exports.config = {
     cooldown: 30,
     aliases: ['ud', 'define'],
     skip: roles.moderator,
-    role: roles.community
+    role: roles.user
 };
 
 

@@ -101,7 +101,7 @@ exports.run = (bot, message, args) => {
 exports.config = {
     aliases: ['st'],
     server: true,
-    role: roles.community,
+    role: roles.user,
     cooldown: 60,
     skip: roles.moderator
 };

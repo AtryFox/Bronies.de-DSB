@@ -95,9 +95,9 @@ exports.run = (bot, message, args) => {
 
 exports.config = {
     aliases: ['nowplaying', 'np'],
-    role: roles.community,
+    role: roles.user,
     cooldown: 60,
-    skip: roles.brgteam
+    skip: roles.moderator
 };
 
 exports.help = {
