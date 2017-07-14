@@ -23,6 +23,10 @@ exports.onMessage = (message, isUpdate) => {
         return;
     }
 
+    if (message.author.bot) {
+        return
+    }
+
     function handleMessage() {
         addStats(false);
 
@@ -31,7 +35,7 @@ exports.onMessage = (message, isUpdate) => {
         }
 
         if (message.content == "" && message.embeds.length > 0) {
-            if (!message.author.bot && !bot.checkPermissions(roles.moderator, message.author) && bot.checkTrusted(message.author)) {
+            if (!bot.checkPermissions(roles.moderator, message.author) && bot.checkTrusted(message.author)) {
                 try {
                     if (message._edits.length == 0) {
                         bot.respond(message, 'Bitte versende keine Selfbot Embeds auf diesem Server!', true, 10);
