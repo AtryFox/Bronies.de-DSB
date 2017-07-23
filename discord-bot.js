@@ -5,17 +5,15 @@ let Discord = require('discord.js'),
     YouTube = require('./modules/youtube').YouTube,
     Database = require('./modules/database').Database,
     fs = require('fs'),
-    unirest = require('unirest'),
-    token = config.TOKEN,
-    bot = new Discord.Client(),
     exec = require('child_process').exec,
     moment = require('moment'),
     mysql = require('mysql'),
     schedule = require('node-schedule');
 
+
 moment.locale('de');
 
-bot.radio = config.RADIO_START;
+let bot = new Discord.Client();
 
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
@@ -25,6 +23,8 @@ bot.events = new Discord.Collection();
 bot.config = config;
 
 bot.youtube = new YouTube(bot);
+bot.database = new Database(bot);
+bot.twitter = new Twitter(config.TWITTER_API, bot);
 
 bot.pool = mysql.createPool({
     host: bot.config.MYSQL_SERVER.HOSTNAME,
@@ -35,15 +35,136 @@ bot.pool = mysql.createPool({
     timezone: 'Z'
 });
 
-bot.database = new Database(bot);
-
-bot.twitter = new Twitter(config.TWITTER_API, bot);
-
 bot.cooldowns = {};
 
+/* BOT METHODS */
 bot.log = (msg) => {
     console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${msg}`);
 };
+
+bot.getVersion = (callback) => {
+    let info = {};
+
+    exec('git rev-parse --short=4 HEAD', function (error, version) {
+        if (error) {
+            bot.log('Error getting version', error);
+            info.version = 'unknown';
+        } else {
+            info.version = version.trim();
+        }
+
+        exec('git log -1 --pretty=%B', function (error, message) {
+            if (error) {
+                bot.log('Error getting commit message', error);
+            } else {
+                info.message = message.trim();
+            }
+
+            exec('git log -1 --date=short --pretty=format:%ci', function (error, timestamp) {
+                if (error) {
+                    console.log('Error getting creation time', error);
+                } else {
+                    info.timestamp = timestamp;
+                }
+
+                callback(info);
+            });
+        });
+    });
+};
+
+bot.checkPermissions = (role, user) => {
+    const member = bot.getGuildMember(user);
+
+    if (bot.server.owner == member && !config.DEBUG) {
+        return true;
+    }
+
+    if (!bot.server.roles.has(role)) {
+        return false;
+    }
+
+    return member.highestRole.comparePositionTo(bot.server.roles.get(role)) >= 0;
+};
+
+bot.checkTrusted = (user) => {
+    const member = bot.getGuildMember(user);
+
+    if (bot.server.owner == member && !config.DEBUG) {
+        return true;
+    }
+
+    return member.roles.has(bot.server.roles.get(roles.trusted).id);
+};
+
+bot.getGuildMember = (user) => {
+    return bot.server.members.get(user.id);
+};
+
+bot.respond = (message, response, mention, autodel) => {
+    if (typeof mention === 'undefined') {
+        mention = false;
+    }
+
+    if (typeof autodel === 'undefined') {
+        autodel = 0;
+    }
+
+    function del(msg) {
+        if(autodel <= 0) return;
+        setTimeout(() => msg.delete(), autodel * 1000);
+    }
+
+    if (mention) {
+        message.reply(response).then(msg => del(msg));
+    } else {
+        message.channel.send(response).then(msg => del(msg));
+    }
+};
+
+bot.respondPm = (message, response) => {
+    message.author.send(response);
+};
+
+bot.getEmoji = (name) => {
+    if (bot.server.emojis.exists('name', name)) {
+        return bot.server.emojis.find('name', name).toString();
+    } else {
+        return ':robot:';
+    }
+};
+
+bot.randomInt = (low, high) => {
+    return Math.floor(Math.random() * (high - low + 1) + low);
+};
+
+bot.idle = () => {
+    try {
+        bot.user.setStatus('idle');
+    } catch (e) {
+        bot.log("Could not set idle status " + e);
+    }
+};
+
+bot.online = () => {
+    try {
+        bot.user.setStatus('online');
+    } catch (e) {
+        bot.log("Could not set online status " + e);
+    }
+
+};
+
+/* GENERAL APPLICATION STUFF */
+process.on('exit', () => {
+    bot.idle();
+});
+
+process.on('SIGINT', () => {
+    bot.idle();
+    process.exit();
+
+});
 
 /* COMMAND LOADER */
 let commandLoader = function (currentPath) {
@@ -141,122 +262,5 @@ let dbSetup = function () {
 };
 dbSetup();
 
-/* VERSION */
-bot.getVersion = (callback) => {
-    let info = {};
-
-    exec('git rev-parse --short=4 HEAD', function (error, version) {
-        if (error) {
-            bot.log('Error getting version', error);
-            info.version = 'unknown';
-        } else {
-            info.version = version.trim();
-        }
-
-        exec('git log -1 --pretty=%B', function (error, message) {
-            if (error) {
-                bot.log('Error getting commit message', error);
-            } else {
-                info.message = message.trim();
-            }
-
-            exec('git log -1 --date=short --pretty=format:%ci', function (error, timestamp) {
-                if (error) {
-                    console.log('Error getting creation time', error);
-                } else {
-                    info.timestamp = timestamp;
-                }
-
-                callback(info);
-            });
-        });
-    });
-};
-
-/* BOT METHODS */
-bot.checkPermissions = (role, user) => {
-    const member = bot.getGuildMember(user);
-
-    if (bot.server.owner == member && !config.DEBUG) {
-        return true;
-    }
-
-    if (!bot.server.roles.has(role)) {
-        return false;
-    }
-
-    return member.highestRole.comparePositionTo(bot.server.roles.get(role)) >= 0;
-};
-
-bot.checkTrusted = (user) => {
-    const member = bot.getGuildMember(user);
-
-    if (bot.server.owner == member && !config.DEBUG) {
-        return true;
-    }
-
-    return member.roles.has(bot.server.roles.get(roles.trusted).id);
-};
-
-bot.getGuildMember = (user) => {
-    return bot.server.members.get(user.id);
-};
-
-bot.respond = (message, response, mention, autodel) => {
-    if (typeof mention === 'undefined') {
-        mention = false;
-    }
-
-    if (typeof autodel === 'undefined') {
-        autodel = 0;
-    }
-
-    function del(msg) {
-        if(autodel <= 0) return;
-        setTimeout(() => msg.delete(), autodel * 1000);
-    }
-
-    if (mention) {
-        message.reply(response).then(msg => del(msg));
-    } else {
-        message.channel.send(response).then(msg => del(msg));
-    }
-};
-
-bot.respondPm = (message, response) => {
-    message.author.send(response);
-};
-
-bot.getEmoji = (name) => {
-    if (bot.server.emojis.exists('name', name)) {
-        return bot.server.emojis.find('name', name).toString();
-    } else {
-        return ':robot:';
-    }
-};
-
-bot.randomInt = (low, high) => {
-    return Math.floor(Math.random() * (high - low + 1) + low);
-};
-
-/* GENERAL APPLICATION STUFF */
-process.on('exit', () => {
-    bot.idle();
-});
-
-process.on('SIGINT', () => {
-    bot.idle();
-    process.exit();
-
-});
-
-bot.idle = () => {
-    bot.user.setStatus('idle');
-};
-
-bot.online = () => {
-    bot.user.setStatus('online');
-};
-
 /* LOGIN */
-bot.login(token);
+bot.login(config.TOKEN);

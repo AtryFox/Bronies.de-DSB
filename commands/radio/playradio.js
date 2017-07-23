@@ -5,12 +5,12 @@ const roles = require('../../config/roles'),
 exports.run = (bot, message, args) => {
     bot.log(`${this.help.name}: Stream restarted by ${message.author.tag}`);
 
-    fs.access(bot.radio, fs.constants.R_OK, (err) => {
+    fs.access(bot.config.RADIO_START, fs.constants.R_OK, (err) => {
         if (!err) {
             try{
                 bot.respond(message, 'Radio wird neugestartet...', true);
 
-                exec(bot.radio, (error) => {
+                exec(bot.config.RADIO_START, (error) => {
                     if(error != null) {
                         bot.respond(message, 'beim Neustarten des Radios ist ein Fehler aufgetreten!', true);
                         bot.log('Failed executing radio start.sh! ' + err);
