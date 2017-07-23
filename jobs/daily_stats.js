@@ -1,4 +1,7 @@
-const Discord = require('discord.js');
+const moment = require('moment'),
+    Discord = require('discord.js');
+
+moment.locale('de');
 
 exports.run = (bot) => {
     function respondError() {
@@ -7,13 +10,12 @@ exports.run = (bot) => {
 
     let embed = new Discord.RichEmbed({
         author: {
-            name: bot.server.name,
+            name: bot.server.name + ' - Statistik',
             icon_url: bot.server.iconURL,
             url: 'http://bronies.de/'
         },
-        title: `Aktuelle Statistiken:`,
         color: 0x243870
-    });
+    }).setFooter(moment().format('LLLL'));
 
     bot.pool.getConnection((error, con) => {
         if (error) {
@@ -29,13 +31,13 @@ exports.run = (bot) => {
                 }
 
                 if (results.length < 1) {
-                    embed.setDescription(' Gestern wurden keine Nachrichten gesendet oder Befehle verwendet.');
+                    embed.addField('Gestern', 'Keine Nachrichten oder Befehle.', true);
                 } else {
                     results = results[0];
                     const messagesString = results.MESSAGES == 1 ? 'Nachricht' : 'Nachrichten';
                     const commandsString = results.COMMANDS == 1 ? 'Befehl' : 'Befehle';
 
-                    embed.setDescription(`Gestern wurden ${results.MESSAGES} ${messagesString} gesendet und ${results.COMMANDS} ${commandsString} verwendet.`);
+                    embed.addField('Gestern', `${results.MESSAGES} ${messagesString} und ${results.COMMANDS} ${commandsString}`, true);
                 }
 
                 getStatsAverage();
@@ -52,7 +54,7 @@ exports.run = (bot) => {
                 }
 
                 if (results.length < 1) {
-                    embed.addField('Gestern:', 'Keine Nachrichten gesendet oder Befehle verwendet.');
+                    embed.addField('Durchschnitt', 'Kann nicht berechnet werden');
                 } else {
                     results = results[0];
                     const messages = Math.round(results.MESSAGES * 100) / 100;
@@ -61,7 +63,7 @@ exports.run = (bot) => {
                     const messagesString = messages == 1 ? 'Nachricht' : 'Nachrichten';
                     const commandsString = commands == 1 ? 'Befehl' : 'Befehle';
 
-                    embed.addField('Durchschnitt:', `${messages} ${messagesString} pro Tag, ${commands} ${commandsString} pro Tag.`);
+                    embed.addField('Durchschnitt', `${messages} ${messagesString} pro Tag und ${commands} ${commandsString} pro Tag.`);
 
                     bot.server.channels.get(bot.config.BOT_CH).send({embed});
                 }
