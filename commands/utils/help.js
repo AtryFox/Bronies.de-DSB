@@ -98,7 +98,17 @@ exports.run = (bot, message, args) => {
         }
 
         if ('cooldown' in cmdObj.config) {
-            embed.addField('Cooldown', cmdObj.config.cooldown + ' Sekunden', true);
+            let globalCooldown = false;
+
+            if('global_cooldown' in cmdObj.config) {
+                globalCooldown = cmdObj.config.global_cooldown;
+            }
+
+            if(globalCooldown) {
+                embed.addField('Globaler Cooldown', cmdObj.config.cooldown + ' Sekunden', true);
+            } else {
+                embed.addField('Cooldown', cmdObj.config.cooldown + ' Sekunden', true);
+            }
 
             if ('skip' in cmdObj.config) {
                 embed.addField('Cooldown wird ignoriert ab', bot.server.roles.get(cmdObj.config.skip).name, true);
