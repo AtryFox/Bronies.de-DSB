@@ -2,6 +2,7 @@ const roles = require('../../config/roles');
 
 exports.config = {
     handled: false,
+    trusted: false
 };
 
 exports.help = {

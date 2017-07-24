@@ -2,7 +2,8 @@ const roles = require('../../config/roles');
 
 exports.config = {
     aliases: ['rv'],
-    handled: false
+    handled: false,
+    trusted: false
 };
 
 exports.help = {

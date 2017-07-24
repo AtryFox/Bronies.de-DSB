@@ -3,9 +3,7 @@ const roles = require('../../config/roles'),
     Discord = require('discord.js');
 
 exports.run = (bot, message, args) => {
-    const here = args.includes('here');
-
-    if (args.length < 1 || (args.length == 1 && here && bot.checkPermissions(roles.moderator, message.author))) {
+    function showCommands() {
         let text = '\n\nBefehle müssen `!` vorangestellt haben. Groß- und Kleinschreibung wird nicht beachtet.\nIn PMs wird kein Präfix benötigt.\n\n';
 
         text += 'Liste aller Befehle, die **du** nutzen kannst:\n\n';
@@ -57,7 +55,9 @@ exports.run = (bot, message, args) => {
                 message.delete();
             }
         }
-    } else {
+    }
+
+    function showCommandHelp() {
         const cmd = args[0].toLowerCase();
 
         if (!bot.commands.has(cmd) && !bot.aliases.has(cmd)) {
@@ -134,6 +134,14 @@ exports.run = (bot, message, args) => {
                 message.delete();
             }
         }
+    }
+
+    const here = args.includes('here');
+
+    if (args.length < 1 || (args.length == 1 && here && bot.checkPermissions(roles.moderator, message.author))) {
+        showCommands();
+    } else {
+        showCommandHelp();
     }
 };
 
