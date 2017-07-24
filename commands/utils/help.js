@@ -5,7 +5,7 @@ const roles = require('../../config/roles'),
 exports.run = (bot, message, args) => {
     const here = args.includes('here');
 
-    if (args.length < 1 || (args.length == 1 && here)) {
+    if (args.length < 1 || (args.length == 1 && here && bot.checkPermissions(roles.moderator, message.author))) {
         let text = '\n\nBefehle müssen `!` vorangestellt haben. Groß- und Kleinschreibung wird nicht beachtet.\nIn PMs wird kein Präfix benötigt.\n\n';
 
         text += 'Liste aller Befehle, die **du** nutzen kannst:\n\n';
@@ -115,7 +115,7 @@ exports.run = (bot, message, args) => {
             embed.setThumbnail(cmdObj.help.thumbnail);
         }
 
-        if (here) {
+        if (here && bot.checkPermissions(roles.moderator, message.author)) {
             message.channel.send({embed});
         } else {
             message.author.send({embed});
@@ -128,7 +128,9 @@ exports.run = (bot, message, args) => {
 };
 
 exports.config = {
-    trusted: false
+    trusted: false,
+    cooldown: 10,
+    skip: roles.moderator
 };
 
 exports.help = {

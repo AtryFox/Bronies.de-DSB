@@ -57,7 +57,7 @@ exports.run = (bot, message, args) => {
 exports.config = {
     aliases: ['db'],
     server: true,
-    cooldown: 15,
+    cooldown: 30,
     skip: roles.moderator
 };
 

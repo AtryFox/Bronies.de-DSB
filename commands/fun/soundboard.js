@@ -70,7 +70,7 @@ exports.run = (bot, message, args) => {
 exports.config = {
     aliases: ['sb'],
     server: true,
-    cooldown: 5,
+    cooldown: 15,
 };
 
 exports.help = {

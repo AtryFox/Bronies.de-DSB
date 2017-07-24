@@ -22,7 +22,7 @@ exports.run = (bot, message, args) => {
 exports.config = {
     aliases: ['yt'],
     server: true,
-    cooldown: 15,
+    cooldown: 60,
     skip: roles.moderator
 };
 
