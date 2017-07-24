@@ -123,30 +123,25 @@ exports.onMessage = (message, isUpdate) => {
                 }
 
                 if (check) {
-                    const cooldownName = cmdObj.help.name + message.author.id;
+                    const cooldownName = `${message.author.id}.${cmdObj.help.name}`;
 
                     let cooldown = false;
 
                     if (cooldownName in bot.cooldowns) {
-                        cooldown = bot.cooldowns[cooldownName];
-                    }
+                        const cooldown = bot.cooldowns[cooldownName];
 
-                    if (cooldown) {
-                        bot.respondPm(message, 'Du hast diesen Befehl erst vor kurzem ausgeführt. Bitte versuche es später erneut.');
-                        if (message.guild == bot.server) {
-                            message.delete();
+                        if (moment().diff(cooldown) < 0) {
+                            bot.respondPm(message, `Du hast den Befehl \`${cmdObj.help.name}\` erst vor kurzem ausgeführt. Bitte warte noch ${moment().to(cooldown, true)}.`);
+                            if (message.guild == bot.server) {
+                                message.delete();
+                            }
+
+                            return;
                         }
-
-                        return;
                     }
 
-                    bot.cooldowns[cooldownName] = true;
-                    if (bot.config.DEBUG) bot.log("Cooldown " + cooldownName);
-
-                    setTimeout(() => {
-                        bot.cooldowns[cooldownName] = false;
-                        if (bot.config.DEBUG) bot.log("Cooldown END " + cooldownName);
-                    }, cmdObj.config.cooldown * 1000);
+                    bot.cooldowns[cooldownName] = moment().add(cmdObj.config.cooldown, 'seconds');
+                    if (bot.config.DEBUG) bot.log('Cooldown ' + cooldownName + ' ' + bot.cooldowns[cooldownName]);
                 }
             }
 
