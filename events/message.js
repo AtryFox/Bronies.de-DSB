@@ -123,7 +123,15 @@ exports.onMessage = (message, isUpdate) => {
                 }
 
                 if (check) {
-                    const cooldownName = `${message.author.id}.${cmdObj.help.name}`;
+                    let cooldownName = `${message.author.id}.${cmdObj.help.name}`;
+                    let globalCooldown = false;
+
+                    if('global_cooldown' in cmdObj.config) {
+                        if(cmdObj.config.global_cooldown) {
+                            cooldownName = cmdObj.help.name;
+                            globalCooldown = true;
+                        }
+                    }
 
                     let cooldown = false;
 
@@ -131,7 +139,11 @@ exports.onMessage = (message, isUpdate) => {
                         const cooldown = bot.cooldowns[cooldownName];
 
                         if (moment().diff(cooldown) < 0) {
-                            bot.respondPm(message, `Du hast den Befehl \`${cmdObj.help.name}\` erst vor kurzem ausgeführt. Bitte warte noch ${moment().to(cooldown, true)}.`);
+                            if(globalCooldown) {
+                                bot.respondPm(message, `Der Befehl \`${cmdObj.help.name}\` wurde erst vor kurzem ausgeführt. Bitte warte noch ${moment().to(cooldown, true)}.`);
+                            } else {
+                                bot.respondPm(message, `Du hast den Befehl \`${cmdObj.help.name}\` erst vor kurzem ausgeführt. Bitte warte noch ${moment().to(cooldown, true)}.`);
+                            }
                             if (message.guild == bot.server) {
                                 message.delete();
                             }

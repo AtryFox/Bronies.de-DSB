@@ -104,6 +104,7 @@ exports.config = {
     trusted: false,
     role: roles.user,
     cooldown: 600,
+    global_cooldown: true,
     skip: roles.moderator
 };
 
