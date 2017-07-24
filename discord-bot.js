@@ -62,7 +62,7 @@ bot.getVersion = (callback) => {
 
             exec('git log -1 --date=short --pretty=format:%ci', function (error, timestamp) {
                 if (error) {
-                    console.log('Error getting creation time', error);
+                    bot.log('Error getting creation time', error);
                 } else {
                     info.timestamp = timestamp;
                 }
