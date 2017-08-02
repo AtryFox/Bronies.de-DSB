@@ -88,14 +88,17 @@ bot.checkPermissions = (role, user) => {
 };
 
 bot.checkTrusted = (user) => {
-    const member = bot.getGuildMember(user);
+    return checkTrustedMember(bot.getGuildMember(user));
+};
 
+bot.checkTrustedMember = (member) => {
     if (bot.server.owner == member && !config.DEBUG) {
         return true;
     }
 
     return member.roles.has(bot.server.roles.get(roles.trusted).id);
 };
+
 
 bot.getGuildMember = (user) => {
     return bot.server.members.get(user.id);
