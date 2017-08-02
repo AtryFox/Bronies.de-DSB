@@ -88,7 +88,7 @@ bot.checkPermissions = (role, user) => {
 };
 
 bot.checkTrusted = (user) => {
-    return checkTrustedMember(bot.getGuildMember(user));
+    return bot.checkTrustedMember(bot.getGuildMember(user));
 };
 
 bot.checkTrustedMember = (member) => {
