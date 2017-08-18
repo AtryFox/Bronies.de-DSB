@@ -10,7 +10,7 @@ exports.run = (bot, message, args) => {
 
     if(message.mentions.members.size != 1) {
         if(bot.server.members.has(args[0])) {
-            bot.server.members.get(args[0]);
+            target = bot.server.members.get(args[0]);
         } else {
             bot.respond(message, `der Nutzer \`${args[0]}\` konnte nicht gefunden werden.`, true, 10);
             return message.delete();
