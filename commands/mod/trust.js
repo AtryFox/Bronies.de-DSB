@@ -28,7 +28,7 @@ exports.run = (bot, message, args) => {
                 return message.delete();
             }
 
-            bot.respond(message, `✅ Der Trust Status von ${args[0]} wurde von ${message.author} auf \`${args[1]}\` gesetzt.`);
+            bot.respond(message, `✅ Der Trust Status von ${target} wurde von ${message.author} auf \`${args[1]}\` gesetzt.`);
             return message.delete();
         });
     }
@@ -41,7 +41,7 @@ exports.run = (bot, message, args) => {
                 return message.delete();
             }
 
-            bot.respond(message, `✅ Der Trust Status von ${args[0]} wurde von ${message.author} zurückgesetzt.`);
+            bot.respond(message, `✅ Der Trust Status von ${target} wurde von ${message.author} zurückgesetzt.`);
             return message.delete();
         });
     }
