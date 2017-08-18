@@ -80,84 +80,106 @@ exports.onMessage = (message, isUpdate) => {
                 }
             }
 
-            if ('server' in cmdObj.config) {
-                if (cmdObj.config.server == true) {
-                    if (message.guild != bot.server) {
-                        return bot.respondPm(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!');
+            const blockCmdKey = `${bot.server.id}.BlockCmd.${message.author.id}`;
+            const blockCmdField = `${cmdObj.help.name}`;
+
+            bot.redis.hget(blockCmdKey, blockCmdField, (err, reply) => {
+                if (err) {
+                    bot.log('[CheckBlockCmd] Redis Connection Error!' + err);
+                    handleCommandAfterBlockCheck();
+                }
+
+                if(reply == null) {
+                    handleCommandAfterBlockCheck();
+                } else {
+                    bot.respondPm(message, 'Du darfst diesen Befehl nicht ausführen! Wende dich an einen Administrator oder Moderator um mehr Informationen zu erhalten.');
+
+                    if (message.guild == bot.server) {
+                        message.delete();
                     }
                 }
-            }
+            });
 
-            if ('role' in cmdObj.config) {
-                if (!bot.checkPermissions(cmdObj.config.role, message.author)) {
-                    bot.respondPm(message, 'Du besitzt nicht genügend Rechte um diesen Befehl auszuführen!');
+            function handleCommandAfterBlockCheck() {
+                if ('server' in cmdObj.config) {
+                    if (cmdObj.config.server == true) {
+                        if (message.guild != bot.server) {
+                            return bot.respondPm(message, 'Dieser Befehl kann nur auf dem Bronies.de Discord Server ausgeführt werden!');
+                        }
+                    }
+                }
+
+                if ('role' in cmdObj.config) {
+                    if (!bot.checkPermissions(cmdObj.config.role, message.author)) {
+                        bot.respondPm(message, 'Du besitzt nicht genügend Rechte um diesen Befehl auszuführen!');
+
+                        if (message.guild == bot.server) {
+                            message.delete();
+                        }
+                        return;
+                    }
+                }
+
+                let trusted = true;
+                if ('trusted' in cmdObj.config) {
+                    trusted = cmdObj.config.trusted;
+                }
+
+                if (trusted && !bot.checkTrusted(message.author)) {
+                    bot.respondPm(message, 'Du musst erst Level 3 erreichen um diesen Befehl nutzen zu können.');
 
                     if (message.guild == bot.server) {
                         message.delete();
                     }
                     return;
                 }
-            }
 
-            let trusted = true;
-            if ('trusted' in cmdObj.config) {
-                trusted = cmdObj.config.trusted;
-            }
+                if ('cooldown' in cmdObj.config) {
+                    let check = true;
 
-            if (trusted && !bot.checkTrusted(message.author)) {
-                bot.respondPm(message, 'Du musst erst Level 3 erreichen um diesen Befehl nutzen zu können.');
-
-                if (message.guild == bot.server) {
-                    message.delete();
-                }
-                return;
-            }
-
-            if ('cooldown' in cmdObj.config) {
-                let check = true;
-
-                if ('skip' in cmdObj.config) {
-                    if (bot.checkPermissions(cmdObj.config.skip, message.author)) {
-                        check = false;
-                    }
-                }
-
-                if (check) {
-                    let cooldownName = `${message.author.id}.${cmdObj.help.name}`;
-                    let globalCooldown = false;
-
-                    if('global_cooldown' in cmdObj.config) {
-                        if(cmdObj.config.global_cooldown) {
-                            cooldownName = cmdObj.help.name;
-                            globalCooldown = true;
+                    if ('skip' in cmdObj.config) {
+                        if (bot.checkPermissions(cmdObj.config.skip, message.author)) {
+                            check = false;
                         }
                     }
 
-                    let cooldown = false;
+                    if (check) {
+                        let cooldownName = `${message.author.id}.${cmdObj.help.name}`;
+                        let globalCooldown = false;
 
-                    if (cooldownName in bot.cooldowns) {
-                        const cooldown = bot.cooldowns[cooldownName];
-
-                        if (moment().diff(cooldown) < 0) {
-                            if(globalCooldown) {
-                                bot.respondPm(message, `Der Befehl \`${cmdObj.help.name}\` wurde erst vor kurzem ausgeführt. Bitte warte noch ${moment().to(cooldown, true)}.`);
-                            } else {
-                                bot.respondPm(message, `Du hast den Befehl \`${cmdObj.help.name}\` erst vor kurzem ausgeführt. Bitte warte noch ${moment().to(cooldown, true)}.`);
+                        if ('global_cooldown' in cmdObj.config) {
+                            if (cmdObj.config.global_cooldown) {
+                                cooldownName = cmdObj.help.name;
+                                globalCooldown = true;
                             }
-                            if (message.guild == bot.server) {
-                                message.delete();
-                            }
-
-                            return;
                         }
+
+                        let cooldown = false;
+
+                        if (cooldownName in bot.cooldowns) {
+                            const cooldown = bot.cooldowns[cooldownName];
+
+                            if (moment().diff(cooldown) < 0) {
+                                if (globalCooldown) {
+                                    bot.respondPm(message, `Der Befehl \`${cmdObj.help.name}\` wurde erst vor kurzem ausgeführt. Bitte warte noch ${moment().to(cooldown, true)}.`);
+                                } else {
+                                    bot.respondPm(message, `Du hast den Befehl \`${cmdObj.help.name}\` erst vor kurzem ausgeführt. Bitte warte noch ${moment().to(cooldown, true)}.`);
+                                }
+                                if (message.guild == bot.server) {
+                                    message.delete();
+                                }
+
+                                return;
+                            }
+                        }
+
+                        bot.cooldowns[cooldownName] = moment().add(cmdObj.config.cooldown, 'seconds');
+                        if (bot.config.DEBUG) bot.log('Cooldown ' + cooldownName + ' ' + bot.cooldowns[cooldownName]);
                     }
-
-                    bot.cooldowns[cooldownName] = moment().add(cmdObj.config.cooldown, 'seconds');
-                    if (bot.config.DEBUG) bot.log('Cooldown ' + cooldownName + ' ' + bot.cooldowns[cooldownName]);
                 }
-            }
 
-            cmdObj.run(bot, message, args);
+                cmdObj.run(bot, message, args);
+            }
         } else {
             match = /^\/([a-zA-Z]+).*$/.exec(message.content);
 
