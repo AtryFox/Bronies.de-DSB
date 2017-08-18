@@ -55,10 +55,8 @@ exports.run = (bot, message, args) => {
         if ('current_event' in result) {
             let preString;
 
-            if (result.current_event == 'DJ-Pony Lucy') {
-                preString = bot.getEmoji('brgLucy') + ' **DJ-Pony Lucy**';
-            } else if (result.current_event == 'DJ-Pony Mary') {
-                preString = bot.getEmoji('brgMary') + ' **DJ-Pony Mary**';
+            if (result.current_event == 'DJ-Pony Lucy' || result.current_event == 'DJ-Pony Mary') {
+                preString = `${bot.getEmoji('dropit')} **${result.current_event}**`;
             } else {
                 preString = `🔴 **${result.current_event}**`;
             }
