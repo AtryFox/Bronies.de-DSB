@@ -29,6 +29,7 @@ exports.run = (bot, message, args) => {
             }
 
             bot.respond(message, `✅ Der Trust Status von ${target} wurde von ${message.author} auf \`${args[1]}\` gesetzt.`);
+            bot.log(`!trust: ${message.author.tag} sets trust status of ${target.user.tag} to \`${args[1]}\`.`);
             return message.delete();
         });
     }
@@ -42,6 +43,7 @@ exports.run = (bot, message, args) => {
             }
 
             bot.respond(message, `✅ Der Trust Status von ${target} wurde von ${message.author} zurückgesetzt.`);
+            bot.log(`!trust: ${message.author.tag} resets trust status of ${target.user.tag}.`);
             return message.delete();
         });
     }

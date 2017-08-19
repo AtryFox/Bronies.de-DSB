@@ -61,6 +61,7 @@ exports.run = (bot, message, args) => {
                 }
 
                 bot.respond(message, `✅ Der Befehl \`${cmdName}\` wurde für ${target} von ${message.author} gesperrt.`);
+                bot.log(`!blockcmd: ${message.author.tag} locks commands \`${cmdName}\` for ${target.user.tag}.`);
                 return message.delete();
             });
         } else {
@@ -72,6 +73,7 @@ exports.run = (bot, message, args) => {
                 }
 
                 bot.respond(message, `✅ Der Befehl \`${cmdName}\` wurde für ${target} von ${message.author} entsperrt.`);
+                bot.log(`!blockcmd: ${message.author.tag} unlocks commands \`${cmdName}\` for ${target.user.tag}.`);
                 return message.delete();
             });
         }
