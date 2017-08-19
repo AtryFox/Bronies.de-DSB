@@ -35,13 +35,11 @@ bot.pool = mysql.createPool({
 });
 
 bot.redis = require('redis-connection-pool')('myRedisPool', {
-    host: '127.0.0.1', // default
-    port: 6379, //default
-    // optionally specify full redis url, overrides host + port properties
-    // url: "redis://username:password@host:port"
+    host: '127.0.0.1',
+    port: 6379,
     max_clients: 30, // defalut
-    perform_checks: false, // checks for needed push/pop functionality
-    database: 0, // database number to use
+    perform_checks: false,
+    database: 0,
 });
 
 bot.cooldowns = {};
@@ -111,6 +109,18 @@ bot.checkTrustedMember = (member) => {
 
 bot.getGuildMember = (user) => {
     return bot.server.members.get(user.id);
+};
+
+bot.getGuildMemberFromArgs = (message,args,argNumber) => {
+    if(message.mentions.members.size != 1) {
+        if(bot.server.members.has(args[argNumber])) {
+            return bot.server.members.get(args[argNumber]);
+        } else {
+            return null
+        }
+    } else {
+        return message.mentions.members.first();
+    }
 };
 
 bot.respond = (message, response, mention, autodel) => {

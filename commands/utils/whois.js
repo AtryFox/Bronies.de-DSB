@@ -16,28 +16,12 @@ exports.run = (bot, message, args) => {
             return;
         }
 
-        const arg = args[0];
-
-        if (/(\d{18})/.test(arg)) {
-            let id = /(\d{18})/.exec(arg)[1];
-            if (bot.server.members.has(id)) {
-                member = bot.server.members.get(id);
-            }
-        } else {
-            let search = args.join(' ');
-
-            if (bot.users.exists('username', search)) {
-                if (bot.server.members.has(bot.users.find('username', search).id)) {
-                    member = bot.server.members.get(bot.users.find('username', search).id);
-                }
-            }
-
-        }
+        member = bot.getGuildMemberFromArgs(message,args, 0);
     }
 
     if (member == null) {
-        bot.respond(message, `Der Nutzer \`${args.join(' ')}\` wurde nicht gefunden.`);
-        return;
+        bot.respond(message, `Der Nutzer \`${args.join(' ')}\` wurde nicht gefunden.`, true , 10);
+        return message.delete();
     }
 
     let embed = new Discord.RichEmbed({

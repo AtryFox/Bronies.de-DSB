@@ -6,19 +6,12 @@ exports.run = (bot, message, args) => {
         return message.delete();
     }
 
-    let target;
+    const target = bot.getGuildMemberFromArgs(message,args, 0);
 
-    if(message.mentions.members.size != 1) {
-        if(bot.server.members.has(args[0])) {
-            target = bot.server.members.get(args[0]);
-        } else {
-            bot.respond(message, `der Nutzer \`${args[0]}\` konnte nicht gefunden werden.`, true, 10);
-            return message.delete();
-        }
-    } else {
-        target = message.mentions.members.first();
+    if(target == null) {
+        bot.respond(message, `der Nutzer \`${args[0]}\` konnte nicht gefunden werden.`, true, 10);
+        return message.delete();
     }
-
 
     function setStatus(statusId) {
         bot.redis.hset(key, field, statusId, err => {
