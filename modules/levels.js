@@ -31,23 +31,23 @@ Levels.prototype.giveExp = function (message) {
     const key = `${this.bot.server.id}.Levels`;
     const field = message.author.id;
 
-    if(message.author.id in this.users) {
+    if (message.author.id in this.users) {
         const timeoutEnd = this.users[message.author.id];
 
-        if(timeoutEnd.diff(moment()) > 0) {
+        if (timeoutEnd.diff(moment()) > 0) {
             return;
         }
     }
 
     let getCurrentExp = () => {
         this.bot.redis.hget(key, field, (err, result) => {
-            if(err) {
+            if (err) {
                 return this.bot.log(`[Levels] Could not giveExp (hget) ${err}`);
             }
 
             let currentExp = 0;
 
-            if(result != null) {
+            if (result != null) {
                 currentExp = result;
             }
 
@@ -59,7 +59,7 @@ Levels.prototype.giveExp = function (message) {
         const newExp = currentExp + this.getRandomExp();
 
         this.bot.redis.hset(key, field, newExp, err => {
-            if(err) {
+            if (err) {
                 return this.bot.log(`[Levels] Could not giveExp (hset) ${err}`);
             }
 
@@ -68,7 +68,7 @@ Levels.prototype.giveExp = function (message) {
             const currentLevel = this.getLevelFromXp(currentExp);
             const newLevel = this.getLevelFromXp(newExp);
 
-            if(currentLevel != newLevel) {
+            if (currentLevel != newLevel) {
                 this.bot.respond(message, `du hast soeben Level ${newLevel} erreicht!`);
             }
         })
@@ -77,17 +77,61 @@ Levels.prototype.giveExp = function (message) {
     getCurrentExp();
 };
 
+
+Levels.prototype.getExp = function (member, callback) {
+    const key = `${this.bot.server.id}.Levels`;
+    const field = 'id' in member ? member.id : member;
+
+    this.bot.redis.hget(key, field, (err, result) => {
+        if (err) {
+            return callback(err, null);
+        }
+
+        callback(false, result);
+    });
+};
+
+Levels.prototype.getAllExp = function (callback) {
+    const key = `${this.bot.server.id}.Levels`;
+
+    this.bot.redis.hgetall(key, (err, results) => {
+        if (err) {
+            return callback(err, null);
+        }
+
+        callback(false, results);
+    });
+};
+
+Levels.prototype.getRanklist = function (callback) {
+    this.getAllExp((err, results) => {
+        if (err) {
+            return callback(err, null);
+        }
+
+        let ranks = Object.keys(results).map(function (key) {
+            return [key, results[key]];
+        });
+
+        ranks.sort(function (first, second) {
+            return second[1] - first[1];
+        });
+
+        callback(false, ranks);
+    });
+};
+
 Levels.prototype.setExp = function (member, exp, callback) {
     const key = `${this.bot.server.id}.Levels`;
-    const field = member.id;
+    const field = 'id' in member ? member.id : member;
 
     this.bot.redis.hset(key, field, exp, err => {
-        if(err) {
+        if (err) {
             return callback(err);
         }
 
         callback(false);
-    })
+    });
 };
 
 
