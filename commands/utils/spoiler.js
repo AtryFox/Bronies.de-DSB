@@ -11,7 +11,7 @@ exports.run = (bot, message, args) => {
 
     bot.log(`${message.author.tag} - Message ID: ${message.id}`);
 
-    bot.database.updateUser(message.author, 0, error_ => {
+    bot.database.updateUser(message.author, error_ => {
         if (error_) {
             return bot.respond(message, 'Spoiler konnte nicht erstellt werden.');
         }

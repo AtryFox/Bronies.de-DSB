@@ -21,7 +21,7 @@ Database.prototype.getRandomXp = function () {
     return this.bot.randomInt(15, 25);
 };
 
-Database.prototype.updateUser = function (user, exp, callback) {
+Database.prototype.updateUser = function (user, callback) {
     this.bot.pool.getConnection((error, con) => {
         if (error) {
             this.bot.log(`Could not update user! (DB_CON_FAIL) ${error}`);
@@ -30,7 +30,7 @@ Database.prototype.updateUser = function (user, exp, callback) {
 
         const member = this.bot.server.members.get(user.id);
 
-        let data = [user.id, user.username, member.nickname, user.discriminator, user.displayAvatarURL, exp, user.username, member.nickname, user.discriminator, user.displayAvatarURL, exp];
+        let data = [user.id, user.username, member.nickname, user.discriminator, user.displayAvatarURL, 0, user.username, member.nickname, user.discriminator, user.displayAvatarURL, 0];
 
         con.query(`INSERT INTO member (ID, USERNAME, NICKNAME, DISCRIMINATOR, AVATAR, EXP) VALUES (?,?,?,?,?,?) ON DUPLICATE KEY UPDATE USERNAME = ?, NICKNAME = ?, DISCRIMINATOR = ?, AVATAR = ?, EXP = EXP + ?`, data, (err, results, fields) => {
             con.release();
