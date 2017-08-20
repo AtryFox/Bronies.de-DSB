@@ -6,11 +6,13 @@ exports.run = (bot, message, args) => {
         return Math.floor(Math.random() * (high - low + 1) + low);
     }
 
-    let file = '_cookies' + randomInt(1, 6) + '.png';
+    let file = `_cookies${randomInt(1, 6)}.png`;
+
+    console.log(`${bot.config.BASE_URL}/i/${file}`);
 
     let embed = new Discord.RichEmbed({
         thumbnail: {
-            url: bot.config.BASE_URL + '/i/Bronies.de-DSB/' + file
+            url: `${bot.config.BASE_URL}/i/${file}`
         },
         description: '**🍪 Eine Runde Kekse wird im Chat verteilt!**',
         color: 0x6C4733
@@ -21,7 +23,7 @@ exports.run = (bot, message, args) => {
 
 exports.config = {
     cooldown: 300,
-    aliases: ['kekse', 'keks'],
+    aliases: ['cookie', 'kekse', 'keks'],
     skip: roles.moderator
 };
 

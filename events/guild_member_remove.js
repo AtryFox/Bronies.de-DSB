@@ -11,7 +11,7 @@ exports.run = (member) => {
         title: 'Ein Mitglied hat uns verlassen.',
         description: `**${member.user.username}** hat den Server verlassen. Bye bye **${member.user.username}**...`,
         thumbnail: {
-            url: bot.config.BASE_URL + '/i/_leave.png'
+            url: `${bot.config.BASE_URL}/i/_leave.png`
         },
         color: 0xEC4141
     }).setFooter(`${member.user.tag} hat den Server verlassen.`, member.user.displayAvatarURL);

@@ -184,7 +184,7 @@ exports.onMessage = (message, isUpdate) => {
             match = /^\/([a-zA-Z]+).*$/.exec(message.content);
 
             if (match) {
-                bot.respondPm(message, 'Befehle können nur noch mit `!` vorangestellt ausgeführt werden. Beispiel: `' + message.content.replace('/', '!') + '`');
+                bot.respondPm(message, `Befehle können nur noch mit \`!\` vorangestellt ausgeführt werden. Beispiel: \`${message.content.replace('/', '!')}\``);
                 if (message.channel.type != 'dm') {
                     message.delete();
                 }

@@ -11,7 +11,7 @@ exports.run = (member) => {
         title: 'Ein neues Mitglied ist zu uns gestoßen!',
         description: `Hey **${member}**, willkommen auf dem offiziellen Discord Server von [Bronies.de](http://bronies.de/). Wirf doch zunächst einen Blick in <#${bot.config.INFO_CH}> für alle wichtigen Informationen, Regeln und Bot-Befehle.`,
         thumbnail: {
-            url: bot.config.BASE_URL + '/i/_join2.png'
+            url: `${bot.config.BASE_URL}/i/_join2.png`
         },
         color: 0x5FBB4E
     }).setFooter(`${member.user.tag} ist dem Server beigetreten.`, member.user.displayAvatarURL);

@@ -25,7 +25,7 @@ Twitter.prototype.initTwitter = function () {
 
     async.each(this.profiles, (profile, callback) => {
         parent.client.getUserTimeline({screen_name: profile.name, count: '1'}, (err) => {
-            parent.bot.log('Could not initialize twitter for ' + profile.name + "! " + err);
+            parent.bot.log(`Could not initialize twitter for ${profile.name}! ${err}`);
         }, function (data) {
             let jsonData;
             try {

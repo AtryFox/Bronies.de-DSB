@@ -14,7 +14,7 @@ exports.run = (bot, message, args) => {
 
     let embed = new Discord.RichEmbed({
         author: {
-            name: bot.server.name + ' - Nutzer',
+            name: `${bot.server.name} - Nutzer`,
             icon_url: bot.server.iconURL,
             url: 'http://bronies.de/'
         },

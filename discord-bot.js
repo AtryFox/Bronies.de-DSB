@@ -164,7 +164,7 @@ bot.idle = () => {
     try {
         bot.user.setStatus('idle');
     } catch (e) {
-        bot.log("Could not set idle status " + e);
+        bot.log(`Could not set idle status ${e}`);
     }
 };
 
@@ -172,7 +172,7 @@ bot.online = () => {
     try {
         bot.user.setStatus('online');
     } catch (e) {
-        bot.log("Could not set online status " + e);
+        bot.log(`Could not set online status ${e}`);
     }
 
 };
@@ -190,10 +190,10 @@ process.on('SIGINT', () => {
 
 /* COMMAND LOADER */
 let commandLoader = function (currentPath) {
-    bot.log("Searching for Commands... " + currentPath);
+    bot.log(`Searching for Commands... ${currentPath}`);
     let files = fs.readdirSync(currentPath);
     for (let i in files) {
-        let currentFile = currentPath + '/' + files[i];
+        let currentFile = `${currentPath}/${files[i]}`;
         let stats = fs.statSync(currentFile);
         if (stats.isFile()) {
             let loader = require(`${currentFile}`);
@@ -212,10 +212,10 @@ commandLoader('./commands');
 
 /* JOB LOADER */
 let jobLoader = function (currentPath) {
-    bot.log("Searching for Jobs... " + currentPath);
+    bot.log(`Searching for Jobs... ${currentPath}`);
     let files = fs.readdirSync(currentPath);
     for (let i in files) {
-        let currentFile = currentPath + '/' + files[i];
+        let currentFile = `${currentPath}/${files[i]}`;
         let stats = fs.statSync(currentFile);
         if (stats.isFile()) {
             let loader = require(`${currentFile}`);
@@ -239,10 +239,10 @@ jobLoader('./jobs');
 
 /* EVENT LOADER */
 let eventLoader = function (currentPath) {
-    bot.log("Searching for Events... " + currentPath);
+    bot.log(`Searching for Events... ${currentPath}`);
     let files = fs.readdirSync(currentPath);
     for (let i in files) {
-        let currentFile = currentPath + '/' + files[i];
+        let currentFile = `${currentPath}/${files[i]}`;
         let stats = fs.statSync(currentFile);
         if (stats.isFile()) {
             let loader = require(`${currentFile}`);

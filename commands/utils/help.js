@@ -61,7 +61,7 @@ exports.run = (bot, message, args) => {
         const cmd = args[0].toLowerCase();
 
         if (!bot.commands.has(cmd) && !bot.aliases.has(cmd)) {
-            return this.run(bot, message, []);
+            return bot.commands.get('help').run(bot, message, []);
         }
 
         let cmdObj;
@@ -105,9 +105,9 @@ exports.run = (bot, message, args) => {
             }
 
             if (globalCooldown) {
-                embed.addField('Globaler Cooldown', cmdObj.config.cooldown + ' Sekunden', true);
+                embed.addField('Globaler Cooldown', `${cmdObj.config.cooldown} Sekunden`, true);
             } else {
-                embed.addField('Cooldown', cmdObj.config.cooldown + ' Sekunden', true);
+                embed.addField('Cooldown', `${cmdObj.config.cooldown} Sekunden`, true);
             }
 
             if ('skip' in cmdObj.config) {
@@ -119,7 +119,7 @@ exports.run = (bot, message, args) => {
             embed.addField('Alias', cmdObj.config.aliases.join(' / '), true);
         }
 
-        embed.addField('Beispiele', `\`\`\`${cmdObj.help.usage.join('\n')}\`\`\``);
+        embed.addField('Beispiele', '```' + cmdObj.help.usage.join('\n') + '```');
 
         if ('thumbnail' in cmdObj.help) {
             embed.setThumbnail(cmdObj.help.thumbnail);

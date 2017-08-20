@@ -4,7 +4,7 @@ const roles = require('../../config/roles'),
 exports.run = (bot, message, args) => {
     let embed = new Discord.RichEmbed({
         image: {
-            url: bot.config.BASE_URL + '/i/coco_pommel_licking_ice_cream_by_deannart-d75f94b_opt.gif'
+            url: `${bot.config.BASE_URL}/i/coco_pommel_licking_ice_cream_by_deannart-d75f94b_opt.gif`
         },
         description: '**🍨 Leckeres Eis wird im Chat verteilt!**',
         color: 0x399CE7

@@ -41,14 +41,14 @@ exports.run = (bot, message, args) => {
             return;
         }
 
-        const soundPath = './sounds/' + sounds[arg];
+        const soundPath = `./sounds/${sounds[arg]}`;
 
         fs.access(soundPath, fs.constants.R_OK, (err) => {
             if (!err) {
                 busy = true;
                 member.voiceChannel.join().then((connection) => {
                     const options = {volume: 0.5};
-                    const dispatcher = connection.playFile('./sounds/' + sounds[arg], options);
+                    const dispatcher = connection.playFile(`./sounds/${sounds[arg]}`, options);
 
                     dispatcher.on('end', () => {
                         busy = false;

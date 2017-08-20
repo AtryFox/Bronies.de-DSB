@@ -26,7 +26,7 @@ exports.run = (bot, message, args) => {
         let text = '🎶 Zuletzt gespielte Songs im BRG:';
 
         result.forEach(song => {
-            const time = moment(song.date_played + ' ' + song.time_played, 'DD.MM.YYYY HH:mm:ss');
+            const time = moment(`${song.date_played} ${song.time_played}`, 'DD.MM.YYYY HH:mm:ss');
             text += `\n\n__**${song.title}** von **${song.artist}**__\n${time.fromNow()}`;
         });
 

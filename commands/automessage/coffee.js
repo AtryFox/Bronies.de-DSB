@@ -4,7 +4,7 @@ const roles = require('../../config/roles'),
 exports.run = (bot, message, args) => {
     let embed = new Discord.RichEmbed({
         thumbnail: {
-            url: bot.config.BASE_URL + '/i/_coffee.png'
+            url: `${bot.config.BASE_URL}/i/_coffee.png`
         },
         description: '**☕ Eine Kanne brühend heißer Kaffee steht bereit!**',
         color: 0x6f4e37

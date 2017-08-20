@@ -16,20 +16,20 @@ exports.run = (bot, message, args) => {
     }
 
     if (regexOrder.test(query)) {
-        parameters += '&sd=' + query.match(regexOrder)[1];
+        parameters += `&sd=${query.match(regexOrder)[1]}`;
         query = query.replace(regexOrder, '');
     }
 
     if (regexSort.test(query)) {
-        parameters += '&sf=' + query.match(regexSort)[1];
+        parameters += `&sf=${query.match(regexSort)[1]}`;
         query = query.replace(regexSort, '');
     } else {
         parameters += '&sf=random';
     }
 
     query = query.replace(/,{2,}/g, ',').replace(/(^,|,$)/, '').replace(/ *, *$/, '');
-    const url = 'https://derpibooru.org/search.json?q=' + encodeURIComponent(query) + parameters;
-    bot.log(message.author.tag + ' - Derpibooru search: ' + url);
+    const url = `https://derpibooru.org/search.json?q=${encodeURIComponent(query) + parameters}`;
+    bot.log(`${message.author.tag} - Derpibooru search: ${url}`);
 
     unirest.get(url)
         .header("Accept", "application/json")

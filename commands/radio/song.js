@@ -43,7 +43,7 @@ exports.run = (bot, message, args) => {
 
         if ('artist' in result) {
             songString = `**${result.title}** von **${result.artist}**`;
-            searchQuery = result.title + ' ' + result.artist;
+            searchQuery = `${result.title} ${result.artist}`;
         } else {
             songString = result.title;
             searchQuery = result.title;
@@ -77,11 +77,11 @@ exports.run = (bot, message, args) => {
                     info += ' | ';
                 }
 
-                info += 'Auf YouTube anhören:  https://youtu.be/' + video.id.videoId;
+                info += `Auf YouTube anhören: https://youtu.be/${video.id.videoId}`;
             }
 
             if (info != '') {
-                text += '\n\n' + info;
+                text += `\n\n${info}`;
             }
 
             bot.respond(message, text, false);

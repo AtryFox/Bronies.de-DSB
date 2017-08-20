@@ -9,7 +9,7 @@ exports.run = (bot, message, args) => {
 
     const member = bot.server.members.get(message.author.id);
 
-    bot.log(message.author.tag + ' - Message ID: ' + message.id);
+    bot.log(`${message.author.tag} - Message ID: ${message.id}`);
 
     bot.database.updateUser(message.author, 0, error_ => {
         if (error_) {
@@ -31,7 +31,7 @@ exports.run = (bot, message, args) => {
                     bot.log(`Could not insert spoiler! ${err}`);
                     bot.respond(message, 'Spoiler konnte nicht erstellt werden.');
                 } else {
-                    bot.respond(message, `Nachricht von ${message.author} wurde in Spoiler versteckt. ${bot.config.BASE_URL + '/s/' + message.id}`, false);
+                    bot.respond(message, `Nachricht von ${message.author} wurde in Spoiler versteckt. ${bot.config.BASE_URL}/s/${message.id}`, false);
                     message.delete();
                 }
             });
