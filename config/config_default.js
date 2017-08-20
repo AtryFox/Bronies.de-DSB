@@ -16,6 +16,9 @@ module.exports = {
     // Channel ID of channel for admin logs
     LOG_CH: '',
 
+    // Channel ID of channel with server info and rules (used in welcome message)
+    INFO_CH: '',
+
     // Client ID of admin user
     BOT_ADMIN: '',
 
