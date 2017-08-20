@@ -23,6 +23,17 @@ Levels.prototype.getLevelFromXp = function (xp) {
     return level;
 };
 
+Levels.prototype.getLevelProgress = function (exp) {
+    let level = 0;
+
+    while (exp >= this.getLevelExp(level)) {
+        exp -= this.getLevelExp(level);
+        level++;
+    }
+
+    return exp;
+};
+
 Levels.prototype.getRandomExp = function () {
     return this.bot.randomInt(15, 25);
 };

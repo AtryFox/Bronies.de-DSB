@@ -35,7 +35,7 @@ exports.run = (bot, message, args) => {
             return message.delete();
         }
 
-        bot.respond(message, `✅ EXP-Wert für ${target} von ${message.author} auf **${exp}** gesetzt. __Neues Level: ${bot.levels.getLevelFromXp(exp)}__`)
+        bot.respond(message, `✅ EXP-Wert für ${target} von ${message.author} auf **${exp}** gesetzt. __Neues Level: ${bot.levels.getLevelFromXp(exp)}__`);
         bot.log(`!setexp: ${message.author.tag} set exp for ${target.user.tag} to ${exp}.`);
         message.delete();
     })
