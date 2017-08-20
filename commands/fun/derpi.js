@@ -36,7 +36,8 @@ exports.run = (bot, message, args) => {
         .end((result) => {
             if (result.error || typeof result.body !== 'object') {
                 bot.log(result.error, result.body);
-                return bot.respond(message, 'Derpibooru Anfrage fehlgeschlagen (HTTP ' + result.status + ')');
+                bot.respond(message, `Derpibooru Anfrage fehlgeschlagen (HTTP ${result.status})`, true, 10);
+                return message.delete();
             }
 
             const data = result.body;
@@ -49,7 +50,7 @@ exports.run = (bot, message, args) => {
                 return bot.respond(message, 'Dieses Bild wurde noch nicht von Derpibooru verarbeitet. Bitte versuche es später erneut.');
             }
 
-            bot.respond(message, '<http://derpibooru.org/' + img.id + '>\nhttps:' + (img.image.replace(/__[^.]+(.\w+)$/, '$1')));
+            bot.respond(message, `<http://derpibooru.org/${img.id}>\nhttps:${img.image.replace(/__[^.]+(.\w+)$/, '$1')}`);
         });
 
 };

@@ -20,7 +20,7 @@ exports.run = (bot, message, args) => {
 
     bot.pool.getConnection((error, con) => {
         if (error) {
-            return bot.log('Could not get connection! ' + error);
+            return bot.log(`Could not get connection! ${error}`);
         }
 
         function getStatsToday() {
@@ -28,7 +28,7 @@ exports.run = (bot, message, args) => {
                 if (error) {
                     err.release();
                     respondError();
-                    return bot.log('Could not get stats! ' + error);
+                    return bot.log(`Could not get stats! ${error}`);
                 }
 
                 if (results.length < 1) {
@@ -50,7 +50,7 @@ exports.run = (bot, message, args) => {
                 if (err) {
                     con.release();
                     respondError();
-                    return bot.log('Could not get stats! ' + error);
+                    return bot.log(`Could not get stats! ${error}`);
                 }
 
                 if (results.length < 1) {
@@ -73,7 +73,7 @@ exports.run = (bot, message, args) => {
 
                 if (err) {
                     respondError();
-                    return bot.log('Could not get stats! ' + error);
+                    return bot.log(`Could not get stats! ${error}`);
                 }
 
                 if (results.length < 1) {

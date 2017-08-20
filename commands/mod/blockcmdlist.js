@@ -18,7 +18,7 @@ exports.run = (bot, message, args) => {
 
     bot.redis.hgetall(key, (err, replies) => {
         if (err) {
-            bot.log('Redis Connection Error!' + err);
+            bot.log(`Redis Connection Error! ${err}`);
             bot.respond(message, 'Fehler beim Verbinden zum Redis Server!', true, 10);
             return message.delete();
         }

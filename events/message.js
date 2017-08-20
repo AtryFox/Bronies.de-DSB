@@ -43,7 +43,7 @@ exports.onMessage = (message, isUpdate) => {
                         message.delete();
                     }
                 } catch (e) {
-                    bot.log('Error removing embed!!\n' + e);
+                    bot.log(`Error removing embed!!\n ${e}`);
                 }
             }
         }
@@ -85,7 +85,7 @@ exports.onMessage = (message, isUpdate) => {
 
             bot.redis.hget(blockCmdKey, blockCmdField, (err, reply) => {
                 if (err) {
-                    bot.log('[CheckBlockCmd] Redis Connection Error!' + err);
+                    bot.log(`[CheckBlockCmd] Redis Connection Error! ${err}`);
                     handleCommandAfterBlockCheck();
                 }
 
@@ -174,7 +174,7 @@ exports.onMessage = (message, isUpdate) => {
                         }
 
                         bot.cooldowns[cooldownName] = moment().add(cmdObj.config.cooldown, 'seconds');
-                        if (bot.config.DEBUG) bot.log('Cooldown ' + cooldownName + ' ' + bot.cooldowns[cooldownName]);
+                        if (bot.config.DEBUG) bot.log(`Cooldown ${cooldownName} ${bot.cooldowns[cooldownName]}`);
                     }
                 }
 
@@ -203,13 +203,13 @@ exports.onMessage = (message, isUpdate) => {
 
         bot.pool.getConnection((error, con) => {
             if (error) {
-                return bot.log('Could not get connection! ' + error);
+                return bot.log(`Could not get connection! ${error}`);
             }
 
             con.query(`INSERT INTO daily (DATE, MESSAGES, COMMANDS) VALUES (CURDATE(), ${addMessage}, ${addCommand}) ON DUPLICATE KEY UPDATE MESSAGES = MESSAGES + ${addMessage}, COMMANDS = COMMANDS + ${addCommand}`, (err, results, fields) => {
                 con.release();
                 if (err) {
-                    return bot.log('Could not update/insert stats! ' + err);
+                    return bot.log(`Could not update/insert stats! ${err}`);
                 }
             });
         });
@@ -221,7 +221,7 @@ exports.onMessage = (message, isUpdate) => {
         if (bot.server.members.has(message.author.id)) {
             handleCommand();
         } else {
-            return message.channel.send('You have to be member of ' + bot.server.name + '!');
+            return message.channel.send(`You have to be member of ${bot.server.name}!`);
         }
     }
 };

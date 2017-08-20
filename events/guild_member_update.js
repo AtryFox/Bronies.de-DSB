@@ -17,7 +17,7 @@ exports.run = (oldMember, newMember) => {
 
         bot.redis.hget(key, field, (err, reply) => {
             if (err) {
-                return bot.log('[CheckTrustStatus] Redis Connection Error ' + err);
+                return bot.log(`[CheckTrustStatus] Redis Connection Error ${err}`);
             }
 
             if (reply == null) {

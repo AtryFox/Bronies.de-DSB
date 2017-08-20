@@ -19,7 +19,7 @@ exports.run = (bot, message, args) => {
         bot.pool.getConnection((error, con) => {
             if (error) {
                 bot.respond(message, 'Spoiler konnte nicht erstellt werden.');
-                return bot.log('Could not get connection! ' + error);
+                return bot.log(`Could not get connection! ${error}`);
             }
 
 
@@ -28,7 +28,7 @@ exports.run = (bot, message, args) => {
             con.query(`INSERT INTO spoiler (MESSAGE_ID, MESSAGE_DATE, MESSAGE, MEMBER_ID) VALUES (?, NOW(), ?, ?)`, data, (err, results, fields) => {
                 con.release();
                 if (err) {
-                    bot.log('Could not insert spoiler! ' + err);
+                    bot.log(`Could not insert spoiler! ${err}`);
                     bot.respond(message, 'Spoiler konnte nicht erstellt werden.');
                 } else {
                     bot.respond(message, `Nachricht von ${message.author} wurde in Spoiler versteckt. ${bot.config.BASE_URL + '/s/' + message.id}`, false);

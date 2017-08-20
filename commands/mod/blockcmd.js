@@ -41,7 +41,7 @@ exports.run = (bot, message, args) => {
 
     bot.redis.hget(key, field, (err, reply) => {
         if (err) {
-            bot.log('Redis Connection Error!' + err);
+            bot.log(`Redis Connection Error! ${err}`);
             bot.respond(message, 'Fehler beim Verbinden zum Redis Server!', true, 10);
             return message.delete();
         }
@@ -53,7 +53,7 @@ exports.run = (bot, message, args) => {
         if (reply == null) {
             bot.redis.hset(key, field, 0, err => {
                 if (err) {
-                    bot.log('Redis Connection Error!' + err);
+                    bot.log(`Redis Connection Error! ${err}`);
                     bot.respond(message, 'Fehler beim Verbinden zum Redis Server!', true, 10);
                     return message.delete();
                 }
@@ -65,7 +65,7 @@ exports.run = (bot, message, args) => {
         } else {
             bot.redis.hdel(key, field, err => {
                 if (err) {
-                    bot.log('Redis Connection Error!' + err);
+                    bot.log(`Redis Connection Error! ${err}`);
                     bot.respond(message, 'Fehler beim Verbinden zum Redis Server!', true, 10);
                     return message.delete();
                 }

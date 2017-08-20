@@ -61,7 +61,7 @@ exports.run = (bot, message, args) => {
                 })
                     .catch(console.error);
             } else {
-                bot.log('Soundfile not found: ' + arg + ' file ' + sounds[arg]);
+                bot.log(`Soundfile not found: ${arg} file ${sounds[arg]}`);
             }
         });
     }

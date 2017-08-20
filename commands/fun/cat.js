@@ -6,7 +6,7 @@ exports.run = (bot, message, args) => {
         .end((result) => {
             if (result.error || typeof result.body !== 'object') {
                 bot.log(result.error, result.body);
-                return bot.respond(message, 'RandomCat Anfrage fehlgeschlagen (HTTP ' + result.status + ')');
+                return bot.respond(message, `RandomCat Anfrage fehlgeschlagen (HTTP ${result.status})`);
             }
 
             const data = result.body;

@@ -10,10 +10,10 @@ exports.run = () => {
     bot.log('I am ready!');
     bot.getVersion((info) => {
         bot.versionInfo = info;
-        //bot.user.setGame('version ' + bot.versionInfo.version);
+        //bot.user.setGame(`version ${bot.versionInfo.version}`);
         bot.user.setPresence({game: {name: 'version ' + bot.versionInfo.version, type: 0}});
 
-        if (bot.config.DEBUG) bot.channels.get(bot.config.BOT_CH).send('I am ready, running version `' + bot.versionInfo.version + '`! 👌');
+        if (bot.config.DEBUG) bot.channels.get(bot.config.BOT_CH).send(`I am ready, running version \`${bot.versionInfo.version}\`! 👌`);
     });
 
     if (!bot.guilds.has(bot.config.SERVER_ID)) {

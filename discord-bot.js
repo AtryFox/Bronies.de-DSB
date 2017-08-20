@@ -54,7 +54,7 @@ bot.getVersion = (callback) => {
 
     exec('git rev-parse --short=4 HEAD', function (error, version) {
         if (error) {
-            bot.log('Error getting version', error);
+            bot.log(`Error getting version ${error}`);
             info.version = 'unknown';
         } else {
             info.version = version.trim();
@@ -62,14 +62,14 @@ bot.getVersion = (callback) => {
 
         exec('git log -1 --pretty=%B', function (error, message) {
             if (error) {
-                bot.log('Error getting commit message', error);
+                bot.log(`Error getting commit message ${error}`);
             } else {
                 info.message = message.trim();
             }
 
             exec('git log -1 --date=short --pretty=format:%ci', function (error, timestamp) {
                 if (error) {
-                    bot.log('Error getting creation time', error);
+                    bot.log(`Error getting creation time ${error}`);
                 } else {
                     info.timestamp = timestamp;
                 }
@@ -263,11 +263,11 @@ let dbSetup = function () {
     bot.log('Setting up database...');
     fs.readFile('./db_setup.sql', 'utf8', (err, data) => {
         if (err) {
-            return bot.log('Failed to open setup sql file: ' + err);
+            return bot.log(`Failed to open setup sql file: ${err}`);
         }
         bot.pool.getConnection((error, con) => {
             if (error) {
-                return bot.log('Failed to get db connection: ' + error);
+                return bot.log(`Failed to get db connection: ${error}`);
             }
 
             const statements = data.split(';');
@@ -275,7 +275,7 @@ let dbSetup = function () {
             statements.forEach(data => {
                 con.query(data, (err, results, fields) => {
                     if (err) {
-                        return bot.log('Failed to setup db: ' + err);
+                        return bot.log(`Failed to setup db: ${err}`);
                     }
                 })
             });

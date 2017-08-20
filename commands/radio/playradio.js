@@ -13,16 +13,16 @@ exports.run = (bot, message, args) => {
                 exec(bot.config.RADIO_START, (error) => {
                     if (error != null) {
                         bot.respond(message, 'beim Neustarten des Radios ist ein Fehler aufgetreten!', true);
-                        bot.log('Failed executing radio start.sh! ' + err);
+                        bot.log(`Failed executing radio start.sh! ${err}`);
                     }
                 });
             } catch (err) {
                 bot.respond(message, 'beim Neustarten des Radios ist ein Fehler aufgetreten!', true);
-                bot.log('Failed to execute radio start.sh! ' + err);
+                bot.log(`Failed to execute radio start.sh! ${err}`);
             }
         } else {
             bot.respond(message, 'beim Neustarten des Radios ist ein Fehler aufgetreten!', true);
-            bot.log('Radio start.sh not found! ' + err);
+            bot.log(`Radio start.sh not found! ${err}`);
         }
     });
 };

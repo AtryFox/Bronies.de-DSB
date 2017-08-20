@@ -36,7 +36,7 @@ Twitter.prototype.initTwitter = function () {
             }
 
             if (jsonData.length < 1) {
-                parent.bot.log('Could not initialize twitter for ' + profile.name + ', no tweets fetched...');
+                parent.bot.log(`Could not initialize twitter for ${profile.name}, no tweets fetched...`);
             } else {
                 parent.lastTweets[profile.name] = jsonData[0].id_str;
             }
@@ -69,14 +69,14 @@ Twitter.prototype.postNewTweets = function () {
         };
 
         parent.client.getUserTimeline(options, (err) => {
-            parent.bot.log('Could not fetch new tweets for' + profile.name + "! " + err);
+            parent.bot.log(`Could not fetch new tweets for ${profile.name}! ${err}`);
         }, function (data) {
             let jsonData;
 
             try {
                 jsonData = JSON.parse(data);
             } catch (err) {
-                parent.bot.log('Could not fetch new tweets for' + profile.name + '! ' + err);
+                parent.bot.log(`Could not fetch new tweets for ${profile.name}! ${err}`);
                 return callback();
             }
 
@@ -84,7 +84,7 @@ Twitter.prototype.postNewTweets = function () {
                 parent.lastTweets[profile.name] = jsonData[0].id_str;
 
                 if (!parent.bot.server.channels.has(profile.channel)) {
-                    parent.bot.log('Could not find channel id ' + profile.channel + ' for ' + profile.name);
+                    parent.bot.log(`Could not find channel id ${profile.channel} for ${profile.name}`);
                     return callback();
                 }
 
@@ -116,14 +116,14 @@ Twitter.prototype.getTestTweet = function (user) {
     };
 
     parent.client.getUserTimeline(options, (err) => {
-        parent.bot.log('Could not fetch new tweets for' + profile.name + "! " + err);
+        parent.bot.log(`Could not fetch new tweets for ${profile.name}! ${err}`);
     }, function (data) {
         let jsonData;
 
         try {
             jsonData = JSON.parse(data);
         } catch (err) {
-            parent.bot.log('Could not fetch new tweets for' + profile.name + '! ' + err);
+            parent.bot.log(`Could not fetch new tweets for ${profile.name}! ${err}`);
         }
 
 
