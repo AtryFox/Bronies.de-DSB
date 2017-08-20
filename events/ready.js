@@ -1,5 +1,5 @@
-exports.Event = function(bot) {
-  this.bot = bot;
+exports.Event = function (bot) {
+    this.bot = bot;
 };
 
 exports.run = () => {
@@ -11,7 +11,7 @@ exports.run = () => {
     bot.getVersion((info) => {
         bot.versionInfo = info;
         //bot.user.setGame('version ' + bot.versionInfo.version);
-        bot.user.setPresence({ game: { name: 'version ' + bot.versionInfo.version, type: 0 } });
+        bot.user.setPresence({game: {name: 'version ' + bot.versionInfo.version, type: 0}});
 
         if (bot.config.DEBUG) bot.channels.get(bot.config.BOT_CH).send('I am ready, running version `' + bot.versionInfo.version + '`! 👌');
     });

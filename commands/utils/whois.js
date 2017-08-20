@@ -10,17 +10,17 @@ exports.run = (bot, message, args) => {
     if (args.length == 0) {
         member = bot.server.members.get(message.author.id);
     } else {
-        if(!bot.checkPermissions(roles.moderator, message.author)) {
+        if (!bot.checkPermissions(roles.moderator, message.author)) {
             bot.respondPm(message, 'Du besitzt nicht genügend Rechte um Informationen zu anderen Nutzern abzufragen.');
             message.delete();
             return;
         }
 
-        member = bot.getGuildMemberFromArgs(message,args, 0);
+        member = bot.getGuildMemberFromArgs(message, args, 0);
     }
 
     if (member == null) {
-        bot.respond(message, `Der Nutzer \`${args.join(' ')}\` wurde nicht gefunden.`, true , 10);
+        bot.respond(message, `Der Nutzer \`${args.join(' ')}\` wurde nicht gefunden.`, true, 10);
         return message.delete();
     }
 
@@ -45,12 +45,12 @@ exports.run = (bot, message, args) => {
             },
             {
                 name: 'Status',
-                value: member.presence.status ,
+                value: member.presence.status,
                 inline: true
             },
             {
                 name: 'Spiel',
-                value: member.presence.game != null ? member.presence.game.name : "Kein Spiel aktiv" ,
+                value: member.presence.game != null ? member.presence.game.name : "Kein Spiel aktiv",
                 inline: true
             },
             {

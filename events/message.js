@@ -89,7 +89,7 @@ exports.onMessage = (message, isUpdate) => {
                     handleCommandAfterBlockCheck();
                 }
 
-                if(reply == null) {
+                if (reply == null) {
                     handleCommandAfterBlockCheck();
                 } else {
                     bot.respondPm(message, 'Du darfst diesen Befehl nicht ausführen! Wende dich an einen Administrator oder Moderator um mehr Informationen zu erhalten.');

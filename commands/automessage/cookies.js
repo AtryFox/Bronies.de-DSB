@@ -2,7 +2,7 @@ const roles = require('../../config/roles'),
     Discord = require('discord.js');
 
 exports.run = (bot, message, args) => {
-    function randomInt (low, high) {
+    function randomInt(low, high) {
         return Math.floor(Math.random() * (high - low + 1) + low);
     }
 

@@ -29,11 +29,11 @@ exports.run = (bot, message, args) => {
         color: 0x632E86
     }).setFooter(moment().format('LLLL'));
 
-    if('message' in bot.versionInfo) {
+    if ('message' in bot.versionInfo) {
         embed.addField('Letzte Commitnachricht', bot.versionInfo.message, false);
     }
 
-    if('timestamp' in bot.versionInfo) {
+    if ('timestamp' in bot.versionInfo) {
         embed.addField('Erstellt', (moment(bot.versionInfo.timestamp, 'YYYY-MM-DD HH:mm:ss Z').locale('de').fromNow()), false);
     }
 

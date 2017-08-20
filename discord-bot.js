@@ -111,9 +111,9 @@ bot.getGuildMember = (user) => {
     return bot.server.members.get(user.id);
 };
 
-bot.getGuildMemberFromArgs = (message,args,argNumber) => {
-    if(message.mentions.members.size != 1) {
-        if(bot.server.members.has(args[argNumber])) {
+bot.getGuildMemberFromArgs = (message, args, argNumber) => {
+    if (message.mentions.members.size != 1) {
+        if (bot.server.members.has(args[argNumber])) {
             return bot.server.members.get(args[argNumber]);
         } else {
             return null
@@ -133,7 +133,7 @@ bot.respond = (message, response, mention, autodel) => {
     }
 
     function del(msg) {
-        if(autodel <= 0) return;
+        if (autodel <= 0) return;
         setTimeout(() => msg.delete(), autodel * 1000);
     }
 

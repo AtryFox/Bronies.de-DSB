@@ -7,11 +7,11 @@ exports.run = (bot, message, args) => {
 
     fs.access(bot.config.RADIO_START, fs.constants.R_OK, (err) => {
         if (!err) {
-            try{
+            try {
                 bot.respond(message, 'Radio wird neugestartet...', true);
 
                 exec(bot.config.RADIO_START, (error) => {
-                    if(error != null) {
+                    if (error != null) {
                         bot.respond(message, 'beim Neustarten des Radios ist ein Fehler aufgetreten!', true);
                         bot.log('Failed executing radio start.sh! ' + err);
                     }

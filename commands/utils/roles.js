@@ -5,10 +5,10 @@ exports.run = (bot, message, args) => {
     let roleTable = [];
 
     bot.server.roles.forEach(role => {
-        roleTable.push([role.name, role.id, role.members.size + ' members' ,role.hexColor])
+        roleTable.push([role.name, role.id, role.members.size + ' members', role.hexColor])
     });
 
-    bot.respond(message, 'Liste aller Rollen des Servers:\n```' + table(roleTable, {hsep: '    '})+ '```');
+    bot.respond(message, 'Liste aller Rollen des Servers:\n```' + table(roleTable, {hsep: '    '}) + '```');
 };
 
 exports.config = {

@@ -20,7 +20,7 @@ exports.run = (bot, message, args) => {
         for (let ix = 0; ix < soundsKeys.length; ix += columns)
             soundsTable.push(soundsKeys.slice(ix, ix + columns));
 
-        if(args.includes('here')) {
+        if (args.includes('here')) {
             bot.respond(message, 'Nutze `!sb soundname` um Sounds in einem Voicechannel abzuspielen.\n\nFolgende Sounds können abgespielt werden:\n```' + table(soundsTable, {hsep: '    '}) + '```', false);
         } else {
             bot.respondPm(message, 'Nutze `!sb soundname` um Sounds in einem Voicechannel abzuspielen.\n\nFolgende Sounds können abgespielt werden:\n```' + table(soundsTable, {hsep: '    '}) + '```');

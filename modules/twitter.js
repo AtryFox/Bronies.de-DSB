@@ -102,7 +102,7 @@ Twitter.prototype.postNewTweets = function () {
     });
 };
 
-Twitter.prototype.getTestTweet = function(user) {
+Twitter.prototype.getTestTweet = function (user) {
     const parent = this;
 
     let rts = true;
@@ -115,7 +115,7 @@ Twitter.prototype.getTestTweet = function(user) {
         exclude_replies: !mentions
     };
 
-    parent.client.getUserTimeline(options, (err)  =>{
+    parent.client.getUserTimeline(options, (err) => {
         parent.bot.log('Could not fetch new tweets for' + profile.name + "! " + err);
     }, function (data) {
         let jsonData;

@@ -7,9 +7,9 @@ exports.run = (bot, message, args) => {
         return message.delete();
     }
 
-    const target = bot.getGuildMemberFromArgs(message,args, 0);
+    const target = bot.getGuildMemberFromArgs(message, args, 0);
 
-    if(target == null) {
+    if (target == null) {
         bot.respond(message, `der Nutzer \`${args[0]}\` konnte nicht gefunden werden.`, true, 10);
         return message.delete();
     }
@@ -17,13 +17,13 @@ exports.run = (bot, message, args) => {
     const key = `${bot.server.id}.BlockCmd.${target.id}`;
 
     bot.redis.hgetall(key, (err, replies) => {
-        if(err) {
+        if (err) {
             bot.log('Redis Connection Error!' + err);
             bot.respond(message, 'Fehler beim Verbinden zum Redis Server!', true, 10);
             return message.delete();
         }
 
-        if(replies == null) {
+        if (replies == null) {
             bot.respond(message, `für den Nutzer ${target} sind keine Befehle gesperrt.`, true);
         } else {
             let text = `für den Nutzer ${target} sind folgende Befehle gesperrt:\n`;

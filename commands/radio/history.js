@@ -17,7 +17,7 @@ exports.run = (bot, message, args) => {
     }
 
     getMetaData(result => {
-        if(!result) {
+        if (!result) {
             return bot.respond(message, 'Zulutzt gespielte Songs konnten nicht abgerufen werden. Versuche es bitte später erneut.', true);
         }
 

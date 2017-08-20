@@ -18,11 +18,11 @@ exports.run = (bot, message, args) => {
             }
 
             let trusted = true;
-            if('trusted' in command.config) {
+            if ('trusted' in command.config) {
                 trusted = command.config.trusted;
             }
 
-            if(trusted && !bot.checkTrusted(message.author)){
+            if (trusted && !bot.checkTrusted(message.author)) {
                 return;
             }
 
@@ -42,7 +42,7 @@ exports.run = (bot, message, args) => {
             text += '\n\nWeitere **Moderationsbefehle** von <@155149108183695360> sind über `?help` verfügbar.';
         }
 
-        if(!bot.checkTrusted(message.author)) {
+        if (!bot.checkTrusted(message.author)) {
             text += '\n\n:pushpin: Du schaltest weitere Befehle frei, sobald du **Level 3** erreichst.';
         }
 
@@ -83,11 +83,11 @@ exports.run = (bot, message, args) => {
         let description = cmdObj.help.description;
 
         let trusted = true;
-        if('trusted' in cmdObj.config) {
+        if ('trusted' in cmdObj.config) {
             trusted = cmdObj.config.trusted;
         }
 
-        if(trusted) {
+        if (trusted) {
             description += '\n\n__Info:__\nErfordert die **`@Trusted`**-Rolle.';
         }
 
@@ -100,11 +100,11 @@ exports.run = (bot, message, args) => {
         if ('cooldown' in cmdObj.config) {
             let globalCooldown = false;
 
-            if('global_cooldown' in cmdObj.config) {
+            if ('global_cooldown' in cmdObj.config) {
                 globalCooldown = cmdObj.config.global_cooldown;
             }
 
-            if(globalCooldown) {
+            if (globalCooldown) {
                 embed.addField('Globaler Cooldown', cmdObj.config.cooldown + ' Sekunden', true);
             } else {
                 embed.addField('Cooldown', cmdObj.config.cooldown + ' Sekunden', true);

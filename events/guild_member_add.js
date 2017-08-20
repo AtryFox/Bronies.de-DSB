@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-exports.Event = function(bot) {
+exports.Event = function (bot) {
     this.bot = bot;
 };
 

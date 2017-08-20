@@ -6,22 +6,22 @@ exports.run = (bot, message, args) => {
         return message.delete();
     }
 
-    const target = bot.getGuildMemberFromArgs(message,args, 0);
+    const target = bot.getGuildMemberFromArgs(message, args, 0);
 
-    if(target == null) {
+    if (target == null) {
         bot.respond(message, `der Nutzer \`${args[0]}\` konnte nicht gefunden werden.`, true, 10);
         return message.delete();
     }
 
-    if(target.highestRole.comparePositionTo(bot.server.members.get(message.author.id).highestRole) >= 0 && !bot.checkPermissions(roles.admin, message.author)) {
+    if (target.highestRole.comparePositionTo(bot.server.members.get(message.author.id).highestRole) >= 0 && !bot.checkPermissions(roles.admin, message.author)) {
         bot.respond(message, `nicht genügend Rechte!`, true, 10);
         return message.delete();
     }
 
     let cmdName;
 
-    if(!bot.commands.has(args[1])) {
-        if(bot.aliases.has(args[1])) {
+    if (!bot.commands.has(args[1])) {
+        if (bot.aliases.has(args[1])) {
             cmdName = bot.commands.get(bot.aliases.get(args[1])).help.name;
         } else {
             bot.respond(message, `der Befehl \`${args[0]}\` wurde nicht gefunden.`, true, 10);
@@ -31,7 +31,7 @@ exports.run = (bot, message, args) => {
         cmdName = bot.commands.get(args[1]).help.name;
     }
 
-    if(cmdName == 'blockcmd') {
+    if (cmdName == 'blockcmd') {
         bot.respond(message, `der Befehl \`${cmdName}\` kann nicht gesperrt werden!`, true, 10);
         return message.delete();
     }
@@ -40,7 +40,7 @@ exports.run = (bot, message, args) => {
     const field = `${cmdName}`;
 
     bot.redis.hget(key, field, (err, reply) => {
-        if(err) {
+        if (err) {
             bot.log('Redis Connection Error!' + err);
             bot.respond(message, 'Fehler beim Verbinden zum Redis Server!', true, 10);
             return message.delete();
@@ -50,9 +50,9 @@ exports.run = (bot, message, args) => {
     });
 
     function setBlockState(reply) {
-        if(reply == null) {
+        if (reply == null) {
             bot.redis.hset(key, field, 0, err => {
-                if(err) {
+                if (err) {
                     bot.log('Redis Connection Error!' + err);
                     bot.respond(message, 'Fehler beim Verbinden zum Redis Server!', true, 10);
                     return message.delete();
@@ -64,7 +64,7 @@ exports.run = (bot, message, args) => {
             });
         } else {
             bot.redis.hdel(key, field, err => {
-                if(err) {
+                if (err) {
                     bot.log('Redis Connection Error!' + err);
                     bot.respond(message, 'Fehler beim Verbinden zum Redis Server!', true, 10);
                     return message.delete();
