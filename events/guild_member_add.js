@@ -9,12 +9,12 @@ exports.run = (member) => {
 
     let embed = new Discord.RichEmbed({
         title: 'Ein neues Mitglied ist zu uns gestoßen!',
-        description: `Hey **${member.user.username}**, willkommen auf dem offiziellen Discord Server von [Bronies.de](http://bronies.de/). Wirf doch zunächst einen Blick in **#info** für alle wichtigen Informationen und Bot-Befehle.`,
+        description: `Hey **${member}**, willkommen auf dem offiziellen Discord Server von [Bronies.de](http://bronies.de/). Wirf doch zunächst einen Blick in <#${bot.config.INFO_CH}> für alle wichtigen Informationen, Regeln und Bot-Befehle.`,
         thumbnail: {
-            url: bot.config.BASE_URL + '/i/_join.png'
+            url: bot.config.BASE_URL + '/i/_join2.png'
         },
         color: 0x5FBB4E
-    }).setFooter('Viel Spaß auf dem Server!');
+    }).setFooter(`${member.user.tag} ist dem Server beigetreten.`, member.user.displayAvatarURL);
 
     bot.channels.get(bot.config.DEFAULT_CH).send({embed});
 };

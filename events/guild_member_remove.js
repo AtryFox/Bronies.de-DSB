@@ -14,7 +14,7 @@ exports.run = (member) => {
             url: bot.config.BASE_URL + '/i/_leave.png'
         },
         color: 0xEC4141
-    }).setFooter('DERPY WANTS MUFFINS!');
+    }).setFooter(`${member.user.tag} hat den Server verlassen.`, member.user.displayAvatarURL);
 
     bot.channels.get(bot.config.DEFAULT_CH).send({embed});
 };
