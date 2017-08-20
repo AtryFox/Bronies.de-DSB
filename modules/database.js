@@ -2,25 +2,6 @@ function Database(bot) {
     this.bot = bot;
 }
 
-Database.prototype.getLevelXp = function (level) {
-    return 5 * (Math.pow(level, 2)) + 50 * level + 100;
-};
-
-Database.prototype.getLevelFromXp = function (xp) {
-    let level = 0;
-
-    while (xp >= this.getLevelXp(level)) {
-        xp -= this.getLevelXp(level);
-        level++;
-    }
-
-    return level;
-};
-
-Database.prototype.getRandomXp = function () {
-    return this.bot.randomInt(15, 25);
-};
-
 Database.prototype.updateUser = function (user, callback) {
     this.bot.pool.getConnection((error, con) => {
         if (error) {
