@@ -3,10 +3,6 @@ const roles = require('../../config/roles'),
 
 
 exports.run = (bot, message, args) => {
-    if (args.length < 1) {
-        return bot.respond(message, 'Dieser Befehl benötigt zusätzliche Parameter. Mehr unter `!help spoiler`');
-    }
-
     const member = bot.server.members.get(message.author.id);
 
     bot.log(`${message.author.tag} - Message ID: ${message.id}`);
@@ -43,7 +39,8 @@ exports.config = {
     aliases: ['s'],
     cooldown: 60,
     skip: roles.moderator,
-    server: true
+    server: true,
+    params: 1
 };
 
 exports.help = {

@@ -5,11 +5,6 @@ const roles = require('../../config/roles'),
 let busy = false;
 
 exports.run = (bot, message, args) => {
-    if (args.length < 1) {
-        this.run(bot, message, ['help']);
-        return message.delete();
-    }
-
     const arg = args[0].toLowerCase();
 
     if (arg == 'help') {
@@ -71,6 +66,7 @@ exports.config = {
     aliases: ['sb'],
     server: true,
     cooldown: 15,
+    params: 1
 };
 
 exports.help = {

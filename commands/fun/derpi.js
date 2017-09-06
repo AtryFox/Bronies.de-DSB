@@ -2,10 +2,6 @@ const roles = require('../../config/roles'),
     unirest = require('unirest');
 
 exports.run = (bot, message, args) => {
-    if (args.length < 1) {
-        return bot.respond(message, 'Dieser Befehl benötigt zusätzliche Parameter. Mehr unter `!help derpi`');
-    }
-
     let regexOrder = /\bo:(desc|asc)\b/i,
         regexSort = /\bby:(score|relevance|width|height|comments|created_at|random)\b/i,
         parameters = '',
@@ -59,7 +55,8 @@ exports.config = {
     aliases: ['db'],
     server: true,
     cooldown: 30,
-    skip: roles.moderator
+    skip: roles.moderator,
+    params: 1
 };
 
 exports.help = {

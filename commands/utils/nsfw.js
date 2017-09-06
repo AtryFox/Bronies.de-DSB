@@ -7,10 +7,6 @@ exports.run = (bot, message, args) => {
         message.delete();
     }
 
-    if (args.length != 1) {
-        return bot.respondPm(msg, 'Nutze `!nsfw <join|leave>` um den NSFW Bereich zu betreten bzw. zu verlassen. Beispiel: `!nsfw join`');
-    }
-
     const arg = args[0].toLowerCase();
 
     const nsfwRole = bot.server.roles.get(roles.nsfw);
@@ -38,7 +34,8 @@ exports.run = (bot, message, args) => {
 exports.config = {
     server: false,
     role: roles.user,
-    trusted: false
+    trusted: false,
+    params: 1
 };
 
 exports.help = {

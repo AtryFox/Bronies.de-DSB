@@ -2,11 +2,6 @@ const roles = require('../../config/roles'),
     table = require('text-table');
 
 exports.run = (bot, message, args) => {
-    if (args.length < 1) {
-        bot.respond(message, 'dieser Befehl benötigt zusätzliche Parameter. Mehr unter `!help blockcmdlist`', true, 10);
-        return message.delete();
-    }
-
     const target = bot.getGuildMemberFromArgs(message, args, 0);
 
     if (target == null) {
@@ -51,7 +46,8 @@ exports.config = {
     server: true,
     role: roles.moderator,
     trusted: false,
-    aliases: ['blocklist', 'bcmdlist']
+    aliases: ['blocklist', 'bcmdlist'],
+    params: 1
 };
 
 exports.help = {

@@ -1,11 +1,6 @@
 const roles = require('../../config/roles');
 
 exports.run = (bot, message, args) => {
-    if (args.length < 2) {
-        bot.respond(message, 'dieser Befehl benötigt zusätzliche Parameter. Mehr unter `!help blockcmd`', true, 10);
-        return message.delete();
-    }
-
     const target = bot.getGuildMemberFromArgs(message, args, 0);
 
     if (target == null) {
@@ -82,7 +77,8 @@ exports.config = {
     server: true,
     role: roles.moderator,
     trusted: false,
-    aliases: ['block', 'bcmd']
+    aliases: ['block', 'bcmd'],
+    params: 2
 };
 
 exports.help = {

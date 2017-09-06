@@ -6,10 +6,6 @@ exports.run = (bot, _message, args) => {
     const message = _message;
     _message.delete();
 
-    if (args.length < 1) {
-        return bot.respond(message, 'Dieser Befehl benötigt zusätzliche Parameter. Mehr unter `!help urban`', true, 5);
-    }
-
     urban(args.join(' ')).res(res => {
         if (res.length == 0) {
             return bot.respond(message, `Keine Definition für den Begriff \`${args.join(' ')}\` gefunden.`, true, 5);
@@ -87,7 +83,8 @@ exports.run = (bot, _message, args) => {
 exports.config = {
     cooldown: 60,
     aliases: ['ud', 'define'],
-    skip: roles.moderator
+    skip: roles.moderator,
+    params: 1
 };
 
 

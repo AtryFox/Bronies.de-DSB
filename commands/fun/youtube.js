@@ -2,10 +2,6 @@ const roles = require('../../config/roles');
 
 
 exports.run = (bot, message, args) => {
-    if (args.length < 1) {
-        return bot.respond(message, 'Dieser Befehl benötigt zusätzliche Parameter. Mehr unter `!help youtube`');
-    }
-
     bot.youtube.searchVideo(args.join(' '), result => {
         let text = '';
 
@@ -23,7 +19,8 @@ exports.config = {
     aliases: ['yt'],
     server: true,
     cooldown: 60,
-    skip: roles.moderator
+    skip: roles.moderator,
+    params: 1
 };
 
 exports.help = {
