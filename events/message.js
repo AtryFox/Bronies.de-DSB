@@ -134,6 +134,13 @@ exports.onMessage = (message, isUpdate) => {
                     return;
                 }
 
+                if('params' in cmdObj.config) {
+                    if(cmdObj.config.params > args.length) {
+                        bot.respond(message, `dieser Befehl benötigt zusätzliche Parameter. Mehr Infos unter \`!help ${cmdObj.help.name}\`.`, true, 10);
+                        return message.delete();
+                    }
+                }
+
                 if ('cooldown' in cmdObj.config) {
                     let check = true;
 
@@ -216,6 +223,7 @@ exports.onMessage = (message, isUpdate) => {
     }
 
     if (bot.server.channels.has(message.channel.id)) {
+        bot.levels.giveExp(message);
         handleCommand();
     } else {
         if (bot.server.members.has(message.author.id)) {

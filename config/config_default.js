@@ -18,6 +18,9 @@ module.exports = {
 
     // Channel ID of channel with server info and rules (used in welcome message)
     INFO_CH: '',
+    
+    // Channel ID of channel for experimental features
+    TEST_CH: '',
 
     // Client ID of admin user
     BOT_ADMIN: '',
