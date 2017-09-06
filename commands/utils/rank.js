@@ -17,7 +17,7 @@ exports.run = (bot, message, args) => {
 
         const currentExp = ranks.find(cmpFunction)[1],
             currentRank = ranks.findIndex(cmpFunction) + 1,
-            currentLevel = bot.levels.getLevelFromXp(currentExp),
+            currentLevel = bot.levels.getLevelFromExp(currentExp),
             levelExp = bot.levels.getLevelExp(currentLevel),
             currentLevelExp = bot.levels.getLevelProgress(currentExp);
 
@@ -52,14 +52,14 @@ exports.run = (bot, message, args) => {
 
 exports.config = {
     server: true,
-    role: roles.user,
+    role: roles.moderator,
     trusted: false,
     skip: roles.moderator,
     cooldown: 300
 };
 
 exports.help = {
-    name: 'rank',
+    name: 'rankk',
     description: 'Zeigt euren Rang anhand eurer Aktivität auf dem Server an.',
     usage: ['!rank']
 };

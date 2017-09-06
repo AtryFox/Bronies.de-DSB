@@ -134,6 +134,13 @@ exports.onMessage = (message, isUpdate) => {
                     return;
                 }
 
+                if('params' in cmdObj.config) {
+                    if(cmdObj.config.params > args.length) {
+                        bot.respond(message, `dieser Befehl benötigt zusätzliche Parameter. Mehr Infos unter \`!help ${cmdObj.help.name}\`.`, true, 10);
+                        return message.delete();
+                    }
+                }
+
                 if ('cooldown' in cmdObj.config) {
                     let check = true;
 

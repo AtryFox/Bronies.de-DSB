@@ -12,11 +12,11 @@ Levels.prototype.getLevelExp = function (level) {
     return 5 * (Math.pow(level, 2)) + 50 * level + 100;
 };
 
-Levels.prototype.getLevelFromXp = function (xp) {
+Levels.prototype.getLevelFromExp = function (exp) {
     let level = 0;
 
-    while (xp >= this.getLevelExp(level)) {
-        xp -= this.getLevelExp(level);
+    while (exp >= this.getLevelExp(level)) {
+        exp -= this.getLevelExp(level);
         level++;
     }
 
@@ -76,11 +76,12 @@ Levels.prototype.giveExp = function (message) {
 
             this.users[message.author.id] = moment().add(1, 'm');
 
-            const currentLevel = this.getLevelFromXp(currentExp);
-            const newLevel = this.getLevelFromXp(newExp);
+            const currentLevel = this.getLevelFromExp(currentExp);
+            const newLevel = this.getLevelFromExp(newExp);
 
             if (currentLevel != newLevel) {
-                this.bot.respond(message, `du hast soeben Level ${newLevel} erreicht!`);
+                //this.bot.respond(message, `${message.author}, du hast soeben Level ${newLevel} erreicht!`);
+                this.bot.server.channels.get(this.bot.config.TEST_CH).send(`${message.author}, du hast soeben Level ${newLevel} erreicht!`);
             }
         })
     };
