@@ -23,7 +23,6 @@ bot.events = new Discord.Collection();
 bot.config = config;
 
 bot.youtube = new YouTube(bot);
-bot.database = new Database(bot);
 bot.twitter = new Twitter(config.TWITTER_API, bot);
 bot.levels = new Levels(bot);
 
