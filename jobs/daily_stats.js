@@ -15,7 +15,7 @@ exports.run = (bot) => {
             url: 'http://bronies.de/'
         },
         color: 0x243870
-    }).setFooter(moment().format('LLLL'));
+    }).setFooter(moment().format('LLLL') + ' | Mehr unter !stats');
 
     bot.pool.getConnection((error, con) => {
         if (error) {
@@ -45,7 +45,7 @@ exports.run = (bot) => {
         }
 
         function getStatsAverage() {
-            con.query('SELECT AVG(MESSAGES) AS MESSAGES, AVG(COMMANDS) AS COMMANDS FROM `daily` WHERE DATE != CURDATE()', (err, results, fields) => {
+            con.query('SELECT AVG(MESSAGES) AS MESSAGES, AVG(COMMANDS) AS COMMANDS FROM `daily` WHERE DATE != CURDATE() AND DATE >= DATE_ADD(CURDATE(), INTERVAL -7 DAY)', (err, results, fields) => {
                 con.release();
 
                 if (err) {
@@ -54,7 +54,7 @@ exports.run = (bot) => {
                 }
 
                 if (results.length < 1) {
-                    embed.addField('Durchschnitt', 'Kann nicht berechnet werden');
+                    embed.addField('Durchschnitt (7 Tage)', 'Kann nicht berechnet werden');
                 } else {
                     results = results[0];
                     const messages = Math.round(results.MESSAGES * 100) / 100;
@@ -63,7 +63,7 @@ exports.run = (bot) => {
                     const messagesString = messages == 1 ? 'Nachricht' : 'Nachrichten';
                     const commandsString = commands == 1 ? 'Befehl' : 'Befehle';
 
-                    embed.addField('Durchschnitt', `${messages} ${messagesString} pro Tag und ${commands} ${commandsString} pro Tag.`);
+                    embed.addField('Durchschnitt (7 Tage)', `${messages} ${messagesString} pro Tag und ${commands} ${commandsString} pro Tag.`);
 
                     bot.server.channels.get(bot.config.BOT_CH).send({embed});
                 }

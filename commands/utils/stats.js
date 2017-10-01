@@ -63,6 +63,54 @@ exports.run = (bot, message, args) => {
                     embed.addField('Gestern', `${results.MESSAGES} ${messagesString} und ${results.COMMANDS} ${commandsString}`, true);
                 }
 
+                getStatsAverage7();
+            });
+        }
+
+        function getStatsAverage7() {
+            con.query('SELECT AVG(MESSAGES) AS MESSAGES, AVG(COMMANDS) AS COMMANDS FROM `daily` WHERE DATE != CURDATE() AND DATE >= DATE_ADD(CURDATE(), INTERVAL -7 DAY)', (err, results, fields) => {
+                if (err) {
+                    respondError();
+                    return bot.log(`Could not get stats! ${error}`);
+                }
+
+                if (results.length < 1) {
+                    embed.addField('Durchschnitt (7 Tage)', 'Kann nicht berechnet werden');
+                } else {
+                    results = results[0];
+                    const messages = Math.round(results.MESSAGES * 100) / 100;
+                    const commands = Math.round(results.COMMANDS * 100) / 100;
+
+                    const messagesString = messages == 1 ? 'Nachricht' : 'Nachrichten';
+                    const commandsString = commands == 1 ? 'Befehl' : 'Befehle';
+
+                    embed.addField('Durchschnitt (7 Tage)', `${messages} ${messagesString} pro Tag und ${commands} ${commandsString} pro Tag.`);
+                }
+
+                getStatsAverage30();
+            });
+        }
+
+        function getStatsAverage30() {
+            con.query('SELECT AVG(MESSAGES) AS MESSAGES, AVG(COMMANDS) AS COMMANDS FROM `daily` WHERE DATE != CURDATE() AND DATE >= DATE_ADD(CURDATE(), INTERVAL -30 DAY)', (err, results, fields) => {
+                if (err) {
+                    respondError();
+                    return bot.log(`Could not get stats! ${error}`);
+                }
+
+                if (results.length < 1) {
+                    embed.addField('Durchschnitt (30 Tage)', 'Kann nicht berechnet werden');
+                } else {
+                    results = results[0];
+                    const messages = Math.round(results.MESSAGES * 100) / 100;
+                    const commands = Math.round(results.COMMANDS * 100) / 100;
+
+                    const messagesString = messages == 1 ? 'Nachricht' : 'Nachrichten';
+                    const commandsString = commands == 1 ? 'Befehl' : 'Befehle';
+
+                    embed.addField('Durchschnitt (30 Tage)', `${messages} ${messagesString} pro Tag und ${commands} ${commandsString} pro Tag.`);
+                }
+
                 getStatsAverage();
             });
         }
@@ -77,7 +125,7 @@ exports.run = (bot, message, args) => {
                 }
 
                 if (results.length < 1) {
-                    embed.addField('Durchschnitt', 'Kann nicht berechnet werden');
+                    embed.addField('Durchschnitt (All Time)', 'Kann nicht berechnet werden');
                 } else {
                     results = results[0];
                     const messages = Math.round(results.MESSAGES * 100) / 100;
@@ -86,7 +134,7 @@ exports.run = (bot, message, args) => {
                     const messagesString = messages == 1 ? 'Nachricht' : 'Nachrichten';
                     const commandsString = commands == 1 ? 'Befehl' : 'Befehle';
 
-                    embed.addField('Durchschnitt', `${messages} ${messagesString} pro Tag und ${commands} ${commandsString} pro Tag.`);
+                    embed.addField('Durchschnitt (All Time)', `${messages} ${messagesString} pro Tag und ${commands} ${commandsString} pro Tag.`);
 
                     message.channel.send({embed});
                 }
