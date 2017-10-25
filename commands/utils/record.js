@@ -41,7 +41,7 @@ exports.run = (bot, message, args) => {
             });
         }
         function getCommandsRecord() {
-            con.query('SELECT COMMANDS, DATE FROM daily ORDER BY MESSAGES DESC LIMIT 1', (err, results, fields) => {
+            con.query('SELECT COMMANDS, DATE FROM daily ORDER BY COMMANDS DESC LIMIT 1', (err, results, fields) => {
                 if (error) {
                     err.release();
                     respondError();
