@@ -32,13 +32,13 @@ exports.run = (bot, message, args) => {
                 }
 
                 if (results.length < 1) {
-                    embed.addField('Heute', 'Keine Nachrichten oder Befehle', true);
+                    embed.addField('__Heute__', 'Keine Nachrichten oder Befehle', true);
                 } else {
                     results = results[0];
                     const messagesString = results.MESSAGES == 1 ? 'Nachricht' : 'Nachrichten';
                     const commandsString = results.COMMANDS == 1 ? 'Befehl' : 'Befehle';
 
-                    embed.addField(`Heute`, `${results.MESSAGES} ${messagesString} und ${results.COMMANDS} ${commandsString}`, true);
+                    embed.addField(`__Heute__`, `${results.MESSAGES} ${messagesString} und ${results.COMMANDS} ${commandsString}`, true);
                 }
 
                 getStatsYesterday();
@@ -54,13 +54,13 @@ exports.run = (bot, message, args) => {
                 }
 
                 if (results.length < 1) {
-                    embed.addField('Gestern', 'Keine Nachrichten oder Befehle.', true);
+                    embed.addField('__Gestern__', 'Keine Nachrichten oder Befehle.', true);
                 } else {
                     results = results[0];
                     const messagesString = results.MESSAGES == 1 ? 'Nachricht' : 'Nachrichten';
                     const commandsString = results.COMMANDS == 1 ? 'Befehl' : 'Befehle';
 
-                    embed.addField('Gestern', `${results.MESSAGES} ${messagesString} und ${results.COMMANDS} ${commandsString}`, true);
+                    embed.addField('__Gestern__', `${results.MESSAGES} ${messagesString} und ${results.COMMANDS} ${commandsString}`, true);
                 }
 
                 getStatsAverage7();
@@ -75,7 +75,7 @@ exports.run = (bot, message, args) => {
                 }
 
                 if (results.length < 1) {
-                    embed.addField('Durchschnitt (7 Tage)', 'Kann nicht berechnet werden');
+                    embed.addField('__Durchschnitt (7 Tage)__', 'Kann nicht berechnet werden');
                 } else {
                     results = results[0];
                     const messages = Math.round(results.MESSAGES * 100) / 100;
@@ -84,7 +84,7 @@ exports.run = (bot, message, args) => {
                     const messagesString = messages == 1 ? 'Nachricht' : 'Nachrichten';
                     const commandsString = commands == 1 ? 'Befehl' : 'Befehle';
 
-                    embed.addField('Durchschnitt (7 Tage)', `${messages} ${messagesString} pro Tag und ${commands} ${commandsString} pro Tag.`);
+                    embed.addField('__Durchschnitt (7 Tage)__', `${messages} ${messagesString} pro Tag und ${commands} ${commandsString} pro Tag.`);
                 }
 
                 getStatsAverage30();
@@ -99,7 +99,7 @@ exports.run = (bot, message, args) => {
                 }
 
                 if (results.length < 1) {
-                    embed.addField('Durchschnitt (30 Tage)', 'Kann nicht berechnet werden');
+                    embed.addField('__Durchschnitt (30 Tage)__', 'Kann nicht berechnet werden');
                 } else {
                     results = results[0];
                     const messages = Math.round(results.MESSAGES * 100) / 100;
@@ -108,7 +108,7 @@ exports.run = (bot, message, args) => {
                     const messagesString = messages == 1 ? 'Nachricht' : 'Nachrichten';
                     const commandsString = commands == 1 ? 'Befehl' : 'Befehle';
 
-                    embed.addField('Durchschnitt (30 Tage)', `${messages} ${messagesString} pro Tag und ${commands} ${commandsString} pro Tag.`);
+                    embed.addField('__Durchschnitt (30 Tage)__', `${messages} ${messagesString} pro Tag und ${commands} ${commandsString} pro Tag.`);
                 }
 
                 getStatsAverage();
@@ -125,7 +125,7 @@ exports.run = (bot, message, args) => {
                 }
 
                 if (results.length < 1) {
-                    embed.addField('Durchschnitt (All Time)', 'Kann nicht berechnet werden');
+                    embed.addField('__Durchschnitt (All Time)__', 'Kann nicht berechnet werden');
                 } else {
                     results = results[0];
                     const messages = Math.round(results.MESSAGES * 100) / 100;
@@ -134,7 +134,7 @@ exports.run = (bot, message, args) => {
                     const messagesString = messages == 1 ? 'Nachricht' : 'Nachrichten';
                     const commandsString = commands == 1 ? 'Befehl' : 'Befehle';
 
-                    embed.addField('Durchschnitt (All Time)', `${messages} ${messagesString} pro Tag und ${commands} ${commandsString} pro Tag.`);
+                    embed.addField('__Durchschnitt (All Time)__', `${messages} ${messagesString} pro Tag und ${commands} ${commandsString} pro Tag.`);
 
                     message.channel.send({embed});
                 }

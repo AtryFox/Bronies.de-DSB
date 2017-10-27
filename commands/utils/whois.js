@@ -26,7 +26,7 @@ exports.run = (bot, message, args) => {
 
     let embed = new Discord.RichEmbed({
         author: {
-            name: member.user.tag,
+            name: Discord.Util.escapeMarkdown(member.user.tag),
             icon_url: member.user.displayAvatarURL,
         },
         thumbnail: {
@@ -40,7 +40,7 @@ exports.run = (bot, message, args) => {
             },
             {
                 name: 'Nickname',
-                value: member.displayName,
+                value: Discord.Util.escapeMarkdown(member.displayName),
                 inline: true
             },
             {
@@ -50,7 +50,7 @@ exports.run = (bot, message, args) => {
             },
             {
                 name: 'Spiel',
-                value: member.presence.game != null ? member.presence.game.name : "Kein Spiel aktiv",
+                value: member.presence.game != null ? Discord.Util.escapeMarkdown(member.presence.game.name) : "Kein Spiel aktiv",
                 inline: true
             },
             {
