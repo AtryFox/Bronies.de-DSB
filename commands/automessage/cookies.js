@@ -8,8 +8,6 @@ exports.run = (bot, message, args) => {
 
     let file = `_cookies${randomInt(1, 6)}.png`;
 
-    console.log(`${bot.config.BASE_URL}/i/${file}`);
-
     let embed = new Discord.RichEmbed({
         thumbnail: {
             url: `${bot.config.BASE_URL}/i/${file}`
