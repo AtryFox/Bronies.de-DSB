@@ -66,7 +66,8 @@ exports.config = {
     aliases: ['sb'],
     server: true,
     cooldown: 15,
-    params: 1
+    params: 1,
+    global_cooldown: true
 };
 
 exports.help = {
