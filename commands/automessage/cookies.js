@@ -24,7 +24,8 @@ exports.run = (bot, message, args) => {
 exports.config = {
     cooldown: 300,
     aliases: ['cookie', 'kekse', 'keks'],
-    skip: roles.moderator
+    skip: roles.moderator,
+    global_cooldown: true
 };
 
 exports.help = {

@@ -16,7 +16,8 @@ exports.run = (bot, message, args) => {
 exports.config = {
     cooldown: 300,
     aliases: ['cider'],
-    skip: roles.moderator
+    skip: roles.moderator,
+    global_cooldown: true
 };
 
 
