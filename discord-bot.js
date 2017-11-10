@@ -8,6 +8,7 @@ let Discord = require('discord.js'),
     exec = require('child_process').exec,
     moment = require('moment'),
     mysql = require('mysql'),
+    table = require('text-table'),
     schedule = require('node-schedule');
 
 moment.locale('de');
@@ -154,6 +155,53 @@ bot.getEmoji = (name) => {
     } else {
         return ':robot:';
     }
+};
+
+bot.getInactiveMembers = (days, callback) => {
+    bot.server.fetchMembers().then(guild => {
+        callback(guild.members.filter(member => {
+            return member.roles.size <= 1 && moment().subtract(days, 'days').isAfter(moment(member.joinedAt));
+        }).sort((a, b) => {
+            return moment(a.joinedAt) - moment(b.joinedAt);
+        }));
+    });
+};
+
+bot.memberCollectionToTable = (members) => {
+    let tableContent = ['Tag', 'ID', 'Joined', '-----', '------------------', '------------------'];
+
+    members.forEach(member => {
+        tableContent.push(member.user.tag, member.id, `${moment(member.joinedAt).format('L LT')} (${moment(member.joinedAt).fromNow()})`);
+    });
+
+    let membersTable = [],
+        columns = 3;
+    for (let ix = 0; ix < tableContent.length; ix += columns)
+        membersTable.push(tableContent.slice(ix, ix + columns));
+
+    return '```' + table(membersTable, {hsep: '    '}) + '```';
+};
+
+bot.splitMessageToMultiple = (text) => {
+    let rows = text.split(/\r?\n/);
+
+    let messages = [];
+
+    let curMessage = '';
+
+    for (let i = 1; i < rows.length + 1; i++) {
+        curMessage += rows[i - 1] + '\n';
+
+        if ((i % 15) === 0 && i != rows.length) {
+            curMessage += '```';
+            messages.push(curMessage);
+            curMessage = '```';
+        }
+    }
+
+    messages.push(curMessage);
+
+    return messages;
 };
 
 bot.randomInt = (low, high) => {
