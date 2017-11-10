@@ -28,8 +28,24 @@ exports.run = (bot, message, args) => {
 
         text += '```' + table(commandsTable, {hsep: '    '}) + '```';
 
-        console.log(text);
-        message.channel.send(text);
+        let rows = text.split(/\r?\n/);
+
+        let messages = [];
+
+        let curMessage = [];
+
+        for(let i = 1; i < rows.length + 1; i++) {
+            curMessage.push(rows[i - 1]);
+
+            if((i % 15) === 0) {
+                messages.push(curMessage);
+                curMessage = [];
+            }
+        }
+
+        messages.push(curMessage);
+
+        messages.forEach(msg => message.channel.send(msg));
     });
 };
 
