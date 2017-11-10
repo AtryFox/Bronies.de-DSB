@@ -32,14 +32,15 @@ exports.run = (bot, message, args) => {
 
         let messages = [];
 
-        let curMessage = [];
+        let curMessage = '';
 
         for(let i = 1; i < rows.length + 1; i++) {
-            curMessage.push(rows[i - 1]);
+            curMessage += rows[i - 1] + '\n';
 
             if((i % 15) === 0) {
+                curMessage += '```';
                 messages.push(curMessage);
-                curMessage = [];
+                curMessage = '```';
             }
         }
 
