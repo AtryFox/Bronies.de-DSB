@@ -14,8 +14,6 @@ exports.run = (bot, message, args) => {
 
     bot.server.fetchMembers().then(guild => {
         guild.members.filter(member => {
-            console.log(member.user.tag + " " + member.roles.size);
-
             return member.roles.size <= 1;
         }).sort((a, b) => {
             return moment(a.joinedAt) - moment(b.joinedAt);
@@ -30,6 +28,7 @@ exports.run = (bot, message, args) => {
 
         text += '```' + table(commandsTable, {hsep: '    '}) + '```';
 
+        console.log(text);
         message.channel.send(text);
     });
 };
