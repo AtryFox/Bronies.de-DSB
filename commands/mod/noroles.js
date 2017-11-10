@@ -34,10 +34,10 @@ exports.run = (bot, message, args) => {
 
         let curMessage = '';
 
-        for(let i = 0; i < rows.length; i++) {
-            curMessage += rows[i] + '\n';
+        for(let i = 1; i < rows.length + 1; i++) {
+            curMessage += rows[i - 1] + '\n';
 
-            if((i % 14) === 0) {
+            if((i % 15) === 0 && i != rows.length) {
                 curMessage += '```';
                 messages.push(curMessage);
                 curMessage = '```';
