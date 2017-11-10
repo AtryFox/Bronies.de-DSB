@@ -12,24 +12,26 @@ exports.run = (bot, message, args) => {
 
     let tableContent = ['Tag', 'ID', 'Joined', '-----', '------------------', '------------------'];
 
-    bot.server.members.filter(member => {
-        console.log(member.user.tag + " " + member.roles.size);
+    bot.server.fetchMembers().then(guild => {
+        guild.members.filter(member => {
+            console.log(member.user.tag + " " + member.roles.size);
 
-        return member.roles.size <= 1;
-    }).sort((a, b) => {
-        return moment(a.joinedAt) - moment(b.joinedAt);
-    }).forEach(member => {
-        tableContent.push(member.user.tag, member.id, `${moment(member.joinedAt).format('L LT')} (${moment(member.joinedAt).fromNow()})`);
+            return member.roles.size <= 1;
+        }).sort((a, b) => {
+            return moment(a.joinedAt) - moment(b.joinedAt);
+        }).forEach(member => {
+            tableContent.push(member.user.tag, member.id, `${moment(member.joinedAt).format('L LT')} (${moment(member.joinedAt).fromNow()})`);
+        });
+
+        let commandsTable = [],
+            columns = 3;
+        for (let ix = 0; ix < tableContent.length; ix += columns)
+            commandsTable.push(tableContent.slice(ix, ix + columns));
+
+        text += '```' + table(commandsTable, {hsep: '    '}) + '```';
+
+        message.channel.send(text);
     });
-
-    let commandsTable = [],
-        columns = 3;
-    for (let ix = 0; ix < tableContent.length; ix += columns)
-        commandsTable.push(tableContent.slice(ix, ix + columns));
-
-    text += '```' + table(commandsTable, {hsep: '    '}) + '```';
-
-    message.channel.send(text);
 };
 
 exports.config = {
