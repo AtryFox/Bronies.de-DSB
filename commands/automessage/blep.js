@@ -15,9 +15,10 @@ exports.run = (bot, message, args) => {
 
 exports.config = {
     cooldown: 600,
-    aliases: ['bleb', 'plep'],
+    aliases: ['bleb', 'plep', 'pleb'],
     skip: roles.moderator,
-    global_cooldown: true
+    global_cooldown: true,
+    trusted: false
 };
 
 

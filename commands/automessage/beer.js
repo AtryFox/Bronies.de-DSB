@@ -17,7 +17,8 @@ exports.config = {
     cooldown: 300,
     aliases: ['bier'],
     skip: roles.moderator,
-    global_cooldown: true
+    global_cooldown: true,
+    trusted: false
 };
 
 

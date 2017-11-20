@@ -17,7 +17,8 @@ exports.config = {
     cooldown: 300,
     aliases: ['kaffee'],
     skip: roles.moderator,
-    global_cooldown: true
+    global_cooldown: true,
+    trusted: false
 };
 
 exports.help = {

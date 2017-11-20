@@ -23,7 +23,8 @@ exports.config = {
     cooldown: 300,
     aliases: ['cookie', 'kekse', 'keks'],
     skip: roles.moderator,
-    global_cooldown: true
+    global_cooldown: true,
+    trusted: false
 };
 
 exports.help = {

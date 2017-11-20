@@ -20,10 +20,11 @@ exports.run = (bot, message, args) => {
 };
 
 exports.config = {
-    cooldown: 300,
+    cooldown: 600,
     aliases: ['glomb', 'clomp'],
     skip: roles.moderator,
-    global_cooldown: true
+    global_cooldown: true,
+    trusted: false
 };
 
 exports.help = {
