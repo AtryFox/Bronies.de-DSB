@@ -13,7 +13,7 @@ exports.run = (bot, message, args) => {
             url: `${bot.config.BASE_URL}/i/${file}`
         },
         description: '**❤ Glomp!**',
-        color: 0x6C4733
+        color: 0xFCB6DF
     }).setFooter(`Der Chat wurde geglompt von ${bot.server.members.get(message.author.id).displayName} | Art by n0nnny`);
 
     message.channel.send({embed});
