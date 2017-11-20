@@ -6,7 +6,7 @@ exports.run = (bot, message, args) => {
         return Math.floor(Math.random() * (high - low + 1) + low);
     }
 
-    let file = `_glomp${randomInt(1, 10)}.gif`;
+    let file = `_glomp${randomInt(1, 9)}.gif`;
 
     let embed = new Discord.RichEmbed({
         image: {
