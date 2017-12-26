@@ -147,7 +147,7 @@ Levels.prototype.setExp = function (member, exp, callback) {
 };
 
 Levels.prototype.exportLevels = function (callback) {
-    this.getAllExp((err, result) => {
+    this.getRanklist((err, result) => {
         if (err) {
             return callback(err);
         }
