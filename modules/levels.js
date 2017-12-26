@@ -116,13 +116,15 @@ Levels.prototype.getAllExp = function (callback) {
 };
 
 Levels.prototype.getRanklist = function (callback) {
+    const server = this.bot.server;
+
     this.getAllExp((err, results) => {
         if (err) {
             return callback(err, null);
         }
 
         let ranks = Object.keys(results).map(function (key) {
-            return [key, results[key]];
+            return [key, results[key], server.members.get(key).user.tag, server.members.get(key).user.displayAvatarURL];
         });
 
         ranks.sort(function (first, second) {
