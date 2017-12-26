@@ -124,7 +124,7 @@ Levels.prototype.getRanklist = function (callback) {
         }
 
         let ranks = Object.keys(results).map(function (key) {
-            return [key, results[key], server.members.get(key).user.tag, server.members.get(key).user.displayAvatarURL];
+            return [key, results[key]];
         });
 
         ranks.sort(function (first, second) {
@@ -146,16 +146,6 @@ Levels.prototype.setExp = function (member, exp, callback) {
 
         callback(false);
     });
-};
-
-Levels.prototype.exportLevels = function (callback) {
-    this.getRanklist((err, result) => {
-        if (err) {
-            return callback(err);
-        }
-
-        console.log(result);
-    })
 };
 
 
