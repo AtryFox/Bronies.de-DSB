@@ -26,6 +26,8 @@ exports.run = () => {
     if (bot.server.members.has(bot.config.BOT_ADMIN)) {
         bot.admin = bot.server.members.get(bot.config.BOT_ADMIN);
     }
+
+    bot.levels.exportLevels();
 };
 
 exports.config = {

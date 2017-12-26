@@ -146,6 +146,16 @@ Levels.prototype.setExp = function (member, exp, callback) {
     });
 };
 
+Levels.prototype.exportLevels = function (callback) {
+    this.getAllExp((err, result) => {
+        if (err) {
+            return callback(err);
+        }
+
+        console.log(result);
+    })
+};
+
 
 if (!(typeof exports === 'undefined')) {
     exports.Levels = Levels;
