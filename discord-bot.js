@@ -3,7 +3,6 @@ let Discord = require('discord.js'),
     roles = require('./config/roles'),
     Twitter = require('./modules/twitter').Twitter,
     YouTube = require('./modules/youtube').YouTube,
-    Levels = require('./modules/levels').Levels,
     fs = require('fs'),
     exec = require('child_process').exec,
     moment = require('moment'),
@@ -24,7 +23,6 @@ bot.config = config;
 
 bot.youtube = new YouTube(bot);
 bot.twitter = new Twitter(config.TWITTER_API, bot);
-bot.levels = new Levels(bot);
 
 bot.pool = mysql.createPool({
     host: bot.config.MYSQL_SERVER.HOSTNAME,

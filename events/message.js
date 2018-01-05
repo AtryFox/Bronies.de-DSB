@@ -223,7 +223,6 @@ exports.onMessage = (message, isUpdate) => {
     }
 
     if (bot.server.channels.has(message.channel.id)) {
-        bot.levels.giveExp(message);
         handleCommand();
     } else {
         if (bot.server.members.has(message.author.id)) {
