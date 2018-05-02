@@ -2,7 +2,7 @@ const roles = require('../../config/roles'),
     unirest = require('unirest');
 
 exports.run = (bot, message, args) => {
-    unirest.get('http://aws.random.cat/meow')
+    unirest.get('https://aws.random.cat/meow')
         .end((result) => {
             if (result.error || typeof result.body !== 'object') {
                 bot.log(result.error, result.body);
