@@ -6,7 +6,7 @@ moment.locale('de');
 
 exports.run = (bot, message, args) => {
     function getMetaData(callback) {
-        axios.get('https://www.bronyradiogermany.com/request-v2/json/v1/history')
+        axios.get('https://panel.bronyradiogermany.com/api/history')
             .then((res) => {
                 return callback(res.data.result);
             })
@@ -26,7 +26,7 @@ exports.run = (bot, message, args) => {
         let text = '🎶 Zuletzt gespielte Songs im BRG:';
 
         result.forEach(song => {
-            const time = moment(`${song.date_played} ${song.time_played}`, 'DD.MM.YYYY HH:mm:ss');
+            const time = moment(`${song.date_played} ${song.time_played}`, 'YYYY-MM-DD HH:mm:ss');
             text += `\n\n__**${song.title}** von **${song.artist}**__\n${time.fromNow()}`;
         });
 

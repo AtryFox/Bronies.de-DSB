@@ -3,7 +3,7 @@ const roles = require('../../config/roles'),
 
 exports.run = (bot, message, args) => {
     function getMetaData(callback) {
-        axios.get('https://www.bronyradiogermany.com/request-v2/json/v1/nowplaying/stream')
+        axios.get('https://panel.bronyradiogermany.com/api/streaminfo/stream')
             .then((res) => {
                 return callback(res.data.result);
             })
