@@ -19,7 +19,7 @@ exports.run = (bot, message, args) => {
 exports.config = {
     cooldown: 600,
     skip: roles.moderator,
-    aliases: ['d']
+    aliases: ['f']
 };
 
 
