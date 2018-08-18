@@ -6,7 +6,7 @@ moment.locale('de');
 
 
 exports.run = (bot, message, args) => {
-    bot.getInactiveMembers(0, members => {
+    bot.getInactiveMembers(30, members => {
         let text = '**Folgende Benutzer wurden entfernt:**';
 
         text += bot.memberCollectionToTable(members);
