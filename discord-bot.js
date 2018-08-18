@@ -243,6 +243,11 @@ let commandLoader = function (currentPath) {
         let stats = fs.statSync(currentFile);
         if (stats.isFile()) {
             let loader = require(`${currentFile}`);
+            if ('enabled' in loader.config) {
+                if (!loader.config.enabled) {
+                    continue;
+                }
+            }
             bot.commands.set(loader.help.name.toLowerCase(), loader);
             if ('aliases' in loader.config) {
                 loader.config.aliases.forEach(alias => {
