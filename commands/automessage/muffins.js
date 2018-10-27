@@ -3,8 +3,8 @@ const roles = require('../../config/roles'),
 
 exports.run = (bot, message, args) => {
     let embed = new Discord.RichEmbed({
-        thumbnail: {
-            url: `${bot.config.BASE_URL}/i/_muffins.png`
+        image: {
+            url: `${bot.config.BASE_URL}/i/_muffins.gif`
         },
         description: '**Derpy war da! It\'s Muffin time!**',
         color: 0x808AA7
