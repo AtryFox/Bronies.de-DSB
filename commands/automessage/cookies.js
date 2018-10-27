@@ -2,11 +2,7 @@ const roles = require('../../config/roles'),
     Discord = require('discord.js');
 
 exports.run = (bot, message, args) => {
-    function randomInt(low, high) {
-        return Math.floor(Math.random() * (high - low + 1) + low);
-    }
-
-    let file = `_cookies${randomInt(1, 6)}.png`;
+    let file = `_cookies.gif`;
 
     let embed = new Discord.RichEmbed({
         thumbnail: {
@@ -14,7 +10,7 @@ exports.run = (bot, message, args) => {
         },
         description: '**🍪 Eine Runde Kekse wird im Chat verteilt!**',
         color: 0x6C4733
-    }).setFooter(`Kekse angefordert von ${bot.server.members.get(message.author.id).displayName} | Art by FilPaperSoul`);
+    }).setFooter(`Kekse angefordert von ${bot.server.members.get(message.author.id).displayName} | Art by Evomanaphy`);
 
     message.channel.send({embed});
 };
