@@ -5,7 +5,7 @@ exports.run = (bot, message, args) => {
     let file = `_cookies.gif`;
 
     let embed = new Discord.RichEmbed({
-        thumbnail: {
+        image: {
             url: `${bot.config.BASE_URL}/i/${file}`
         },
         description: '**🍪 Eine Runde Kekse wird im Chat verteilt!**',
