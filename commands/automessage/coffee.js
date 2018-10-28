@@ -2,9 +2,15 @@ const roles = require('../../config/roles'),
     Discord = require('discord.js');
 
 exports.run = (bot, message, args) => {
+    function randomInt(low, high) {
+        return Math.floor(Math.random() * (high - low + 1) + low);
+    }
+
+    let file = `_coffee${randomInt(1, 4)}.gif`;
+
     let embed = new Discord.RichEmbed({
-        thumbnail: {
-            url: `${bot.config.BASE_URL}/i/_coffee.png`
+        image: {
+            url: `${bot.config.BASE_URL}/i/${file}`
         },
         description: '**☕ Eine Kanne brühend heißer Kaffee steht bereit!**',
         color: 0x6f4e37
