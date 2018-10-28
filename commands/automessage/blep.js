@@ -14,7 +14,7 @@ exports.run = (bot, message, args) => {
         },
         description: '**Blep o3o**',
         color: 0x399CE7
-    }).setFooter(`Der Chat wurde geblept von ${bot.server.members.get(message.author.id).displayName} | Art by n0nnny`);
+    }).setFooter(`Der Chat wurde geblept von ${bot.server.members.get(message.author.id).displayName}`);
 
     message.channel.send({embed});
 };
